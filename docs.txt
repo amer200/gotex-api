@@ -1,6 +1,6 @@
 /***********************************user***********************************/
 1)signup
-url = http://localhost:5000/user/signup
+url = http://83.136.219.95:5000/user/signup
 body:
 {
     "name": "",
@@ -19,7 +19,7 @@ response
 }
 /**********************
 2)signin
-url = http://localhost:5000/user/signup
+url = http://83.136.219.95:5000/user/signup
 body:
 {
     "email": "",
