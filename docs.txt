@@ -1,0 +1,32 @@
+/***********************************user***********************************/
+1)signup
+url = http://localhost:5000/user/signup
+body:
+{
+    "name": "",
+    "mobile": "",
+    "email": "",
+    "password": "",
+    "address": "",
+    "location": ""
+}
+response
+{
+    "msg": "ok",
+    "user": {
+        
+    }
+}
+/**********************
+2)signin
+url = http://localhost:5000/user/signup
+body:
+{
+    "email": "",
+    "password": "",
+}
+response
+{
+    "msg": "ok",
+    "token": " "
+}
