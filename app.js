@@ -41,7 +41,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 /********************************************************************************* */
 const userRoutes = require("./routes/user");
+const adminRoutes = require("./routes/admin");
+const saeeRoutes = require("./routes/saee");
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
+app.use("/saee", saeeRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {

@@ -1,6 +1,6 @@
 /***********************************user***********************************/
 1)signup
-url = http://83.136.219.95:5000/user/signup
+url = https://dashboard.go-tex.net/api/user/signup
 body:
 {
     "name": "",
@@ -19,7 +19,7 @@ response
 }
 /**********************
 2)signin
-url = http://83.136.219.95:5000/user/signup
+url = https://dashboard.go-tex.net/api/user/login
 body:
 {
     "email": "",
@@ -29,4 +29,54 @@ response
 {
     "msg": "ok",
     "token": " "
+}
+/*********************************admin*************************/
+1) login
+url = https://dashboard.go-tex.net/api/admin/login
+body:
+{
+    "email": "",
+    "password": "",
+}
+response
+{
+    "msg": "ok",
+    "token": " "
+}
+/*********************************saee***************************/
+1)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/saee/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+}
+response
+{
+    "msg": "ok",
+    "token": " "
+}
+/******************
+2) create order for user
+url = https://dashboard.go-tex.net/api/saee/create-user-order
+body{
+          p_name;
+          p_city;
+          p_mobile;
+          p_streetaddress;
+          weight;
+          quantity;
+          c_name;
+          c_city;
+          c_streetaddress;
+          c_mobile;
+}
+
+response {
+    user: "",
+    data: "",
 }

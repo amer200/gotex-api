@@ -2,6 +2,41 @@ const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const salt = 10;
+const nodemailer = require("nodemailer");
+const sendEmail = async (email, subject, text) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: process.env.HOST,
+            service: process.env.SERVICE,
+            port: 587,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAILPASSWORD,
+            },
+        });
+
+        await transporter.sendMail({
+            from: process.env.USER,
+            to: email,
+            subject: subject,
+            text: text,
+        });
+        console.log("email sent sucessfully");
+    } catch (error) {
+        console.log("email not sent");
+        console.log(error);
+    }
+};
+function genRandonString(length) {
+    var chars = '0123456789';
+    var charLength = chars.length;
+    var result = '';
+    for (var i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
+}
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
     const hash = bcrypt.hashSync(password, salt);
@@ -20,6 +55,7 @@ exports.signUp = (req, res) => {
                     address: address,
                     location: location,
                     verified: false,
+                    emailcode: genRandonString(4),
                     rolle: "user"
                 })
                 user.save()
