@@ -41,9 +41,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 /********************************************************************************* */
 app.use(cors({
-    origin: "*",
-    methods: ["POST", "get", "put", "delete"],
-}))
+    origin: '*',
+    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+}));
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const saeeRoutes = require("./routes/saee");
