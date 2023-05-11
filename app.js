@@ -40,6 +40,12 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 /********************************************************************************* */
+app.options("*", cors({
+    origin: "http://localhost:3000",
+    methods: ["post", "get", "put", "delete"],
+    credentials: true,
+    exposedHeaders: ["set-cookie"]
+}))
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const saeeRoutes = require("./routes/saee");
