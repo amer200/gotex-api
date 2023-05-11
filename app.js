@@ -42,7 +42,7 @@ app.use(bodyParser.json());
 /********************************************************************************* */
 app.use(cors({
     origin: "*",
-    methods: ["post", "get", "put", "delete"],
+    methods: ["POST", "get", "put", "delete"],
 }))
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
