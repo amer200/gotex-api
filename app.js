@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken");
 var cors = require('cors');
 var morgan = require('morgan')
 app.use(cors({
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["post", "get", "put", "delete"],
     credentials: true,
     exposedHeaders: ["set-cookie"]
