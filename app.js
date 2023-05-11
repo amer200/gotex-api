@@ -9,7 +9,12 @@ const multer = require('multer');
 const jwt = require("jsonwebtoken");
 var cors = require('cors');
 var morgan = require('morgan')
-app.use(cors())
+app.use(cors({
+    origin: "*",
+    methods: ["post", "get", "put", "delete"],
+    credentials: true,
+    exposedHeaders: ["set-cookie"]
+}))
 app.use(morgan('combined'))
 /********************************************************************************* */
 const storage = multer.diskStorage({
