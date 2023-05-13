@@ -88,3 +88,15 @@ exports.createUserOrder = async (req, res) => {
             console.log(err.request)
         })
 }
+exports.getUserOrders = async (req, res) => {
+    const userId = req.user.id;
+    SaeeOrder.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}

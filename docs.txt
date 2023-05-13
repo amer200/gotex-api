@@ -80,3 +80,10 @@ response {
     user: "",
     data: "",
 }
+/********************
+3) get all user orders
+url = https://dashboard.go-tex.net/saee/get-all-orders
+method = get
+response {
+    "data": []
+}

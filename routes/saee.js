@@ -5,4 +5,5 @@ const userMiddlewares = require('../middleware/user');
 const adminMiddlewares = require("../middleware/admin");
 routes.post("/edit", adminMiddlewares.isAuth, saeeControllers.edit);
 routes.post("/create-user-order", userMiddlewares.isAuth, saeeControllers.createUserOrder);
+routes.get("/get-all-orders", userMiddlewares.isAuth, saeeControllers.getUserOrders);
 module.exports = routes;
