@@ -100,3 +100,26 @@ exports.getUserOrders = async (req, res) => {
             console.log(err.request)
         })
 }
+exports.getSticker = async (req, res) => {
+    const orderId = req.params.id;
+    SaeeOrder.findById(orderId)
+        .then(o => {
+            axios({
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'secret': `${process.env.SAEE_KEY}`
+                },
+                url: `https://corporate.k-w-h.com/deliveryrequest/printsticker/${o.data.waybill}`
+            })
+                .then(bill => {
+                    res.status(200).json({
+                        msg: "ok",
+                        data: bill.data
+                    })
+                })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}

@@ -8,16 +8,17 @@ exports.isAuth = (req, res, next) => {
         })
     }
     jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
+        console.log(user)
         if (err) {
             return res.status(400).json({
                 msg: err
             })
         }
-        if (user.user.roll == 'admin') {
-            req.user = user.user
+        if (user.data.user.rolle == 'admin') {
+            req.user = user.data
+            console.log()
             next();
         } else {
-            console.log(user.user.roll)
             res.status(304).json({
                 msg: "not allowed"
             })

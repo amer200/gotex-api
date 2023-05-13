@@ -87,3 +87,11 @@ method = get
 response {
     "data": []
 }
+/*******************
+4) get order stiker
+url = https://dashboard.go-tex.net/print-sticker/${order id}
+method = get
+response{
+    msg: "ok",
+    data: "html"
+}
