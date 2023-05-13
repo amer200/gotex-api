@@ -57,7 +57,7 @@ exports.isAuth = (req, res, next) => {
                 msg: err
             })
         }
-        if (user.user.roll == 'user') {
+        if (user.user.rolle == 'user') {
             req.user = user.user
             next();
         } else {
