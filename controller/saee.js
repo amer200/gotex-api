@@ -1,6 +1,7 @@
 const axios = require("axios");
 const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
+const { response } = require("express");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -29,6 +30,7 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     const saee = await Saee.findOne();
+    let ordersNum = await SaeeOrder.count();
     const p_name = req.body.p_name;
     const p_city = req.body.p_city;
     const p_mobile = req.body.p_mobile;
@@ -57,7 +59,8 @@ exports.createUserOrder = async (req, res) => {
         c_name: c_name,
         c_city: c_city,
         c_streetaddress: c_streetaddress,
-        c_mobile: c_mobile
+        c_mobile: c_mobile,
+        ordernumber: ordersNum + 2
     }
     axios({
         method: 'POST',
@@ -70,6 +73,7 @@ exports.createUserOrder = async (req, res) => {
                 const order = new SaeeOrder({
                     user: req.user.id,
                     company: "saee",
+                    ordernumber: ordersNum + 2,
                     data: response.data
                 })
                 order.save()
@@ -119,6 +123,26 @@ exports.getSticker = async (req, res) => {
                         data: bill.data
                     })
                 })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+exports.trakingOrderByNum = async (req, res) => {
+    const orderId = req.body.orderId;
+    const order = await SaeeOrder.findById(orderId);
+    axios({
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'secret': `${process.env.SAEE_KEY}`
+        },
+        url: `https://corporate.k-w-h.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
+    })
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
         })
         .catch(err => {
             console.log(err)

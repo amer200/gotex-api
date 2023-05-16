@@ -95,3 +95,30 @@ response{
     msg: "ok",
     data: "html"
 }
+/******************
+5) track order by Number
+url = https://dashboard.go-tex.net/api/saee/track-order-by-number
+method = post
+data={
+    "orderId": "6463b592f7f3e6cea14253c0"
+}
+response{    // just use trackingnum && status
+    "data": {
+        "success": true,
+        "trackingnum": "OS42823840KS",
+        "company_id": 3403,
+        "failed_delivery_attempts": 0,
+        "scheduled_shipment_date": "",
+        "reason_code": "",
+        "ticket": null,
+        "details": [
+            {
+                "id": 40186288,
+                "city": "Makkah",
+                "status": 0,
+                "notes": "Created By Origin",
+                "updated_at": "2023-05-16 16:55:46"
+            }
+        ]
+    }
+}
