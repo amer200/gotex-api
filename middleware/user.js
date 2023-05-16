@@ -4,7 +4,7 @@ const { joiPasswordExtendCore } = require('joi-password');
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 const userSchema = Joi.object({
     name: Joi.string().min(3).required(),
-    mobile: Joi.string().min(12).required(),
+    mobile: Joi.string().required(),
     email: Joi.string().email().required(),
     address: Joi.string(),
     location: Joi.string(),

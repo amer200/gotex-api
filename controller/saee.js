@@ -69,6 +69,7 @@ exports.createUserOrder = async (req, res) => {
             if (response.data.success) {
                 const order = new SaeeOrder({
                     user: req.user.id,
+                    company: "saee",
                     data: response.data
                 })
                 order.save()
@@ -85,7 +86,7 @@ exports.createUserOrder = async (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err.request)
+            console.log(err.message)
         })
 }
 exports.getUserOrders = async (req, res) => {
