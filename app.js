@@ -42,14 +42,16 @@ app.use(bodyParser.json());
 /********************************************************************************* */
 app.use(cors({
     origin: '*',
-    methods: ['GET','POST','DELETE','UPDATE','PUT','PATCH']
+    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const saeeRoutes = require("./routes/saee");
+const aramexRoutes = require("./routes/aramex");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/saee", saeeRoutes);
+app.use("/aramex", aramexRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {
