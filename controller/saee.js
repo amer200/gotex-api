@@ -71,7 +71,7 @@ exports.createUserOrder = async (req, res) => {
         .then(response => {
             if (response.data.success) {
                 const order = new SaeeOrder({
-                    user: req.user.id,
+                    user: req.user.user.id,
                     company: "saee",
                     ordernumber: ordersNum + 2,
                     data: response.data
@@ -94,7 +94,7 @@ exports.createUserOrder = async (req, res) => {
         })
 }
 exports.getUserOrders = async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user.user.id;
     SaeeOrder.find({ user: userId })
         .then(o => {
             res.status(200).json({

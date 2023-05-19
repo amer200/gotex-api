@@ -23,10 +23,10 @@ exports.createOrder = async (req, res) => {
     const p_city = req.body.p_city;
     const p_CellPhone = req.body.p_CellPhone;
     /***************************** */
-    let data = JSON.stringify({
-        "LabelInfo": {
-            "ReportID": 1,
-            "ReportType": "URL"
+    let data = {
+        LabelInfo: {
+            ReportID: 1,
+            ReportType: "URL"
         },
         "Shipments": [
             {
@@ -244,10 +244,10 @@ exports.createOrder = async (req, res) => {
             "Reference4": "",
             "Reference5": ""
         }
-    });
+    };
     let config = {
         method: 'post',
-        maxBodyLength: Infinity,
+        // maxBodyLength: Infinity,
         url: 'https://ws.dev.aramex.net/shippingapi.v1/shipping/service_1_0.svc/json',
         headers: {
             'Content-Type': 'application/json'
@@ -256,10 +256,10 @@ exports.createOrder = async (req, res) => {
     };
     axios.request(config)
         .then((response) => {
-            console.log(JSON.stringify(response.data));
+            console.log(JSON.stringify(response.status));
         })
         .catch((error) => {
-            console.log(error.cause);
+            console.log(error);
         });
     // clientInfo = new aramex.ClientInfo();
 
