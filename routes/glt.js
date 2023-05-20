@@ -1,0 +1,11 @@
+const express = require("express");
+const routes = express.Router();
+const gltControllers = require("../controller/glt");
+const userMiddlewares = require('../middleware/user');
+const adminMiddlewares = require("../middleware/admin");
+routes.post("/edit", adminMiddlewares.isAuth, gltControllers.edit);
+// routes.post("/create-user-order", userMiddlewares.isAuth, gltControllers.createUserOrder);
+// routes.get("/get-all-orders", userMiddlewares.isAuth, gltControllers.getUserOrders);
+// routes.get("/print-sticker/:id", userMiddlewares.isAuth, gltControllers.getSticker);
+// routes.post("/track-order-by-number", userMiddlewares.isAuth, gltControllers.trakingOrderByNum);
+module.exports = routes;

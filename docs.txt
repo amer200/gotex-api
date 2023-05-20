@@ -58,7 +58,6 @@ body
 response
 {
     "msg": "ok",
-    "token": " "
 }
 /******************
 2) create order for user
@@ -121,4 +120,20 @@ response{    // just use trackingnum && status
             }
         ]
     }
+}
+/*****************************************************glt************************************/
+1)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/glt/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+}
+response
+{
+    "msg": "ok",
 }

@@ -48,10 +48,12 @@ const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const saeeRoutes = require("./routes/saee");
 const aramexRoutes = require("./routes/aramex");
+const gltRoutes = require("./routes/glt");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/saee", saeeRoutes);
 app.use("/aramex", aramexRoutes);
+app.use("/glt", gltRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {
