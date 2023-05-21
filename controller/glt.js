@@ -52,7 +52,7 @@ exports.createUserOrder = async (req, res) => {
     let data = {
         orders: [
             {
-                referenceNumber: ordersNum + 1 + "gotex",
+                referenceNumber: ordersNum + Date.now() + "gotex",
                 pieces: pieces,
                 description: desc,
                 codAmount: 22,
