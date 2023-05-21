@@ -137,3 +137,73 @@ response
 {
     "msg": "ok",
 }
+/**********************************************
+2) get all cities
+url = https://dashboard.go-tex.net/api/glt/cities
+method = get
+response 
+{
+    "data": {
+        "status": "success",
+        "message": null,
+        "httpStatus": "OK",
+        "data": [
+            {
+                "id": 49,
+                "name": "Jeddah",
+                "code": "JED"
+            },
+            {
+                "id": 50,
+                "name": "Dammam",
+                "code": "DMM"
+            },
+            {
+                "id": 52,
+                "name": "Al Kharj",
+                "code": "ALK"
+            }
+        ]
+}
+}
+/*****************************
+2)create order
+url = https://dashboard.go-tex.net/api/glt/create-user-order
+method = post
+body{
+    {
+    "pieces": 3,
+    "description": "desc",
+    "clintComment": "c comment",
+    "value": 100,
+    "weight": 25,
+    "s_address": "jadah",
+    "s_city": "JED", use city code from no 2
+    "s_mobile": 96123987456,
+    "s_name": "amer",
+    "c_name": "mostafa",
+    "c_address": "makah",
+    "c_areaName": "makah",
+    "c_city": "JED", use city code from no 2
+    "c_mobile": 96123987456
+}
+}
+
+response 
+{
+    "data": {
+        "user": "64453d395f6255b608741b8b",
+        "company": "glt",
+        "ordernumber": 4,
+        "data": {
+            "orderNumber": "4gotex",
+            "orderTrackingNumber": "GLT0000331895",
+            "status": "success",
+            "msg": "Order created",
+            "order": null,
+            "type": "DROP_SHIP"
+        },
+        "_id": "646a578dcd6e8001870aceaf",
+        "__v": 0
+    }
+}

@@ -14,9 +14,8 @@ exports.isAuth = (req, res, next) => {
                 msg: err
             })
         }
-        if (user.data.user.rolle == 'admin') {
+        if (user.data.user.roll == 'admin') {
             req.user = user.data
-            console.log()
             next();
         } else {
             res.status(304).json({

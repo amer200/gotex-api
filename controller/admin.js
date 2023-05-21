@@ -1,5 +1,6 @@
 const Saee = require("../model/saee");
 const User = require("../model/user");
+const jwt = require("jsonwebtoken");
 
 exports.logIn = (req, res) => {
     const email = req.body.email;

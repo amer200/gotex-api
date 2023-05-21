@@ -60,7 +60,6 @@ exports.isAuth = (req, res, next) => {
         }
         if (user.data.user.rolle == 'user') {
             req.user = user.data
-            console.log()
             next();
         } else {
             res.status(304).json({
