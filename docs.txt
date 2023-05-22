@@ -207,3 +207,52 @@ response
         "__v": 0
     }
 }
+/******************
+3) get all user order
+url = https://dashboard.go-tex.net/api/glt/get-all-orders
+method = get
+response
+{
+    "data": [
+        {
+            "_id": "646a5669e1d8184cf046a4e7",
+            "user": "64453d395f6255b608741b8b",
+            "company": "glt",
+            "ordernumber": 1,
+            "data": {
+                "orderNumber": "1gotex",
+                "orderTrackingNumber": "GLT0000331892",
+                "status": "success",
+                "msg": "Order created",
+                "order": null,
+                "type": "DROP_SHIP"
+            },
+            "__v": 0
+        },
+        {
+            "_id": "646a56c4cd6e8001870acea7",
+            "user": "64453d395f6255b608741b8b",
+            "company": "glt",
+            "ordernumber": 2,
+            "data": {
+                "orderNumber": "2gotex",
+                "orderTrackingNumber": "GLT0000331893",
+                "status": "success",
+                "msg": "Order created",
+                "order": null,
+                "type": "DROP_SHIP"
+            },
+            "__v": 0
+        }
+]
+}
+/***************************
+4) get pdf sticker
+url = https://dashboard.go-tex.net/api/print-sticker/${orderid}
+method = get
+
+response
+{
+    "msg": "ok",
+    "data": " pdf"
+}

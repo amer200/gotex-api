@@ -1,8 +1,9 @@
 const axios = require("axios");
+const qs = require('qs');
 const Glt = require("../model/glt");
 const GltOrder = require("../model/gltorders");
-const { response } = require("express");
-const { json } = require("body-parser");
+const fs = require('fs');
+const PDFDocument = require('pdfkit');
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -142,5 +143,45 @@ exports.getAllCities = (req, res) => {
             res.status(500).json({
                 msg: err
             })
+        })
+}
+exports.getUserOrders = async (req, res) => {
+    const userId = req.user.user.id;
+    GltOrder.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}
+exports.getSticker = async (req, res) => {
+    const orderId = req.params.id;
+    GltOrder.findById(orderId)
+        .then(o => {
+            var data = qs.stringify({
+                'orderid': o.data.orderTrackingNumber
+            });
+            var config = {
+                method: 'post',
+                url: 'https://devapi.gltmena.com/api/get/awb',
+                headers: {
+                    'Authorization': process.env.GLT_TOKEN,
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: data
+            };
+            axios(config)
+                .then(response => {
+                    res.status(200).json({
+                        msg: "ok",
+                        data: response.data
+                    })
+                })
+        })
+        .catch(err => {
+            console.log(err)
         })
 }
