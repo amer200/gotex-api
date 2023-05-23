@@ -43,6 +43,14 @@ response
     "msg": "ok",
     "token": " "
 }
+/*********************************companies***********************/
+1)get all (token is not require)
+url = https://dashboard.go-tex.net/api/companies/get-all
+method = get
+/***************
+2) get all orders (for admin)
+url = https://dashboard.go-tex.net/api/companies/get-all-orders
+method = get
 /*********************************saee***************************/
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/saee/edit

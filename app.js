@@ -46,6 +46,7 @@ app.use(cors({
 }));
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
+const companiesRoutes = require('./routes/companies');
 const saeeRoutes = require("./routes/saee");
 const aramexRoutes = require("./routes/aramex");
 const gltRoutes = require("./routes/glt");
@@ -53,6 +54,7 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/saee", saeeRoutes);
 app.use("/aramex", aramexRoutes);
+app.use("/companies", companiesRoutes);
 app.use("/glt", gltRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)

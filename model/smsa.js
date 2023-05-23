@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const gltSchema = mongoose.Schema({
+const smsaSchema = mongoose.Schema({
     name: {
         type: String,
-        default: "glt"
+        default: "smsa"
     },
     userprice: {
         type: Number,
@@ -23,4 +23,4 @@ const gltSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("Glt", gltSchema);
+module.exports = mongoose.model("Smsa", smsaSchema);
