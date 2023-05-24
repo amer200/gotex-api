@@ -25,3 +25,37 @@ exports.logIn = (req, res) => {
         })
     }
 }
+exports.getAllUsers = (req, res) => {
+    User.find()
+        .then(u => {
+            res.status(200).json({
+                data: u
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err
+            })
+        })
+}
+exports.addWalletToUser = (req, res) => {
+    const deposit = req.body.deposit;
+    const id = req.body.id;
+    User.findById(id)
+        .then(u => {
+            u.wallet = u.wallet + deposit;
+            return u.save()
+        })
+        .then(u => {
+            res.status(200).json({
+                msg: "ok"
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err
+            })
+        })
+}
