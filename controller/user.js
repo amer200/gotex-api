@@ -3,12 +3,12 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const salt = 10;
 const nodemailer = require("nodemailer");
-const sendEmail = async (email, subject, text) => {
+const sendEmail = async (email, text) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: process.env.HOST,
-            service: process.env.SERVICE,
-            port: 587,
+            host: smtp.hostinger.com,
+            // service: process.env.SERVICE,
+            port: 465,
             secure: true,
             auth: {
                 user: process.env.EMAIL,
@@ -19,7 +19,7 @@ const sendEmail = async (email, subject, text) => {
         await transporter.sendMail({
             from: process.env.USER,
             to: email,
-            subject: subject,
+            subject: "verfiy your gotex account",
             text: text,
         });
         console.log("email sent sucessfully");
@@ -111,6 +111,21 @@ exports.logIn = (req, res) => {
             res.status(500).json({
                 msg: "server error",
                 error: err.message
+            })
+        })
+}
+exports.getUserBalance = (req, res) => {
+    const id = req.user.user.id;
+    User.findById(id)
+        .then(u => {
+            res.status(200).json({
+                data: u.wallet
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err
             })
         })
 }

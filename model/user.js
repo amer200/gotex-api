@@ -12,7 +12,11 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    rolle: String
+    rolle: String,
+    wallet: {
+        type: Number,
+        default: 0
+    }
 })
 
 module.exports = mongoose.model("User", userSchema);

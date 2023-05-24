@@ -30,6 +30,13 @@ response
     "msg": "ok",
     "token": " "
 }
+/**************
+3) get user balance
+url = https://dashboard.go-tex.net/api/user/get-user-balance
+method = get 
+response{
+    "data": 0
+}
 /*********************************admin*************************/
 1) login
 url = https://dashboard.go-tex.net/api/admin/login
@@ -42,6 +49,19 @@ response
 {
     "msg": "ok",
     "token": " "
+}
+/************
+2)get all users
+url = https://dashboard.go-tex.net/api/admin/get-all-users
+method = get
+/************
+3) add deposit
+url = https://dashboard.go-tex.net/api/admin/add-deposit-to-user
+method = post
+body
+{
+    id: "user id",
+    deposit: Number
 }
 /*********************************companies***********************/
 1)get all (token is not require)
