@@ -21,8 +21,8 @@ exports.getAllCompanies = async (req, res) => {
 }
 exports.getAllOrders = async (req, res) => {
     try {
-        const saeeorders = await SaeeOrder.find();
-        const gltorders = await GltOrder.find();
+        const saeeorders = await SaeeOrder.find().populate("user");
+        const gltorders = await GltOrder.find().populate("user");
         let orders = [...saeeorders, ...gltorders];
         res.status(200).json({
             data: orders
