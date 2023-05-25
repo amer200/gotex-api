@@ -7,6 +7,6 @@ routes.post("/edit", adminMiddlewares.isAuth, gltControllers.edit);
 routes.post("/create-user-order", userMiddlewares.isAuth, gltControllers.createUserOrder);
 routes.get("/cities", gltControllers.getAllCities);
 routes.get("/get-all-orders", userMiddlewares.isAuth, gltControllers.getUserOrders);
-routes.get("/print-sticker/:id", userMiddlewares.isAuth, gltControllers.getSticker);
+routes.get("/print-sticker/:id", gltControllers.getSticker);
 // routes.post("/track-order-by-number", userMiddlewares.isAuth, gltControllers.trakingOrderByNum);
 module.exports = routes;

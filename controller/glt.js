@@ -2,6 +2,7 @@ const axios = require("axios");
 const qs = require('qs');
 const Glt = require("../model/glt");
 const GltOrder = require("../model/gltorders");
+const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
 exports.edit = (req, res) => {
@@ -169,19 +170,25 @@ exports.getSticker = async (req, res) => {
                 url: 'https://devapi.gltmena.com/api/get/awb',
                 headers: {
                     'Authorization': process.env.GLT_TOKEN,
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    'Content-Type': 'application/x-www-form-urlencoded',
                 },
+                responseType: 'arraybuffer',
                 data: data
             };
             axios(config)
                 .then(response => {
+                    base64.base64Decode(response.data, `public/gltAwb/${orderId}.pdf`)
                     res.status(200).json({
                         msg: "ok",
-                        data: response.data
+                        data: `/gltAwb/${orderId}.pdf`
                     })
+                    setTimeout(() => { fs.unlink(`public/gltAwb/${orderId}.pdf`, () => { }) }, 30 * 60 * 1000);
                 })
         })
         .catch(err => {
             console.log(err)
+            res.status(5000).json({
+                msg: err
+            })
         })
 }
