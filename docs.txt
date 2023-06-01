@@ -284,3 +284,29 @@ response
     "msg": "ok",
     "data": " pdf"
 }
+/*************************************************aramex*************************************/
+1)create user order
+url = https://dashboard.go-tex.net/api/aramex/create-user-order
+method = post
+body{
+    "c_name": "amer",
+    "c_company": "company name",
+    "c_email": "amer@gmail.com",
+    "c_phone": "201152306375",
+    "c_CellPhone": "652561651",
+    "c_PhoneNumber1Ext": "",
+    "c_line1": "sadas",
+    "c_line2": "sadas",
+    "c_city": "الرياض",
+    "pieces": 5,
+    "p_name": "amer",
+    "p_company": "asdczx",
+    "p_email": "amer@gmail.com",
+    "p_phone": "201152306375",
+    "p_PhoneNumber1Ext": "515165165165",
+    "p_line1": "gfdsasdvcx",
+    "p_city": "الرياض",
+    "p_CellPhone": "546545612",
+    "p_postCode": "8151",
+    "weight": 5
+}

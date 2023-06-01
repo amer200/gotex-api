@@ -56,10 +56,7 @@ exports.createOrder = async (req, res) => {
     const c_phone = req.body.c_phone;
     const c_PhoneNumber1Ext = req.body.c_PhoneNumber1Ext;
     const c_line1 = req.body.c_line1;
-    const c_line2 = req.body.c_line2;
     const c_city = req.body.c_city;
-    const c_StateOrProvinceCode = req.body.c_StateOrProvinceCode;
-    const c_PostCode = req.body.c_PostCode;
     const c_CellPhone = req.body.c_CellPhone;
     //     /************************* */
     const p_name = req.body.p_name;
@@ -70,9 +67,11 @@ exports.createOrder = async (req, res) => {
     const p_line1 = req.body.p_line1;
     const p_city = req.body.p_city;
     const p_CellPhone = req.body.p_CellPhone;
+    const p_StateOrProvinceCode = req.body.p_StateOrProvinceCode;
+    const p_postCode = req.body.p_postCode;
     //     /***************************** */
     const weight = req.body.weight;
-    const desc = req.body.description;
+    const pieces = req.body.pieces;
     /*************************************** */
     const shipmentDate = Date.now();
     var data = JSON.stringify({
@@ -104,8 +103,8 @@ exports.createOrder = async (req, res) => {
                         "Line2": "",
                         "Line3": "",
                         "City": p_city,
-                        "StateOrProvinceCode": "",
-                        "PostCode": "",
+                        "StateOrProvinceCode": p_StateOrProvinceCode,
+                        "PostCode": p_postCode,
                         "CountryCode": "SA",
                         "Longitude": 0,
                         "Latitude": 0,
@@ -150,7 +149,7 @@ exports.createOrder = async (req, res) => {
                         "Floor": "",
                         "Apartment": "",
                         "POBox": null,
-                        "Description": ""
+                        "Description": null
                     },
                     "Contact": {
                         "Department": "",
@@ -179,12 +178,12 @@ exports.createOrder = async (req, res) => {
                         "Value": weight
                     },
                     "ChargeableWeight": null,
-                    "DescriptionOfGoods": desc,
-                    "GoodsOriginCountry": "SA",
+                    "DescriptionOfGoods": "Books",
+                    "GoodsOriginCountry": "IN",
                     "NumberOfPieces": pieces,
                     "ProductGroup": "EXP",
                     "ProductType": "PPX",
-                    "PaymentType": "COD",
+                    "PaymentType": "P",
                     "PaymentOptions": "",
                     "CustomsValueAmount": {
                         "CurrencyCode": "SAR",
@@ -202,55 +201,13 @@ exports.createOrder = async (req, res) => {
                             "Quantity": "1",
                             "Weight": null,
                             "CustomsValue": {
-                                "CurrencyCode": "USD",
+                                "CurrencyCode": "SAR",
                                 "Value": 10
                             },
                             "Comments": "Ravishing Gold Facial Kit Long Lasting Shining Appearance For All Skin Type 125g",
                             "GoodsDescription": "new Gold Facial Kit Long  Shining Appearance",
                             "Reference": "",
                             "CommodityCode": "98765432"
-                        }
-                    ],
-                    "AdditionalProperties": [
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "ShipperTaxIdVATEINNumber",
-                            "Value": "123456789101"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "ConsigneeTaxIdVATEINNumber",
-                            "Value": "987654321012"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "TaxPaid",
-                            "Value": "1"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "InvoiceDate",
-                            "Value": "08/17/2020"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "InvoiceNumber",
-                            "Value": "Inv123456"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "TaxAmount",
-                            "Value": "120.52"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "IOSS",
-                            "Value": "IM1098494352"
-                        },
-                        {
-                            "CategoryName": "CustomsClearance",
-                            "Name": "ExporterType",
-                            "Value": "UT"
                         }
                     ]
                 },
@@ -282,12 +239,21 @@ exports.createOrder = async (req, res) => {
 
     axios(config)
         .then(function (response) {
-            res.status(200).json({
-                data: response.data
-            });
+            if (response.data.HasErrors) {
+                res.status(400).json({
+                    data: response.data
+                })
+            } else {
+                res.status(200).json({
+                    data: response.data
+                })
+            }
         })
         .catch(function (error) {
-            console.log(error);
+            res.status(500).json({
+                error: error
+            })
         });
+
 
 }
