@@ -310,3 +310,94 @@ body{
     "p_postCode": "8151",
     "weight": 5
 }
+/*********************
+2)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/aramex/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+}
+response
+{
+    "msg": "ok",
+}
+/*****************
+3) get all user order
+url = https://dashboard.go-tex.net/api/aramex/get-all-orders
+method = get
+response{
+    "data": [
+        {
+            "_id": "647be82dab3f367c29b81927",
+            "user": "64453d395f6255b608741b8b",
+            "company": "aramex",
+            "ordernumber": 2,
+            "data": {
+                "Transaction": {
+                    "Reference1": "",
+                    "Reference2": "",
+                    "Reference3": "",
+                    "Reference4": "",
+                    "Reference5": ""
+                },
+                "Notifications": [],
+                "HasErrors": false,
+                "Shipments": [
+                    {
+                        "ID": "32266532583",
+                        "Reference1": "",
+                        "Reference2": "",
+                        "Reference3": "",
+                        "ForeignHAWB": "",
+                        "HasErrors": false,
+                        "Notifications": [],
+                        "ShipmentLabel": {
+                            "LabelURL": "https://ws.aramex.net/ShippingAPI.V2/rpt_cache/2ffa93b0aecf415fabe3a372f949d985.pdf",
+                            "LabelFileContents": []
+                        },
+                        "ShipmentDetails": {
+                            "Origin": "BOM",
+                            "Destination": "RUH",
+                            "ChargeableWeight": {
+                                "Unit": "KG",
+                                "Value": 56
+                            },
+                            "DescriptionOfGoods": "Books",
+                            "GoodsOriginCountry": "IN",
+                            "NumberOfPieces": 2,
+                            "ProductGroup": "EXP",
+                            "ProductType": "PPX",
+                            "PaymentType": "P",
+                            "PaymentOptions": "",
+                            "CustomsValueAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 200
+                            },
+                            "CashOnDeliveryAmount": null,
+                            "InsuranceAmount": null,
+                            "CashAdditionalAmount": null,
+                            "CollectAmount": null,
+                            "Services": "",
+                            "OriginCity": "Riyadh",
+                            "DestinationCity": "Riyadh"
+                        },
+                        "ShipmentAttachments": []
+                    }
+                ]
+            },
+            "__v": 0
+        }
+    ]
+}
+/*******************
+4) get sticker
+url = http://localhost:3000/aramex/print-sticker/{orderId}
+method = get
+response{
+     "data": "https://ws.aramex.net/ShippingAPI.V2/rpt_cache/2ffa93b0aecf415fabe3a372f949d985.pdf"
+}

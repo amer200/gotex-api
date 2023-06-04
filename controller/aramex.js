@@ -1,4 +1,6 @@
-const aramex = require('aramex-api');
+// const aramex = require('aramex-api');
+const Aramex = require("../model/aramex");
+const AramexOrder = require("../model/aramexorders");
 const axios = require("axios");
 // exports.createOrder = async (req, res) => {
 //     try {
@@ -48,8 +50,35 @@ const axios = require("axios");
 //     }
 
 // }
+exports.edit = (req, res) => {
+    const status = req.body.status;
+    const userprice = req.body.userprice;
+    const marketerprice = req.body.marketerprice;
+    const kgprice = req.body.kgprice;
+    Aramex.findOne()
+        .then(a => {
+            a.status = status;
+            a.userprice = userprice;
+            a.marketerprice = marketerprice;
+            a.kgprice = kgprice;
+            return a.save()
+        })
+        .then(a => {
+            res.status(200).json({
+                msg: "ok"
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err.message
+            })
+        })
+}
 
 exports.createOrder = async (req, res) => {
+    let ordersNum = await AramexOrder.count();
+    /************************* */
     const c_name = req.body.c_name;
     const c_company = req.body.c_company;
     const c_email = req.body.c_email;
@@ -72,6 +101,10 @@ exports.createOrder = async (req, res) => {
     //     /***************************** */
     const weight = req.body.weight;
     const pieces = req.body.pieces;
+    const aramex = await Aramex.findOne();
+    const codAmount = aramex.userprice;
+    console.log(codAmount)
+
     /*************************************** */
     const shipmentDate = Date.now();
     var data = JSON.stringify({
@@ -244,16 +277,51 @@ exports.createOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                res.status(200).json({
+                const newO = new AramexOrder({
+                    user: req.user.user.id,
+                    company: "aramex",
+                    ordernumber: ordersNum + 2,
                     data: response.data
                 })
+                newO.save()
+                    .then(o => {
+                        res.status(200).json({
+                            data: response.data
+                        })
+                    })
             }
         })
         .catch(function (error) {
+            console.log(error)
             res.status(500).json({
                 error: error
             })
         });
 
 
+}
+exports.getUserOrders = (req, res) => {
+    const userId = req.user.user.id;
+    AramexOrder.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}
+exports.getSticker = (req, res) => {
+    const orderId = req.params.id;
+    AramexOrder.findById(orderId)
+        .then(o => {
+            const url = o.data.Shipments[0].ShipmentLabel.LabelURL;
+            res.status(200).json({
+                data: url
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }
