@@ -43,6 +43,44 @@ exports.gltCheck = async (req, res, next) => {
         })
     }
 }
+exports.saeeCheck = async (req, res, next) => {
+    try {
+        const cod = req.body.cod;
+        if (!cod) {
+            return next()
+        }
+        const userId = req.user.user.id;
+        const userRolle = req.user.user.rolle;
+        const weight = req.body.weight;
+        const saee = await Saee.findOne();
+        const user = await User.findById(userId);
+        if (userRolle == "user") {
+            var shipPrice = saee.userprice;
+        } else {
+            var shipPrice = saee.marketerprice;
+        }
+        if (weight <= 15) {
+            var weightPrice = 0;
+        } else {
+            var weightPrice = (weight - 15) * saee.kgprice;
+        }
+        const totalPrice = shipPrice + weightPrice;
+        if (user.wallet < totalPrice) {
+            return res.status(200).json({
+                msg: "Your wallet balance is not enough to make the shipment"
+            })
+        }
+        user.wallet = user.wallet - totalPrice;
+        await user.save()
+        res.locals.codAmount = totalPrice
+        next()
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
 exports.aramexCheck = async (req, res, next) => {
     next()
     // try {

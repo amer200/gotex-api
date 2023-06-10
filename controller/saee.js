@@ -40,7 +40,12 @@ exports.createUserOrder = async (req, res) => {
     const c_city = req.body.c_city;
     const c_streetaddress = req.body.c_streetaddress;
     const c_mobile = req.body.c_mobile;
-    let cashondelivery = saee.userprice;
+    const cod = req.body.cod;
+    if (cod) {
+        let cashondelivery = res.locals.codAmount;
+    } else {
+        let cashondelivery = 0;
+    }
     let weightPrice = 1;
     if (weight > 15) {
         weightPrice = (weight - 15) * saee.kgprice;
