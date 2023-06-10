@@ -31,7 +31,6 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    const glt = await Glt.findOne();
     let ordersNum = await GltOrder.count();
     /************************** */
     const pieces = req.body.pieces;
@@ -50,15 +49,23 @@ exports.createUserOrder = async (req, res) => {
     const c_areaName = req.body.c_areaName;
     const c_city = req.body.c_city;
     const c_mobile = req.body.c_mobile;
-
+    /**************************** */
+    const cod = req.body.cod;
+    if (cod) {
+        var paymentType = "COD";
+        var codAmount = res.locals.codAmount;
+    } else {
+        var paymentType = "CC";
+        var codAmount = null;
+    }
     let data = {
         orders: [
             {
                 referenceNumber: ordersNum + Date.now() + "gotex",
                 pieces: pieces,
                 description: desc,
-                codAmount: 22,
-                paymentType: "COD",
+                codAmount: codAmount,
+                paymentType: paymentType,
                 clintComment: comment,
                 value: value,
                 senderInformation: {

@@ -3,9 +3,9 @@ const routes = express.Router();
 const aramexControllers = require("../controller/aramex");
 const userMiddlewares = require('../middleware/user');
 const adminMiddlewares = require("../middleware/admin");
-
+const aramexMiddleware = require("../middleware/comapny");
 routes.post("/edit", adminMiddlewares.isAuth, aramexControllers.edit);
-routes.post("/create-user-order", userMiddlewares.isAuth, aramexControllers.createOrder);
+routes.post("/create-user-order", userMiddlewares.isAuth, aramexMiddleware.aramexCheck, aramexControllers.createOrder);
 routes.get("/get-all-orders", userMiddlewares.isAuth, aramexControllers.getUserOrders);
 routes.get("/print-sticker/:id", aramexControllers.getSticker);
 module.exports = routes;
