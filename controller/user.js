@@ -74,6 +74,43 @@ exports.signUp = (req, res) => {
             })
         })
 }
+exports.MarkterSignUp = (req, res) => {
+    const { name, password, email, mobile, address, location } = req.body;
+    const hash = bcrypt.hashSync(password, salt);
+    User.findOne({ email: email })
+        .then(u => {
+            if (u) {
+                res.status(200).json({
+                    msg: "error this email is already used"
+                })
+            } else {
+                const user = new User({
+                    name: name,
+                    password: hash,
+                    email: email,
+                    mobile: mobile,
+                    address: address,
+                    location: location,
+                    verified: false,
+                    emailcode: genRandonString(4),
+                    rolle: "marketer"
+                })
+                user.save()
+                    .then(u => {
+                        res.status(200).json({
+                            msg: "ok",
+                            user: u
+                        })
+                    })
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err.message
+            })
+        })
+}
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;

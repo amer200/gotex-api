@@ -37,6 +37,26 @@ method = get
 response{
     "data": 0
 }
+/********************
+4)marketer-signup
+url = https://dashboard.go-tex.net/api/user/marketer-signup
+body:
+{
+    "name": "",
+    "mobile": "",
+    "email": "",
+    "password": "",
+    "address": "",
+    "location": ""
+}
+response
+{
+    "msg": "ok",
+    "user": {
+        
+    }
+}
+
 /*********************************admin*************************/
 1) login
 url = https://dashboard.go-tex.net/api/admin/login
