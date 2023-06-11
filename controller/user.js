@@ -16,13 +16,22 @@ const sendEmail = async (email, text) => {
             },
         });
 
-        await transporter.sendMail({
-            from: process.env.USER,
+        // await transporter.sendMail({
+        //     from: process.env.USER,
+        //     to: email,
+        //     subject: "verfiy your gotex account",
+        //     text: text,
+        // });
+        transporter.sendMail({
+            from: process.env.EMAIL,
             to: email,
             subject: "verfiy your gotex account",
             text: text,
+        }, (error, result) => {
+            if (error) return console.error(error);
+            return console.log(result);
         });
-        console.log("email sent sucessfully");
+        // console.log("email sent sucessfully");
     } catch (error) {
         console.log("email not sent");
         console.log(error);
