@@ -1,3 +1,4 @@
+const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
@@ -70,4 +71,23 @@ exports.isAuth = (req, res, next) => {
             })
         }
     })
+}
+exports.isVerfied = (req, res, next) => {
+    const userId = req.user.user.id;
+    User.findById(userId)
+        .then(u => {
+            console.log(u);
+            if (u.verified) {
+                 return next()
+            }
+            return res.status(400).json({
+                msg: "user email not verified"
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err
+            })
+        })
 }

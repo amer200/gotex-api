@@ -4,7 +4,7 @@ const saeeControllers = require("../controller/saee");
 const userMiddlewares = require('../middleware/user');
 const adminMiddlewares = require("../middleware/admin");
 routes.post("/edit", adminMiddlewares.isAuth, saeeControllers.edit);
-routes.post("/create-user-order", userMiddlewares.isAuth, saeeControllers.createUserOrder);
+routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, saeeControllers.createUserOrder);
 routes.get("/get-all-orders", userMiddlewares.isAuth, saeeControllers.getUserOrders);
 routes.get("/print-sticker/:id", userMiddlewares.isAuth, saeeControllers.getSticker);
 routes.post("/track-order-by-number", userMiddlewares.isAuth, saeeControllers.trakingOrderByNum);

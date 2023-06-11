@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 const sendEmail = async (email, text) => {
     try {
         const transporter = nodemailer.createTransport({
-            host: smtp.hostinger.com,
+            host: "smtp.hostinger.com",
             // service: process.env.SERVICE,
             port: 465,
             secure: true,
@@ -60,6 +60,7 @@ exports.signUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
+                        sendEmail(u.email, u.emailcode);
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -97,12 +98,37 @@ exports.MarkterSignUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
+                        sendEmail(u.email, u.emailcode);
                         res.status(200).json({
                             msg: "ok",
                             user: u
                         })
                     })
             }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err.message
+            })
+        })
+}
+exports.activateUser = (req, res) => {
+    const code = req.params.code;
+    User.findOne({ emailcode: code })
+        .then(u => {
+            if (!u) {
+                return res.status(400).json({
+                    msg: "not found"
+                })
+            }
+            u.verified = true;
+            u.save()
+                .then(u => {
+                    return res.status(200).json({
+                        msg: "user verified"
+                    })
+                })
         })
         .catch(err => {
             console.log(err)
@@ -142,6 +168,27 @@ exports.logIn = (req, res) => {
                     msg: "wrong password or email"
                 })
             }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: "server error",
+                error: err.message
+            })
+        })
+}
+exports.reSendActivateCode = (req, res) => {
+    const userId = req.user.user.id;
+    User.findById(userId)
+        .then(u => {
+            u.emailcode = genRandonString(4);
+            return u.save()
+        })
+        .then(u => {
+            sendEmail(u.email, u.emailcode);
+            res.status(200).json({
+                msg: "email send"
+            })
         })
         .catch(err => {
             console.log(err)
