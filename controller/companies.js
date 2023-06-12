@@ -5,6 +5,7 @@ const GltOrder = require("../model/gltorders");
 const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
 const Smsa = require("../model/smsa");
+const SmsaOrder = require("../model/smsaorders");
 exports.getAllCompanies = async (req, res) => {
     try {
         const saee = await Saee.findOne();
@@ -27,7 +28,8 @@ exports.getAllOrders = async (req, res) => {
         const saeeorders = await SaeeOrder.find().populate("user");
         const gltorders = await GltOrder.find().populate("user");
         const aramexorders = await AramexOrder.find().populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders];
+        const smsaorders = await SmsaOrder.find().populate("user");
+        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders];
         res.status(200).json({
             data: orders
         })
