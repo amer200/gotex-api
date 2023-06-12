@@ -472,3 +472,13 @@ method = get
 response{
     "data": []
 }
+/******************
+4) get pdf sticker
+url = https://dashboard.go-tex.net/api/smsa/print-sticker/${orderid}
+method = get
+
+response
+{
+    "msg": "ok",
+    "data": " pdf"
+}

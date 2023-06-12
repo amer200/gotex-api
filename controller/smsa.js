@@ -149,10 +149,13 @@ exports.getUserOrders = (req, res) => {
             console.log(err.request)
         })
 }
-exports.getStiker = (req, res) => {
-    const orderId = req.params.orderId;
+exports.getSticker = (req, res) => {
+    const orderId = req.params.id;
     SmsaOrder.findById(orderId)
         .then(o => {
-
+            res.status(200).json({
+                msg: "ok",
+                data: `/smsaAwb/${o.ordernumber}.pdf`
+            })
         })
 }
