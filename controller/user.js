@@ -3,7 +3,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const salt = 10;
 const nodemailer = require("nodemailer");
-const sendEmail = async (email, text) => {
+const ejs = require("ejs");
+const sendEmail = async (email, text, id) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.hostinger.com",
@@ -15,22 +16,40 @@ const sendEmail = async (email, text) => {
                 pass: process.env.EMAILPASSWORD,
             },
         });
-
+        ejs.renderFile(__dirname + "/emailTemp.ejs", { code: text, id: id }, function (err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                var mainOptions = {
+                    from: process.env.USER,
+                    to: email,
+                    subject: "verfiy your gotex account",
+                    html: data
+                };
+                transporter.sendMail(mainOptions, function (err, info) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log('Message sent: ' + info.response);
+                    }
+                });
+            }
+        })
         // await transporter.sendMail({
-        //     from: process.env.USER,
+        // from: process.env.USER,
+        // to: email,
+        // subject: "verfiy your gotex account",
+        // text: text,
+        // });
+        // transporter.sendMail({
+        //     from: process.env.EMAIL,
         //     to: email,
         //     subject: "verfiy your gotex account",
         //     text: text,
+        // }, (error, result) => {
+        //     if (error) return console.error(error);
+        //     return console.log(result);
         // });
-        transporter.sendMail({
-            from: process.env.EMAIL,
-            to: email,
-            subject: "verfiy your gotex account",
-            text: text,
-        }, (error, result) => {
-            if (error) return console.error(error);
-            return console.log(result);
-        });
         // console.log("email sent sucessfully");
     } catch (error) {
         console.log("email not sent");
@@ -69,7 +88,7 @@ exports.signUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode);
+                        sendEmail(u.email, u.emailcode, u._id);
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -107,7 +126,7 @@ exports.MarkterSignUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode);
+                        sendEmail(u.email, u.emailcode, u._id);
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -124,20 +143,26 @@ exports.MarkterSignUp = (req, res) => {
 }
 exports.activateUser = (req, res) => {
     const code = req.params.code;
-    User.findOne({ emailcode: code })
+    const id = req.params.id;
+    User.findById(id)
         .then(u => {
             if (!u) {
                 return res.status(400).json({
                     msg: "not found"
                 })
             }
-            u.verified = true;
-            u.save()
-                .then(u => {
-                    return res.status(200).json({
-                        msg: "user verified"
+            if (u.emailcode == code) {
+                u.verified = true;
+                u.save()
+                    .then(u => {
+                        return res.status(200).redirect("https://gotex.vercel.app/")
                     })
+            } else {
+                return res.status(400).json({
+                    msg: "not found"
                 })
+            }
+
         })
         .catch(err => {
             console.log(err)
@@ -194,7 +219,7 @@ exports.reSendActivateCode = (req, res) => {
             return u.save()
         })
         .then(u => {
-            sendEmail(u.email, u.emailcode);
+            sendEmail(u.email, u.emailcode, u_id);
             res.status(200).json({
                 msg: "email send"
             })

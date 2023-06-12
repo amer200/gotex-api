@@ -58,7 +58,7 @@ response
 }
 /***********************
 5) verfiy account
-url = https://dashboard.go-tex.net/api/user/activate-user/{code}
+url = https://dashboard.go-tex.net/api/user/activate-user/{code}/{id}
 method = get
 response{
     msg: "user verified"
