@@ -101,9 +101,19 @@ exports.createOrder = async (req, res) => {
     //     /***************************** */
     const weight = req.body.weight;
     const pieces = req.body.pieces;
-    const aramex = await Aramex.findOne();
-    const codAmount = aramex.userprice;
-    console.log(codAmount)
+    const cod = req.body.cod;
+    if (cod) {
+        var codAmount = {
+            "CurrencyCode": "SAR",
+            "Value": res.locals.codAmount
+        };
+        var PaymentType = "C"
+        console.log(cod)
+    } else {
+        var codAmount = null;
+        var PaymentType = "P"
+        console.log(cod)
+    }
 
     /*************************************** */
     const shipmentDate = Date.now();
@@ -115,7 +125,7 @@ exports.createOrder = async (req, res) => {
             "AccountNumber": "60531487",
             "AccountPin": "654654",
             "AccountEntity": "BOM",
-            "AccountCountryCode": "IN",
+            "AccountCountryCode": "SA",
             "Source": 24
         },
         "LabelInfo": {
@@ -166,7 +176,7 @@ exports.createOrder = async (req, res) => {
                 "Consignee": {
                     "Reference1": "",
                     "Reference2": "",
-                    "AccountNumber": "",
+                    "AccountNumber": null,
                     "PartyAddress": {
                         "Line1": c_line1,
                         "Line2": "",
@@ -211,18 +221,18 @@ exports.createOrder = async (req, res) => {
                         "Value": weight
                     },
                     "ChargeableWeight": null,
-                    "DescriptionOfGoods": "Books",
+                    "DescriptionOfGoods": null,
                     "GoodsOriginCountry": "IN",
                     "NumberOfPieces": pieces,
                     "ProductGroup": "EXP",
                     "ProductType": "PPX",
-                    "PaymentType": "P",
+                    "PaymentType": PaymentType,
                     "PaymentOptions": "",
                     "CustomsValueAmount": {
                         "CurrencyCode": "SAR",
                         "Value": 200
                     },
-                    "CashOnDeliveryAmount": null,
+                    "CashOnDeliveryAmount": codAmount,
                     "InsuranceAmount": null,
                     "CashAdditionalAmount": null,
                     "CashAdditionalAmountDescription": "",

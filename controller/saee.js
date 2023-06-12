@@ -46,18 +46,18 @@ exports.createUserOrder = async (req, res) => {
     } else {
         let cashondelivery = 0;
     }
-    let weightPrice = 1;
-    if (weight > 15) {
-        weightPrice = (weight - 15) * saee.kgprice;
-        cashondelivery = saee.userprice + weightPrice
-    }
+    // let weightPrice = 1;
+    // if (weight > 15) {
+    //     weightPrice = (weight - 15) * saee.kgprice;
+    //     cashondelivery = saee.userprice + weightPrice
+    // }
     const data = {
         secret: process.env.SAEE_KEY,
         name: p_name,
         city: p_city,
         mobile: p_mobile,
         streetaddress: p_streetaddress,
-        cashondelivery: cashondelivery,
+        cashondelivery: cod,
         weight: weight,
         quantity: quantity,
         c_name: c_name,
