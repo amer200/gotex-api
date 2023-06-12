@@ -427,3 +427,26 @@ method = get
 response{
      "data": "https://ws.aramex.net/ShippingAPI.V2/rpt_cache/2ffa93b0aecf415fabe3a372f949d985.pdf"
 }
+/****************************smsa****************************/
+1) create order
+url = http://localhost:3000/smsa/create-user-order
+method = post
+body{
+    "c_name": "",
+    "c_ContactPhoneNumber": "",
+    "c_District": "",
+    "c_City": "",
+    "c_AddressLine1": "",
+    "c_AddressLine2": "",
+    "p_name": "",
+    "p_ContactPhoneNumber": "",
+    "p_District": "",
+    "p_City": "",
+    "p_AddressLine1": "",
+    "p_AddressLine2": "",
+    "pieces": 1,
+    "weight": 5,
+    "description": "test",
+    "Value": 10,
+    "cod": 0
+}

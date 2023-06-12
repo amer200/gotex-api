@@ -105,7 +105,7 @@ exports.createUserOrder = (req, res) => {
     axios(config)
         .then(function (response) {
             res.status(200).json({
-                data: response
+                data: response.data
             })
         })
         .catch(function (error) {
