@@ -1,6 +1,7 @@
 const Smsa = require("../model/smsa");
-const smsaOrder = require("../model/smsaorders");
+const SmsaOrder = require("../model/smsaorders");
 const axios = require('axios');
+const base64 = require('base64topdf');
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -27,7 +28,8 @@ exports.edit = (req, res) => {
             })
         })
 }
-exports.createUserOrder = (req, res) => {
+exports.createUserOrder = async (req, res) => {
+    let ordersNum = await SmsaOrder.count();
     const c_name = req.body.c_name;
     const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
     const c_ContactPhoneNumber2 = req.body.c_ContactPhoneNumber2;
@@ -48,10 +50,12 @@ exports.createUserOrder = (req, res) => {
     const cod = req.body.cod;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
+        var paytype = "cod";
     } else {
         var cashondelivery = 0;
+        var paytype = "p";
     }
-    // return console.log(cashondelivery)
+    const date = new Date().toISOString().split('T')[0];
     // return console.log(Date())
     var data = JSON.stringify({
         "ConsigneeAddress": {
@@ -81,7 +85,7 @@ exports.createUserOrder = (req, res) => {
         "DeclaredValue": value,
         "CODAmount": cashondelivery,
         "Parcels": pieces,
-        "ShipDate": "2021-01-01T08:00:00",
+        "ShipDate": `${date}`,
         "ShipmentCurrency": "SAR",
         "SMSARetailID": "0",
         "WaybillType": "PDF",
@@ -104,9 +108,26 @@ exports.createUserOrder = (req, res) => {
 
     axios(config)
         .then(function (response) {
-            res.status(200).json({
-                data: response.data
-            })
+            if (response.status == 200) {
+                const o = new SmsaOrder({
+                    user: req.user.user.id,
+                    company: "smsa",
+                    ordernumber: ordersNum + 1,
+                    data: response.data,
+                    paytype: paytype
+                })
+                base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
+                o.save()
+                    .then(o => {
+                        res.status(200).json({
+                            data: response.data
+                        })
+                    })
+            } else {
+                res.status(400).json({
+                    msg: response.data
+                })
+            }
         })
         .catch(function (error) {
             console.log(error);
@@ -115,4 +136,23 @@ exports.createUserOrder = (req, res) => {
             })
         });
 
+}
+exports.getUserOrders = (req, res) => {
+    const userId = req.user.user.id;
+    SmsaOrder.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}
+exports.getStiker = (req, res) => {
+    const orderId = req.params.orderId;
+    SmsaOrder.findById(orderId)
+        .then(o => {
+
+        })
 }

@@ -450,3 +450,25 @@ body{
     "Value": 10,
     "cod": 0
 }
+2)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/smsa/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+}
+response
+{
+    "msg": "ok",
+}
+/*****************
+3) get all user order
+url = https://dashboard.go-tex.net/api/smsa/get-all-orders
+method = get
+response{
+    "data": []
+}
