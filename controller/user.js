@@ -16,23 +16,20 @@ const sendEmail = async (email, text, id) => {
                 pass: process.env.EMAILPASSWORD,
             },
         });
-        ejs.renderFile(__dirname + "/emailTemp.ejs", { code: text, id: id }, function (err, data) {
+        ejs.renderFile(__dirname + "/emailTemp.ejs", { code: text, id: id }, async function (err, data) {
             if (err) {
                 console.log(err);
             } else {
-                var mainOptions = {
-                    from: process.env.USER,
+                transporter.sendMail({
+                    from: process.env.EMAIL,
                     to: email,
                     subject: "verfiy your gotex account",
-                    html: data
-                };
-                transporter.sendMail(mainOptions, function (err, info) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log('Message sent: ' + info.response);
-                    }
+                    html: data,
+                }, (error, result) => {
+                    if (error) return console.error(error);
+                    return console.log(result);
                 });
+                console.log("email sent sucessfully");
             }
         })
         // await transporter.sendMail({
