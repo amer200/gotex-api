@@ -42,9 +42,9 @@ exports.createUserOrder = async (req, res) => {
     const c_mobile = req.body.c_mobile;
     const cod = req.body.cod;
     if (cod) {
-        let cashondelivery = res.locals.codAmount;
+        var cashondelivery = res.locals.codAmount;
     } else {
-        let cashondelivery = 0;
+        var cashondelivery = 0;
     }
     // let weightPrice = 1;
     // if (weight > 15) {
@@ -57,7 +57,7 @@ exports.createUserOrder = async (req, res) => {
         city: p_city,
         mobile: p_mobile,
         streetaddress: p_streetaddress,
-        cashondelivery: cod,
+        cashondelivery: cashondelivery,
         weight: weight,
         quantity: quantity,
         c_name: c_name,
