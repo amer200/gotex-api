@@ -45,32 +45,36 @@ exports.isValide = (req, res, next) => {
     }
 }
 exports.isAuth = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) {
-        return res.status(400).json({
-            msg: "token is requires"
-        })
-    }
-    jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
-        console.log(user)
-        if (err) {
+    try {
+        const authHeader = req.headers['authorization'];
+        const token = authHeader && authHeader.split(' ')[1];
+        if (!token) {
             return res.status(400).json({
-                msg: err
+                msg: "token is requires"
             })
         }
-        if (user.data.user.rolle == 'user') {
-            req.user = user.data
-            next();
-        } else if (user.data.user.rolle == 'marketer') {
-            req.user = user.data
-            next();
-        } else {
-            res.status(304).json({
-                msg: "not allowed"
-            })
-        }
-    })
+        jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
+            console.log(user)
+            if (err) {
+                return res.status(400).json({
+                    msg: err
+                })
+            }
+            if (user.data.user.rolle == 'user') {
+                req.user = user.data
+                next();
+            } else if (user.data.user.rolle == 'marketer') {
+                req.user = user.data
+                next();
+            } else {
+                res.status(304).json({
+                    msg: "not allowed"
+                })
+            }
+        })
+    } catch (err) {
+        console.log(`user erro : ${err}`)
+    }
 }
 exports.isVerfied = (req, res, next) => {
     const userId = req.user.user.id;
@@ -78,7 +82,7 @@ exports.isVerfied = (req, res, next) => {
         .then(u => {
             console.log(u);
             if (u.verified) {
-                 return next()
+                return next()
             }
             return res.status(400).json({
                 msg: "user email not verified"

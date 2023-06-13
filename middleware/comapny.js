@@ -138,7 +138,6 @@ exports.smsaCheck = async (req, res, next) => {
         if (weight <= 15) {
             var weightPrice = 0;
         } else {
-        return console.log(weight)
             var weightPrice = (weight - 15) * smsa.kgprice;
         }
         const totalPrice = shipPrice + weightPrice;
