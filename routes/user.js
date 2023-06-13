@@ -8,4 +8,5 @@ routes.get("/activate-user/:code/:id", userControllers.activateUser);
 routes.post('/marketer-signup', userMiddlewares.isValide, userControllers.MarkterSignUp);
 routes.post('/login', userControllers.logIn);
 routes.get('/get-user-balance', userMiddlewares.isAuth, userControllers.getUserBalance);
+routes.get("/resend-activate-code", userMiddlewares.isAuth, userControllers.reSendActivateCode);
 module.exports = routes;

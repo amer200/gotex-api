@@ -216,7 +216,7 @@ exports.reSendActivateCode = (req, res) => {
             return u.save()
         })
         .then(u => {
-            sendEmail(u.email, u.emailcode, u_id);
+            sendEmail(u.email, u.emailcode, u._id);
             res.status(200).json({
                 msg: "email send"
             })

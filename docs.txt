@@ -63,6 +63,13 @@ method = get
 response{
     msg: "user verified"
 }
+/***************
+6) resend activate mail (token is required)
+url = https://dashboard.go-tex.net/api/user/resend-activate-code
+method = get
+response{
+    "msg": "email send"
+}
 /*********************************admin*************************/
 1) login
 url = https://dashboard.go-tex.net/api/admin/login
