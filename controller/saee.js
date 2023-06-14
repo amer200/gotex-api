@@ -77,7 +77,7 @@ exports.createUserOrder = async (req, res) => {
                 const order = new SaeeOrder({
                     user: req.user.user.id,
                     company: "saee",
-                    ordernumber: `${ordersNum + 2 + "gotex"}`,
+                    ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`,
                     data: response.data
                 })
                 order.save()
