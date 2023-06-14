@@ -51,7 +51,6 @@ exports.saeeCheck = async (req, res, next) => {
         const weight = req.body.weight;
         const saee = await Saee.findOne();
         const user = await User.findById(userId);
-        const totalPrice = shipPrice + weightPrice;
         if (userRolle == "user") {
             var shipPrice = saee.userprice;
         } else {
@@ -62,10 +61,12 @@ exports.saeeCheck = async (req, res, next) => {
         } else {
             var weightPrice = (weight - 15) * saee.kgprice;
         }
+        const totalPrice = shipPrice + weightPrice;
+
         /**************************************** */
         if (cod) {
             res.locals.codAmount = totalPrice
-            return console.log(totalPrice)
+            return next()
         }
         /*********************** */
         if (user.wallet < totalPrice) {
@@ -76,7 +77,6 @@ exports.saeeCheck = async (req, res, next) => {
         user.wallet = user.wallet - totalPrice;
         await user.save()
         res.locals.codAmount = 0
-        return console.log(totalPrice)
         next()
     } catch (err) {
         console.log(err)
