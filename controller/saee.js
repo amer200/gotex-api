@@ -45,7 +45,7 @@ exports.createUserOrder = async (req, res) => {
         var cashondelivery = res.locals.codAmount;
         console.log(cashondelivery)
     } else {
-        var cashondelivery = 0;
+        var cashondelivery = res.locals.codAmount;
     }
     // let weightPrice = 1;
     // if (weight > 15) {

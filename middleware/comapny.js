@@ -65,7 +65,7 @@ exports.saeeCheck = async (req, res, next) => {
         /**************************************** */
         if (cod) {
             res.locals.codAmount = totalPrice
-            return next()
+            return console.log(totalPrice)
         }
         /*********************** */
         if (user.wallet < totalPrice) {
@@ -76,6 +76,7 @@ exports.saeeCheck = async (req, res, next) => {
         user.wallet = user.wallet - totalPrice;
         await user.save()
         res.locals.codAmount = 0
+        return console.log(totalPrice)
         next()
     } catch (err) {
         console.log(err)
