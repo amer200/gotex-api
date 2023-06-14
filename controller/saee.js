@@ -43,6 +43,7 @@ exports.createUserOrder = async (req, res) => {
     const cod = req.body.cod;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
+        console.log(cashondelivery)
     } else {
         var cashondelivery = 0;
     }

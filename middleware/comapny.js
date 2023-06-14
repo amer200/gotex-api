@@ -8,7 +8,7 @@ const User = require("../model/user");
 exports.gltCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (!cod) {
+        if (cod) {
             return next()
         }
         const userId = req.user.user.id;
@@ -28,7 +28,7 @@ exports.gltCheck = async (req, res, next) => {
         }
         const totalPrice = shipPrice + weightPrice;
         if (user.wallet < totalPrice) {
-            return res.status(200).json({
+            return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
@@ -46,7 +46,7 @@ exports.gltCheck = async (req, res, next) => {
 exports.saeeCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (!cod) {
+        if (cod) {
             return next()
         }
         const userId = req.user.user.id;
@@ -66,7 +66,7 @@ exports.saeeCheck = async (req, res, next) => {
         }
         const totalPrice = shipPrice + weightPrice;
         if (user.wallet < totalPrice) {
-            return res.status(200).json({
+            return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
@@ -84,7 +84,7 @@ exports.saeeCheck = async (req, res, next) => {
 exports.aramexCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (!cod) {
+        if (cod) {
             return next()
         }
         const userId = req.user.user.id;
@@ -104,7 +104,7 @@ exports.aramexCheck = async (req, res, next) => {
         }
         const totalPrice = shipPrice + weightPrice;
         if (user.wallet < totalPrice) {
-            return res.status(200).json({
+            return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
@@ -122,7 +122,7 @@ exports.aramexCheck = async (req, res, next) => {
 exports.smsaCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (!cod) {
+        if (cod) {
             return next()
         }
         const userId = req.user.user.id;
@@ -142,7 +142,7 @@ exports.smsaCheck = async (req, res, next) => {
         }
         const totalPrice = shipPrice + weightPrice;
         if (user.wallet < totalPrice) {
-            return res.status(200).json({
+            return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
