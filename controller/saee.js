@@ -64,12 +64,12 @@ exports.createUserOrder = async (req, res) => {
         c_city: c_city,
         c_streetaddress: c_streetaddress,
         c_mobile: c_mobile,
-        ordernumber: ordersNum + 2
+        ordernumber: `${ordersNum + 2 + "gotex"}`
     }
     axios({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        url: 'http://www.saee.sa/deliveryrequest/new',
+        url: 'https://corporate.saeex.com/deliveryrequest/new',
         data: data
     })
         .then(response => {
@@ -77,7 +77,7 @@ exports.createUserOrder = async (req, res) => {
                 const order = new SaeeOrder({
                     user: req.user.user.id,
                     company: "saee",
-                    ordernumber: ordersNum + 2,
+                    ordernumber: `${ordersNum + 2 + "gotex"}`,
                     data: response.data
                 })
                 order.save()
