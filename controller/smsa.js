@@ -56,7 +56,6 @@ exports.createUserOrder = async (req, res) => {
         var paytype = "p";
     }
     const date = new Date().toISOString().split('T')[0];
-    // return console.log(Date())
     var data = JSON.stringify({
         "ConsigneeAddress": {
             "ContactName": c_name,

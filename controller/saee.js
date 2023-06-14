@@ -52,7 +52,7 @@ exports.createUserOrder = async (req, res) => {
     //     cashondelivery = saee.userprice + weightPrice
     // }
     const data = {
-        secret: process.env.SAEE_KEY,
+        secret: process.env.SAEE_KEY_P,
         name: p_name,
         city: p_city,
         mobile: p_mobile,
@@ -69,7 +69,7 @@ exports.createUserOrder = async (req, res) => {
     axios({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        url: 'https://www.k-w-h.com/deliveryrequest/new',
+        url: 'http://www.saee.sa/deliveryrequest/new',
         data: data
     })
         .then(response => {
@@ -117,9 +117,9 @@ exports.getSticker = async (req, res) => {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'secret': `${process.env.SAEE_KEY}`
+                    'secret': `${process.env.SAEE_KEY_P}`
                 },
-                url: `https://corporate.k-w-h.com/deliveryrequest/printsticker/${o.data.waybill}`
+                url: `https://corporate.saeex.com/deliveryrequest/printsticker/${o.data.waybill}`
             })
                 .then(bill => {
                     res.status(200).json({
@@ -139,9 +139,9 @@ exports.trakingOrderByNum = async (req, res) => {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'secret': `${process.env.SAEE_KEY}`
+            'secret': `${process.env.SAEE_KEY_P}`
         },
-        url: `https://corporate.k-w-h.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
+        url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
     })
         .then(response => {
             res.status(200).json({
