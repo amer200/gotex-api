@@ -46,14 +46,12 @@ exports.gltCheck = async (req, res, next) => {
 exports.saeeCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (cod) {
-            return next()
-        }
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
         const saee = await Saee.findOne();
         const user = await User.findById(userId);
+        const totalPrice = shipPrice + weightPrice;
         if (userRolle == "user") {
             var shipPrice = saee.userprice;
         } else {
@@ -64,7 +62,12 @@ exports.saeeCheck = async (req, res, next) => {
         } else {
             var weightPrice = (weight - 15) * saee.kgprice;
         }
-        const totalPrice = shipPrice + weightPrice;
+        /**************************************** */
+        if (cod) {
+            res.locals.codAmount = totalPrice
+            return next()
+        }
+        /*********************** */
         if (user.wallet < totalPrice) {
             return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
@@ -72,7 +75,7 @@ exports.saeeCheck = async (req, res, next) => {
         }
         user.wallet = user.wallet - totalPrice;
         await user.save()
-        res.locals.codAmount = totalPrice
+        res.locals.codAmount = 0
         next()
     } catch (err) {
         console.log(err)
