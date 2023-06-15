@@ -69,7 +69,7 @@ exports.createUserOrder = async (req, res) => {
         c_city: c_city,
         c_streetaddress: c_streetaddress,
         c_mobile: c_mobile,
-        ordernumber: `${ordersNum + "/" + new Date.now() + "gotex"}`
+        ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`
     }
     axios({
         method: 'POST',
@@ -85,7 +85,7 @@ exports.createUserOrder = async (req, res) => {
                         const order = new SaeeOrder({
                             user: req.user.user.id,
                             company: "saee",
-                            ordernumber: `${ordersNum + "/" + new Date.now() + "gotex"}`,
+                            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
                             data: response.data,
                             paytype: paytype
                         })
