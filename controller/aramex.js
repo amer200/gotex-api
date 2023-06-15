@@ -1,5 +1,4 @@
 // const aramex = require('aramex-api');
-const { ThirdParty } = require("aramex-api");
 const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
 const axios = require("axios");
@@ -110,7 +109,11 @@ exports.createOrder = async (req, res) => {
         };
         var PaymentType = "3"
         var ThirdParty = {
-            "AccountNumber": process.env.AR_ACCOUNT
+            "Reference1": "",
+            "Reference2": "",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "PartyAddress": "",
+            "Contact": ""
         }
         console.log(cod)
     } else {
