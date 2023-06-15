@@ -54,9 +54,11 @@ exports.createUserOrder = async (req, res) => {
     if (cod) {
         var paymentType = "COD";
         var codAmount = res.locals.codAmount;
+        var paytype = "cod";
     } else {
         var paymentType = "CC";
         var codAmount = null;
+        var paytype = "p";
     }
     let data = {
         orders: [
@@ -114,6 +116,7 @@ exports.createUserOrder = async (req, res) => {
                     user: req.user.user.id,
                     company: "glt",
                     ordernumber: ordersNum + 1,
+                    paytype: paytype,
                     data: result
                 })
                 return newOrder.save();

@@ -8,9 +8,6 @@ const User = require("../model/user");
 exports.gltCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (cod) {
-            return next()
-        }
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
@@ -27,6 +24,13 @@ exports.gltCheck = async (req, res, next) => {
             var weightPrice = (weight - 15) * glt.kgprice;
         }
         const totalPrice = shipPrice + weightPrice;
+
+        /**************************************** */
+        if (cod) {
+            res.locals.codAmount = totalPrice
+            return next()
+        }
+        /*********************** */
         if (user.wallet < totalPrice) {
             return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
@@ -34,7 +38,7 @@ exports.gltCheck = async (req, res, next) => {
         }
         user.wallet = user.wallet - totalPrice;
         await user.save()
-        res.locals.codAmount = totalPrice
+        res.locals.codAmount = 0
         next()
     } catch (err) {
         console.log(err)
@@ -88,9 +92,6 @@ exports.saeeCheck = async (req, res, next) => {
 exports.aramexCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod;
-        if (cod) {
-            return next()
-        }
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
@@ -107,6 +108,13 @@ exports.aramexCheck = async (req, res, next) => {
             var weightPrice = (weight - 15) * aramex.kgprice;
         }
         const totalPrice = shipPrice + weightPrice;
+
+        /**************************************** */
+        if (cod) {
+            res.locals.codAmount = totalPrice
+            return next()
+        }
+        /*********************** */
         if (user.wallet < totalPrice) {
             return res.status(400).json({
                 msg: "Your wallet balance is not enough to make the shipment"
@@ -114,7 +122,7 @@ exports.aramexCheck = async (req, res, next) => {
         }
         user.wallet = user.wallet - totalPrice;
         await user.save()
-        res.locals.codAmount = totalPrice
+        res.locals.codAmount = 0
         next()
     } catch (err) {
         console.log(err)

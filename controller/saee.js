@@ -43,9 +43,10 @@ exports.createUserOrder = async (req, res) => {
     const cod = req.body.cod;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
-        console.log(cashondelivery)
+        var paytype = "cod";
     } else {
         var cashondelivery = res.locals.codAmount;
+        var paytype = "p";
     }
     // let weightPrice = 1;
     // if (weight > 15) {
@@ -79,7 +80,8 @@ exports.createUserOrder = async (req, res) => {
                     user: req.user.user.id,
                     company: "saee",
                     ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`,
-                    data: response.data
+                    data: response.data,
+                    paytype: paytype
                 })
                 order.save()
                     .then(o => {

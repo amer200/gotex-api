@@ -119,12 +119,12 @@ exports.createOrder = async (req, res) => {
     const shipmentDate = Date.now();
     var data = JSON.stringify({
         "ClientInfo": {
-            "UserName": "test.api@aramex.com",
-            "Password": "Aramex@12345",
+            "UserName": process.env.AR_USERNAME,
+            "Password": process.env.AR_PASSWORD,
             "Version": "v1.0",
-            "AccountNumber": "60531487",
-            "AccountPin": "654654",
-            "AccountEntity": "BOM",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "AccountEntity": "JED",
             "AccountCountryCode": "SA",
             "Source": 24
         },
@@ -177,6 +177,7 @@ exports.createOrder = async (req, res) => {
                     "Reference1": "",
                     "Reference2": "",
                     "AccountNumber": null,
+                    "AccountEntity": null,
                     "PartyAddress": {
                         "Line1": c_line1,
                         "Line2": "",
