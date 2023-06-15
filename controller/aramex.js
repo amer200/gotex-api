@@ -112,8 +112,8 @@ exports.createOrder = async (req, res) => {
             "Reference1": "",
             "Reference2": "",
             "AccountNumber": process.env.AR_ACCOUNT,
-            "PartyAddress": "",
-            "Contact": ""
+            "PartyAddress": null,
+            "Contact": null
         }
         console.log(cod)
     } else {
