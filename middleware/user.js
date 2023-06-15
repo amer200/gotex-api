@@ -79,7 +79,6 @@ exports.isVerfied = (req, res, next) => {
     const userId = req.user.user.id;
     User.findById(userId)
         .then(u => {
-            console.log(u);
             if (u.verified) {
                 return next()
             }

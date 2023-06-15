@@ -27,6 +27,7 @@ exports.gltCheck = async (req, res, next) => {
         /**************************************** */
         if (cod) {
             res.locals.codAmount = totalPrice
+            res.locals.totalPrice = totalPrice
             return next()
         }
         /*********************** */
@@ -68,6 +69,7 @@ exports.saeeCheck = async (req, res, next) => {
         /**************************************** */
         if (cod) {
             res.locals.codAmount = totalPrice
+            res.locals.totalPrice = totalPrice
             return next()
         }
         /*********************** */
@@ -109,6 +111,7 @@ exports.aramexCheck = async (req, res, next) => {
         /**************************************** */
         if (cod) {
             res.locals.codAmount = totalPrice
+            res.locals.totalPrice = totalPrice
             return next()
         }
         /*********************** */
@@ -140,15 +143,16 @@ exports.smsaCheck = async (req, res, next) => {
         } else {
             var shipPrice = smsa.marketerprice;
         }
+
         if (weight <= 15) {
             var weightPrice = 0;
         } else {
             var weightPrice = (weight - 15) * smsa.kgprice;
         }
         const totalPrice = shipPrice + weightPrice;
-
         /**************************************** */
         if (cod) {
+            res.locals.totalPrice = totalPrice
             res.locals.codAmount = totalPrice
             return next()
         }
@@ -158,6 +162,7 @@ exports.smsaCheck = async (req, res, next) => {
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
+
         res.locals.totalPrice = totalPrice
         res.locals.codAmount = 0
         next()

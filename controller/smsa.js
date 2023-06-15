@@ -33,7 +33,6 @@ exports.createUserOrder = async (req, res) => {
     let ordersNum = await SmsaOrder.count();
     const user = await User.findById(req.user.user.id);
     const totalPrice = res.locals.totalPrice;
-    console.log(totalPrice)
     const c_name = req.body.c_name;
     const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
     const c_ContactPhoneNumber2 = req.body.c_ContactPhoneNumber2;
