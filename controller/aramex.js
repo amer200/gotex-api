@@ -107,7 +107,7 @@ exports.createOrder = async (req, res) => {
             "CurrencyCode": "SAR",
             "Value": res.locals.codAmount
         };
-        var PaymentType = "C"
+        var PaymentType = "3"
         console.log(cod)
     } else {
         var codAmount = null;
