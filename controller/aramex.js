@@ -141,6 +141,7 @@ exports.createOrder = async (req, res) => {
                     "Reference1": "",
                     "Reference2": "",
                     "AccountNumber": process.env.AR_ACCOUNT,
+                    "AccountEntity": "JED",
                     "PartyAddress": {
                         "Line1": p_line1,
                         "Line2": "",
@@ -176,8 +177,8 @@ exports.createOrder = async (req, res) => {
                 "Consignee": {
                     "Reference1": "",
                     "Reference2": "",
-                    "AccountNumber": null,
-                    "AccountEntity": null,
+                    "AccountNumber": process.env.AR_ACCOUNT,
+                    "AccountEntity": "JED",
                     "PartyAddress": {
                         "Line1": c_line1,
                         "Line2": "",
