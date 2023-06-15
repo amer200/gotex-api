@@ -54,7 +54,6 @@ exports.isAuth = (req, res, next) => {
             })
         }
         jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
-            console.log(user)
             if (err) {
                 return res.status(400).json({
                     msg: err

@@ -104,7 +104,10 @@ exports.createUserOrder = async (req, res) => {
             }
         })
         .catch(err => {
-            console.log(err.response)
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
         })
 }
 exports.getUserOrders = async (req, res) => {
