@@ -1,4 +1,5 @@
 // const aramex = require('aramex-api');
+const { ThirdParty } = require("aramex-api");
 const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
 const axios = require("axios");
@@ -108,6 +109,9 @@ exports.createOrder = async (req, res) => {
             "Value": res.locals.codAmount
         };
         var PaymentType = "3"
+        var ThirdParty = {
+            "AccountNumber": process.env.AR_ACCOUNT
+        }
         console.log(cod)
     } else {
         var codAmount = null;
@@ -211,6 +215,7 @@ exports.createOrder = async (req, res) => {
                         "Type": ""
                     }
                 },
+                "ThirdParty": ThirdParty,
                 "ShippingDateTime": `/Date(${shipmentDate}+0530)/`,
                 "Comments": "",
                 "PickupLocation": "",
