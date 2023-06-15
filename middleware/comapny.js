@@ -26,9 +26,12 @@ exports.gltCheck = async (req, res, next) => {
 
         /**************************************** */
         if (cod) {
-            res.locals.codAmount = totalPrice
-            res.locals.totalPrice = totalPrice
-            return next()
+            // res.locals.codAmount = totalPrice
+            // res.locals.totalPrice = totalPrice
+            // return next()
+            return res.status(400).json({
+                msg: " cod is stoped !!"
+            })
         }
         /*********************** */
         if (user.wallet < totalPrice) {
@@ -68,9 +71,12 @@ exports.saeeCheck = async (req, res, next) => {
 
         /**************************************** */
         if (cod) {
-            res.locals.codAmount = totalPrice
-            res.locals.totalPrice = totalPrice
-            return next()
+            // res.locals.codAmount = totalPrice
+            // res.locals.totalPrice = totalPrice
+            // return next()
+            return res.status(400).json({
+                msg: " cod is stoped !!"
+            })
         }
         /*********************** */
         if (user.wallet < totalPrice) {
@@ -110,9 +116,12 @@ exports.aramexCheck = async (req, res, next) => {
 
         /**************************************** */
         if (cod) {
-            res.locals.codAmount = totalPrice
-            res.locals.totalPrice = totalPrice
-            return next()
+            // res.locals.codAmount = totalPrice
+            // res.locals.totalPrice = totalPrice
+            // return next()
+            return res.status(400).json({
+                msg: " cod is stoped !!"
+            })
         }
         /*********************** */
         if (user.wallet < totalPrice) {
@@ -152,9 +161,12 @@ exports.smsaCheck = async (req, res, next) => {
         const totalPrice = shipPrice + weightPrice;
         /**************************************** */
         if (cod) {
-            res.locals.totalPrice = totalPrice
-            res.locals.codAmount = totalPrice
-            return next()
+            // res.locals.totalPrice = totalPrice
+            // res.locals.codAmount = totalPrice
+            // return next()
+            return res.status(400).json({
+                msg: " cod is stoped !!"
+            })
         }
         /*********************** */
         if (user.wallet < totalPrice) {

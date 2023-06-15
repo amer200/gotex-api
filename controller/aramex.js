@@ -266,35 +266,18 @@ exports.createOrder = async (req, res) => {
                     "DescriptionOfGoods": null,
                     "GoodsOriginCountry": "IN",
                     "NumberOfPieces": pieces,
-                    "ProductGroup": "EXP",
+                    "ProductGroup": "DOM",
                     "ProductType": "PPX",
                     "PaymentType": PaymentType,
                     "PaymentOptions": "",
-                    "CustomsValueAmount": {
-                        "CurrencyCode": "SAR",
-                        "Value": 200
-                    },
+                    "CustomsValueAmount": null,
                     "CashOnDeliveryAmount": codAmount,
                     "InsuranceAmount": null,
                     "CashAdditionalAmount": null,
                     "CashAdditionalAmountDescription": "",
                     "CollectAmount": null,
                     "Services": "",
-                    "Items": [
-                        {
-                            "PackageType": "Box",
-                            "Quantity": "1",
-                            "Weight": null,
-                            "CustomsValue": {
-                                "CurrencyCode": "SAR",
-                                "Value": 10
-                            },
-                            "Comments": "Ravishing Gold Facial Kit Long Lasting Shining Appearance For All Skin Type 125g",
-                            "GoodsDescription": "new Gold Facial Kit Long  Shining Appearance",
-                            "Reference": "",
-                            "CommodityCode": "98765432"
-                        }
-                    ]
+                    "Items": null
                 },
                 "Attachments": [],
                 "ForeignHAWB": "",

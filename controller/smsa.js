@@ -83,7 +83,7 @@ exports.createUserOrder = async (req, res) => {
             "AddressLine1": p_AddressLine1,
             "AddressLine2": p_AddressLine2
         },
-        "OrderNumber": "FirstOrder001",
+        "OrderNumber": "FirstOrder001", /// code 
         "DeclaredValue": value,
         "CODAmount": cashondelivery,
         "Parcels": pieces,
