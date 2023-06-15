@@ -85,7 +85,7 @@ exports.createUserOrder = async (req, res) => {
                         const order = new SaeeOrder({
                             user: req.user.user.id,
                             company: "saee",
-                            ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`,
+                            ordernumber: `${ordersNum + "/" + new Date.now() + "gotex"}`,
                             data: response.data,
                             paytype: paytype
                         })
