@@ -112,8 +112,37 @@ exports.createOrder = async (req, res) => {
             "Reference1": "",
             "Reference2": "",
             "AccountNumber": process.env.AR_ACCOUNT,
-            "PartyAddress": null,
-            "Contact": null
+            "PartyAddress": {
+                "Line1": p_line1,
+                "Line2": "",
+                "Line3": "",
+                "City": p_city,
+                "StateOrProvinceCode": p_StateOrProvinceCode,
+                "PostCode": p_postCode,
+                "CountryCode": "SA",
+                "Longitude": 0,
+                "Latitude": 0,
+                "BuildingNumber": null,
+                "BuildingName": null,
+                "Floor": null,
+                "Apartment": null,
+                "POBox": null,
+                "Description": null
+            },
+            "Contact": {
+                "Department": "",
+                "PersonName": p_name,
+                "Title": "",
+                "CompanyName": p_company,
+                "PhoneNumber1": p_phone,
+                "PhoneNumber1Ext": p_PhoneNumber1Ext,
+                "PhoneNumber2": "",
+                "PhoneNumber2Ext": "",
+                "FaxNumber": "",
+                "CellPhone": p_CellPhone,
+                "EmailAddress": p_email,
+                "Type": ""
+            }
         }
         console.log(cod)
     } else {
