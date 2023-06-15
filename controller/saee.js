@@ -69,7 +69,7 @@ exports.createUserOrder = async (req, res) => {
         c_city: c_city,
         c_streetaddress: c_streetaddress,
         c_mobile: c_mobile,
-        ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`
+        ordernumber: `${ordersNum + "/" + new Date.now() + "gotex"}`
     }
     axios({
         method: 'POST',
