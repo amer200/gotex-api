@@ -1,4 +1,3 @@
-const aramex = require("../model/aramex");
 const Aramex = require("../model/aramex");
 const Glt = require("../model/glt");
 const Saee = require("../model/saee");
@@ -94,7 +93,7 @@ exports.aramexCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const aramex = await Aramex.findOne();
+        const aramex = await aramex.findOne();
         const user = await User.findById(userId);
         if (userRolle == "user") {
             var shipPrice = aramex.userprice;
@@ -119,8 +118,7 @@ exports.aramexCheck = async (req, res, next) => {
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
-        user.wallet = user.wallet - totalPrice;
-        await user.save()
+        res.locals.totalPrice = totalPrice
         res.locals.codAmount = 0
         next()
     } catch (err) {

@@ -78,6 +78,8 @@ exports.edit = (req, res) => {
 
 exports.createOrder = async (req, res) => {
     let ordersNum = await AramexOrder.count();
+    const totalPrice = res.locals.totalPrice;
+    const user = await User.findById(req.user.user.id);
     /************************* */
     const c_name = req.body.c_name;
     const c_company = req.body.c_company;
@@ -326,17 +328,21 @@ exports.createOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                const newO = new AramexOrder({
-                    user: req.user.user.id,
-                    company: "aramex",
-                    ordernumber: ordersNum + 2,
-                    data: response.data
-                })
-                newO.save()
-                    .then(o => {
-                        res.status(200).json({
+                user.wallet = user.wallet - totalPrice;
+                user.save()
+                    .then(u => {
+                        const newO = new AramexOrder({
+                            user: req.user.user.id,
+                            company: "aramex",
+                            ordernumber: ordersNum + 2,
                             data: response.data
                         })
+                        newO.save()
+                            .then(o => {
+                                res.status(200).json({
+                                    data: response.data
+                                })
+                            })
                     })
             }
         })
