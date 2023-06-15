@@ -107,48 +107,47 @@ exports.createOrder = async (req, res) => {
             "CurrencyCode": "SAR",
             "Value": res.locals.codAmount
         };
-        var PaymentType = "3"
-        var ThirdParty = {
-            "Reference1": "",
-            "Reference2": "",
-            "AccountNumber": process.env.AR_ACCOUNT,
-            "PartyAddress": {
-                "Line1": p_line1,
-                "Line2": "",
-                "Line3": "",
-                "City": p_city,
-                "StateOrProvinceCode": p_StateOrProvinceCode,
-                "PostCode": p_postCode,
-                "CountryCode": "SA",
-                "Longitude": 0,
-                "Latitude": 0,
-                "BuildingNumber": null,
-                "BuildingName": null,
-                "Floor": null,
-                "Apartment": null,
-                "POBox": null,
-                "Description": null
-            },
-            "Contact": {
-                "Department": "",
-                "PersonName": p_name,
-                "Title": "",
-                "CompanyName": p_company,
-                "PhoneNumber1": p_phone,
-                "PhoneNumber1Ext": p_PhoneNumber1Ext,
-                "PhoneNumber2": "",
-                "PhoneNumber2Ext": "",
-                "FaxNumber": "",
-                "CellPhone": p_CellPhone,
-                "EmailAddress": p_email,
-                "Type": ""
-            }
-        }
-        console.log(cod)
+        var PaymentType = "P"
+        var ThirdParty = null;
+        // {
+        //     "Reference1": "",
+        //     "Reference2": "",
+        //     "AccountNumber": process.env.AR_ACCOUNT,
+        //     "PartyAddress": {
+        //         "Line1": p_line1,
+        //         "Line2": "",
+        //         "Line3": "",
+        //         "City": p_city,
+        //         "StateOrProvinceCode": p_StateOrProvinceCode,
+        //         "PostCode": p_postCode,
+        //         "CountryCode": "SA",
+        //         "Longitude": 0,
+        //         "Latitude": 0,
+        //         "BuildingNumber": null,
+        //         "BuildingName": null,
+        //         "Floor": null,
+        //         "Apartment": null,
+        //         "POBox": null,
+        //         "Description": null
+        //     },
+        //     "Contact": {
+        //         "Department": "",
+        //         "PersonName": p_name,
+        //         "Title": "",
+        //         "CompanyName": p_company,
+        //         "PhoneNumber1": p_phone,
+        //         "PhoneNumber1Ext": p_PhoneNumber1Ext,
+        //         "PhoneNumber2": "",
+        //         "PhoneNumber2Ext": "",
+        //         "FaxNumber": "",
+        //         "CellPhone": p_CellPhone,
+        //         "EmailAddress": p_email,
+        //         "Type": ""
+        //     }
+        // }
     } else {
         var codAmount = null;
         var PaymentType = "P"
-        console.log(cod)
     }
 
     /*************************************** */
