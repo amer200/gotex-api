@@ -2,6 +2,7 @@ const Smsa = require("../model/smsa");
 const SmsaOrder = require("../model/smsaorders");
 const axios = require('axios');
 const base64 = require('base64topdf');
+const User = require("../model/user");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -30,6 +31,8 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await SmsaOrder.count();
+    const user = await User.findById(req.user.user.id);
+    const totalPrice = res.locals.totalPrice;
     const c_name = req.body.c_name;
     const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
     const c_ContactPhoneNumber2 = req.body.c_ContactPhoneNumber2;
@@ -118,9 +121,13 @@ exports.createUserOrder = async (req, res) => {
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
                     .then(o => {
-                        res.status(200).json({
-                            data: response.data
-                        })
+                        user.wallet = user.wallet - totalPrice;
+                        user.save()
+                            .then(u => {
+                                res.status(200).json({
+                                    data: o
+                                })
+                            })
                     })
             } else {
                 res.status(400).json({

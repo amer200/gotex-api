@@ -2,6 +2,7 @@ const axios = require("axios");
 const qs = require('qs');
 const Glt = require("../model/glt");
 const GltOrder = require("../model/gltorders");
+const User = require("../model/user");
 const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
@@ -32,6 +33,8 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await GltOrder.count();
+    const user = await User.findById(req.user.user.id);
+    const totalPrice = res.locals.totalPrice;
     /************************** */
     const pieces = req.body.pieces;
     const desc = req.body.description;
@@ -112,6 +115,7 @@ exports.createUserOrder = async (req, res) => {
                     msg: result.msg
                 })
             } else {
+
                 const newOrder = new GltOrder({
                     user: req.user.user.id,
                     company: "glt",
@@ -123,9 +127,13 @@ exports.createUserOrder = async (req, res) => {
             }
         })
         .then(o => {
-            res.status(200).json({
-                data: o
-            })
+            user.wallet = user.wallet - totalPrice;
+            user.save()
+                .then(u => {
+                    res.status(200).json({
+                        data: o
+                    })
+                })
         })
         .catch(err => {
             console.log(err)

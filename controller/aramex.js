@@ -1,6 +1,7 @@
 // const aramex = require('aramex-api');
 const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
+const User = require("../model/user");
 const axios = require("axios");
 // exports.createOrder = async (req, res) => {
 //     try {
