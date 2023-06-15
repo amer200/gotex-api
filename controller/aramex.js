@@ -108,7 +108,7 @@ exports.createOrder = async (req, res) => {
             "CurrencyCode": "SAR",
             "Value": res.locals.codAmount
         };
-        var PaymentType = "P"
+        var PaymentType = "P";
         var ThirdParty = null;
         // {
         //     "Reference1": "",
@@ -309,7 +309,7 @@ exports.createOrder = async (req, res) => {
             "Reference5": ""
         }
     });
-
+    console.log(data)
     var config = {
         method: 'post',
         url: 'https://ws.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments',

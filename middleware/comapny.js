@@ -78,8 +78,7 @@ exports.saeeCheck = async (req, res, next) => {
                 msg: "Your wallet balance is not enough to make the shipment"
             })
         }
-        user.wallet = user.wallet - totalPrice;
-        await user.save()
+        res.locals.totalPrice = totalPrice
         res.locals.codAmount = 0
         next()
     } catch (err) {

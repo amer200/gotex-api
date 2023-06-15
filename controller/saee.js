@@ -1,6 +1,7 @@
 const axios = require("axios");
 const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
+const User = require("../model/user");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -29,6 +30,7 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     const saee = await Saee.findOne();
+    const user = await User.findById();
     let ordersNum = await SaeeOrder.count();
     const p_name = req.body.p_name;
     const p_city = req.body.p_city;
@@ -76,19 +78,23 @@ exports.createUserOrder = async (req, res) => {
     })
         .then(response => {
             if (response.data.success) {
-                const order = new SaeeOrder({
-                    user: req.user.user.id,
-                    company: "saee",
-                    ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`,
-                    data: response.data,
-                    paytype: paytype
-                })
-                order.save()
-                    .then(o => {
-                        res.status(200).json({
-                            msg: "order created",
-                            data: o
+                user.wallet = user.wallet - totalPrice;
+                user.save()
+                    .then(u => {
+                        const order = new SaeeOrder({
+                            user: req.user.user.id,
+                            company: "saee",
+                            ordernumber: `${ordersNum + 2 + new Date().toISOString().split('T')[0] + "gotex"}`,
+                            data: response.data,
+                            paytype: paytype
                         })
+                        order.save()
+                            .then(o => {
+                                res.status(200).json({
+                                    msg: "order created",
+                                    data: o
+                                })
+                            })
                     })
             } else {
                 res.status(400).json({
