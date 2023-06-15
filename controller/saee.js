@@ -43,6 +43,7 @@ exports.createUserOrder = async (req, res) => {
     const c_streetaddress = req.body.c_streetaddress;
     const c_mobile = req.body.c_mobile;
     const cod = req.body.cod;
+    const totalPrice = res.locals.totalPrice;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
