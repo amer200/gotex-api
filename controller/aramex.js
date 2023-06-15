@@ -140,7 +140,7 @@ exports.createOrder = async (req, res) => {
                 "Shipper": {
                     "Reference1": "",
                     "Reference2": "",
-                    "AccountNumber": "60531487",
+                    "AccountNumber": process.env.AR_ACCOUNT,
                     "PartyAddress": {
                         "Line1": p_line1,
                         "Line2": "",
