@@ -51,7 +51,6 @@ exports.createUserOrder = async (req, res) => {
     const description = req.body.description;
     const value = req.body.Value;
     const cod = req.body.cod;
-    console.log(req.body)
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
