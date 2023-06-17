@@ -51,6 +51,7 @@ exports.createUserOrder = async (req, res) => {
     const description = req.body.description;
     const value = req.body.Value;
     const cod = req.body.cod;
+    console.log(re.body)
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -107,7 +108,6 @@ exports.createUserOrder = async (req, res) => {
         },
         data: data
     };
-    console.log(data)
     axios(config)
         .then(function (response) {
             if (response.status == 200) {
