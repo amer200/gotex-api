@@ -107,7 +107,7 @@ exports.createUserOrder = async (req, res) => {
         },
         data: data
     };
-
+    console.log(data)
     axios(config)
         .then(function (response) {
             if (response.status == 200) {
