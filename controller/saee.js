@@ -71,7 +71,10 @@ exports.createUserOrder = async (req, res) => {
         c_mobile: c_mobile,
         ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
         sendername: p_name,
-        senderphone: p_mobile
+        senderphone: p_mobile,
+        senderaddress: p_streetaddress,
+        sendercity: p_city,
+        sendercountry: "SA"
     }
     axios({
         method: 'POST',
