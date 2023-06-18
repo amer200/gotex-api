@@ -115,6 +115,9 @@ body
    userprice => Number 
    marketerprice => Number
    kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
 }
 response
 {
@@ -134,6 +137,8 @@ body{
           c_city;
           c_streetaddress;
           c_mobile;
+          "cod" => if(true){Number = ship value}else{false} 
+        "shipmentValue" => if(cod){shipmentValue is require type Number}
 }
 
 response {
@@ -193,6 +198,9 @@ body
    userprice => Number 
    marketerprice => Number
    kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
 }
 response
 {
@@ -247,6 +255,8 @@ body{
     "c_areaName": "makah",
     "c_city": "JED", use city code from no 2
     "c_mobile": 96123987456
+    "cod" => if(true){Number = ship value}else{false} 
+    "shipmentValue" => if(cod){shipmentValue is require type Number}
 }
 }
 
@@ -354,6 +364,9 @@ body
    userprice => Number 
    marketerprice => Number
    kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
 }
 response
 {
@@ -455,7 +468,9 @@ body{
     "weight": 5,
     "description": "test",
     "Value": 10,
-    "cod": 0
+    "cod" => if(true){Number = ship value}else{false} 
+    "shipmentValue" => if(cod){shipmentValue is require type Number}
+
 }
 2)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/smsa/edit
@@ -467,6 +482,9 @@ body
    userprice => Number 
    marketerprice => Number
    kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
 }
 response
 {

@@ -20,6 +20,18 @@ const smsaSchema = mongoose.Schema({
     status: {
         type: Boolean,
         default: false,
+    },
+    codprice: {
+        type: Number,
+        default: 10
+    },
+    mincodmarkteer: {
+        type: Number,
+        default: 10
+    },
+    maxcodmarkteer: {
+        type: Number,
+        default: 10
     }
 })
 

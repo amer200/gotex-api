@@ -29,7 +29,6 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    const saee = await Saee.findOne();
     const user = await User.findById(req.user.user.id);
     let ordersNum = await SaeeOrder.count();
     const p_name = req.body.p_name;
@@ -43,13 +42,13 @@ exports.createUserOrder = async (req, res) => {
     const c_streetaddress = req.body.c_streetaddress;
     const c_mobile = req.body.c_mobile;
     const cod = req.body.cod;
-    const totalPrice = res.locals.totalPrice;
+    const totalShipPrice = res.locals.totalShipPrice;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
     } else {
         var cashondelivery = res.locals.codAmount;
-        var paytype = "p";
+        var paytype = "cc";
     }
     // let weightPrice = 1;
     // if (weight > 15) {
@@ -84,7 +83,11 @@ exports.createUserOrder = async (req, res) => {
     })
         .then(response => {
             if (response.data.success) {
-                user.wallet = user.wallet - totalPrice;
+                if (!cod) {
+                    user.wallet = user.wallet - totalShipPrice;
+                } else {
+                    user.wallet = user.wallet
+                }
                 user.save()
                     .then(u => {
                         const order = new SaeeOrder({
@@ -92,7 +95,8 @@ exports.createUserOrder = async (req, res) => {
                             company: "saee",
                             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
                             data: response.data,
-                            paytype: paytype
+                            paytype: paytype,
+                            price: totalShipPrice
                         })
                         order.save()
                             .then(o => {

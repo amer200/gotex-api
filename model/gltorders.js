@@ -5,7 +5,8 @@ const gltOrderSchema = mongoose.Schema({
     company: String,
     ordernumber: Number,
     data: Object,
-    paytype: String
+    paytype: String,
+    price: Number
 })
 
 module.exports = mongoose.model("GltOrder", gltOrderSchema);

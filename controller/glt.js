@@ -9,7 +9,10 @@ const PDFDocument = require('pdfkit');
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
+    const userCodPrice = req.body.userCodPrice;
     const marketerprice = req.body.marketerprice;
+    const mincodmarkteer = req.body.mincodmarkteer;
+    const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
     Glt.findOne()
         .then(g => {
@@ -17,6 +20,9 @@ exports.edit = (req, res) => {
             g.userprice = userprice;
             g.marketerprice = marketerprice;
             g.kgprice = kgprice;
+            g.maxcodmarkteer = maxcodmarkteer;
+            g.mincodmarkteer = mincodmarkteer;
+            g.codprice = userCodPrice
             return g.save()
         })
         .then(g => {
@@ -34,7 +40,7 @@ exports.edit = (req, res) => {
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await GltOrder.count();
     const user = await User.findById(req.user.user.id);
-    const totalPrice = res.locals.totalPrice;
+    const totalShipPrice = res.locals.totalShipPrice;
     /************************** */
     const pieces = req.body.pieces;
     const desc = req.body.description;
@@ -61,7 +67,7 @@ exports.createUserOrder = async (req, res) => {
     } else {
         var paymentType = "CC";
         var codAmount = null;
-        var paytype = "p";
+        var paytype = "cc";
     }
     let data = {
         orders: [
@@ -115,25 +121,31 @@ exports.createUserOrder = async (req, res) => {
                     msg: result.msg
                 })
             } else {
-
                 const newOrder = new GltOrder({
                     user: req.user.user.id,
                     company: "glt",
                     ordernumber: ordersNum + 1,
                     paytype: paytype,
-                    data: result
+                    data: result,
+                    price: totalShipPrice
                 })
                 return newOrder.save();
             }
         })
         .then(o => {
-            user.wallet = user.wallet - totalPrice;
-            user.save()
-                .then(u => {
-                    res.status(200).json({
-                        data: o
+            if (!cod) {
+                user.wallet = user.wallet - totalShipPrice;
+                user.save()
+                    .then(u => {
+                        res.status(200).json({
+                            data: o
+                        })
                     })
+            } else {
+                res.status(200).json({
+                    data: o
                 })
+            }
         })
         .catch(err => {
             console.log(err)

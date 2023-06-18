@@ -5,7 +5,8 @@ const saeeOrderSchema = mongoose.Schema({
     company: String,
     ordernumber: String,
     data: Object,
-    paytype: String
+    paytype: String,
+    price: Number
 })
 
 module.exports = mongoose.model("SaeeOrder", saeeOrderSchema);

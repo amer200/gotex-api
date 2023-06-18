@@ -32,7 +32,7 @@ exports.edit = (req, res) => {
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await SmsaOrder.count();
     const user = await User.findById(req.user.user.id);
-    const totalPrice = res.locals.totalPrice;
+    const totalShipPrice = res.locals.totalShipPrice;
     const c_name = req.body.c_name;
     const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
     const c_ContactPhoneNumber2 = req.body.c_ContactPhoneNumber2;
@@ -120,13 +120,19 @@ exports.createUserOrder = async (req, res) => {
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
                     .then(o => {
-                        user.wallet = user.wallet - totalPrice;
-                        user.save()
-                            .then(u => {
-                                res.status(200).json({
-                                    data: o
+                        if (!cod) {
+                            user.wallet = user.wallet - totalShipPrice;
+                            user.save()
+                                .then(u => {
+                                    res.status(200).json({
+                                        data: o
+                                    })
                                 })
+                        }else{
+                            res.status(200).json({
+                                data: o
                             })
+                        }
                     })
             } else {
                 res.status(400).json({

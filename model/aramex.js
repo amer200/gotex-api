@@ -17,6 +17,18 @@ const aramexSchema = mongoose.Schema({
         type: Number,
         default: 22,
     },
+    codprice: {
+        type: Number,
+        default: 10
+    },
+    mincodmarkteer: {
+        type: Number,
+        default: 10
+    },
+    maxcodmarkteer: {
+        type: Number,
+        default: 10
+    },
     status: {
         type: Boolean,
         default: false,

@@ -112,46 +112,83 @@ exports.createOrder = async (req, res) => {
             "Value": res.locals.codAmount
         };
         var PaymentType = "P";
-        var ThirdParty = null;
-        // {
-        //     "Reference1": "",
-        //     "Reference2": "",
-        //     "AccountNumber": process.env.AR_ACCOUNT,
-        //     "PartyAddress": {
-        //         "Line1": p_line1,
-        //         "Line2": "",
-        //         "Line3": "",
-        //         "City": p_city,
-        //         "StateOrProvinceCode": p_StateOrProvinceCode,
-        //         "PostCode": p_postCode,
-        //         "CountryCode": "SA",
-        //         "Longitude": 0,
-        //         "Latitude": 0,
-        //         "BuildingNumber": null,
-        //         "BuildingName": null,
-        //         "Floor": null,
-        //         "Apartment": null,
-        //         "POBox": null,
-        //         "Description": null
-        //     },
-        //     "Contact": {
-        //         "Department": "",
-        //         "PersonName": p_name,
-        //         "Title": "",
-        //         "CompanyName": p_company,
-        //         "PhoneNumber1": p_phone,
-        //         "PhoneNumber1Ext": p_PhoneNumber1Ext,
-        //         "PhoneNumber2": "",
-        //         "PhoneNumber2Ext": "",
-        //         "FaxNumber": "",
-        //         "CellPhone": p_CellPhone,
-        //         "EmailAddress": p_email,
-        //         "Type": ""
-        //     }
-        // }
+        var ThirdParty = {
+            "Reference1": "",
+            "Reference2": "",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "PartyAddress": {
+                "Line1": p_line1,
+                "Line2": "",
+                "Line3": "",
+                "City": p_city,
+                "StateOrProvinceCode": p_StateOrProvinceCode,
+                "PostCode": p_postCode,
+                "CountryCode": "SA",
+                "Longitude": 0,
+                "Latitude": 0,
+                "BuildingNumber": null,
+                "BuildingName": null,
+                "Floor": null,
+                "Apartment": null,
+                "POBox": null,
+                "Description": null
+            },
+            "Contact": {
+                "Department": "",
+                "PersonName": p_name,
+                "Title": "",
+                "CompanyName": p_company,
+                "PhoneNumber1": p_phone,
+                "PhoneNumber1Ext": p_PhoneNumber1Ext,
+                "PhoneNumber2": "",
+                "PhoneNumber2Ext": "",
+                "FaxNumber": "",
+                "CellPhone": p_CellPhone,
+                "EmailAddress": p_email,
+                "Type": ""
+            }
+        };
     } else {
         var codAmount = null;
-        var PaymentType = "P"
+        var PaymentType = "3";
+        var ThirdParty = {
+            "Reference1": "",
+            "Reference2": "",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "PartyAddress": {
+                "Line1": p_line1,
+                "Line2": "",
+                "Line3": "",
+                "City": p_city,
+                "StateOrProvinceCode": p_StateOrProvinceCode,
+                "PostCode": p_postCode,
+                "CountryCode": "SA",
+                "Longitude": 0,
+                "Latitude": 0,
+                "BuildingNumber": null,
+                "BuildingName": null,
+                "Floor": null,
+                "Apartment": null,
+                "POBox": null,
+                "Description": null
+            },
+            "Contact": {
+                "Department": "",
+                "PersonName": p_name,
+                "Title": "",
+                "CompanyName": p_company,
+                "PhoneNumber1": p_phone,
+                "PhoneNumber1Ext": p_PhoneNumber1Ext,
+                "PhoneNumber2": "",
+                "PhoneNumber2Ext": "",
+                "FaxNumber": "",
+                "CellPhone": p_CellPhone,
+                "EmailAddress": p_email,
+                "Type": ""
+            }
+        };
     }
 
     /*************************************** */
@@ -267,7 +304,7 @@ exports.createOrder = async (req, res) => {
                     "GoodsOriginCountry": "IN",
                     "NumberOfPieces": pieces,
                     "ProductGroup": "DOM",
-                    "ProductType": "PPX",
+                    "ProductType": "CDS",
                     "PaymentType": PaymentType,
                     "PaymentOptions": "",
                     "CustomsValueAmount": null,
@@ -295,7 +332,6 @@ exports.createOrder = async (req, res) => {
             "Reference5": ""
         }
     });
-    console.log(data)
     var config = {
         method: 'post',
         url: 'https://ws.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments',
@@ -304,7 +340,7 @@ exports.createOrder = async (req, res) => {
         },
         data: data
     };
-
+    console.log(config)
     axios(config)
         .then(function (response) {
             if (response.data.HasErrors) {
