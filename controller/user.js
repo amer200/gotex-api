@@ -180,6 +180,7 @@ exports.logIn = (req, res) => {
                         name: u.name,
                         rolle: u.rolle
                     }
+                    console.log(user)
                     const token = jwt.sign({
                         exp: Math.floor(Date.now() / 1000) + (60 * 60),
                         data: { user: user },
