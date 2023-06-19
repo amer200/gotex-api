@@ -178,7 +178,7 @@ exports.logIn = (req, res) => {
                     const user = {
                         id: u._id,
                         name: u.name,
-                        rolle: "user"
+                        rolle: u.rolle
                     }
                     const token = jwt.sign({
                         exp: Math.floor(Date.now() / 1000) + (60 * 60),
