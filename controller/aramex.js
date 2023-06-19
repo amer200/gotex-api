@@ -105,7 +105,6 @@ exports.createOrder = async (req, res) => {
     const weight = req.body.weight;
     const pieces = req.body.pieces;
     const cod = req.body.cod;
-    console.log(req.body)
     if (cod) {
         var codAmount = {
             "CurrencyCode": "SAR",
@@ -340,7 +339,7 @@ exports.createOrder = async (req, res) => {
         },
         data: data
     };
-    console.log(config)
+    console.log(data)
     axios(config)
         .then(function (response) {
             if (response.data.HasErrors) {
