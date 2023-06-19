@@ -6,7 +6,6 @@ const User = require("../model/user");
 
 
 exports.gltCheck = async (req, res, next) => {
-    console.log(req.body)
     try {
         const cod = req.body.cod; // change to number
         const userId = req.user.user.id;

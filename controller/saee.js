@@ -6,7 +6,10 @@ const User = require("../model/user");
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
+    const userCodPrice = req.body.userCodPrice;
     const marketerprice = req.body.marketerprice;
+    const mincodmarkteer = req.body.mincodmarkteer;
+    const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
     Saee.findOne()
         .then(s => {
@@ -14,6 +17,9 @@ exports.edit = (req, res) => {
             s.userprice = userprice;
             s.marketerprice = marketerprice;
             s.kgprice = kgprice;
+            s.maxcodmarkteer = maxcodmarkteer;
+            s.mincodmarkteer = mincodmarkteer;
+            s.codprice = userCodPrice
             return s.save()
         })
         .then(s => {
