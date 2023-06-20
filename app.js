@@ -11,9 +11,9 @@ var cors = require('cors');
 var morgan = require('morgan')
 app.use(morgan('combined'))
 /********************************************************************************* */
-const storage = multer.diskStorage({
+const crStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads/')
+        cb(null, 'public/cr/')
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9) + '.' + file.originalname;
@@ -22,7 +22,9 @@ const storage = multer.diskStorage({
 });
 
 /********************************************************************************* */
-const upload = multer({ storage: storage });
+const upload = multer({ storage: crStorage });
+app.post('/user/signup', upload.array('cr'));
+app.post('/user/marketer-signup', upload.array('cr'));
 /********************************************************************************** */
 // const store = new MongoDBStore({
 //     uri: dbUrl,

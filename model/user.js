@@ -16,6 +16,11 @@ const userSchema = mongoose.Schema({
     wallet: {
         type: Number,
         default: 0
+    },
+    cr: [String],
+    iscrproofed: {
+        type: Boolean,
+        default: false
     }
 })
 

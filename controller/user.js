@@ -64,6 +64,12 @@ function genRandonString(length) {
 }
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
+    var cr = []
+    if (req.files[0]) {
+        req.files.forEach(f => {
+            cr.push(f.path)
+        });
+    }
     const hash = bcrypt.hashSync(password, salt);
     User.findOne({ email: email })
         .then(u => {
@@ -81,7 +87,8 @@ exports.signUp = (req, res) => {
                     location: location,
                     verified: false,
                     emailcode: genRandonString(4),
-                    rolle: "user"
+                    rolle: "user",
+                    cr: cr
                 })
                 user.save()
                     .then(u => {
@@ -102,6 +109,12 @@ exports.signUp = (req, res) => {
 }
 exports.MarkterSignUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
+    var cr = []
+    if (req.files[0]) {
+        req.files.forEach(f => {
+            cr.push(f.path)
+        });
+    }
     const hash = bcrypt.hashSync(password, salt);
     User.findOne({ email: email })
         .then(u => {
@@ -119,7 +132,8 @@ exports.MarkterSignUp = (req, res) => {
                     location: location,
                     verified: false,
                     emailcode: genRandonString(4),
-                    rolle: "marketer"
+                    rolle: "marketer",
+                    cr: cr
                 })
                 user.save()
                     .then(u => {
@@ -185,7 +199,6 @@ exports.logIn = (req, res) => {
                         exp: Math.floor(Date.now() / 1000) + (60 * 60),
                         data: { user: user },
                     }, process.env.ACCESS_TOKEN);
-                    // const token = jwt.sign({ user: user }, process.env.ACCESS_TOKEN);
                     res.status(200).json({
                         msg: "ok",
                         token: token

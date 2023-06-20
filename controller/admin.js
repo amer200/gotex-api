@@ -1,6 +1,6 @@
-const Saee = require("../model/saee");
 const User = require("../model/user");
 const jwt = require("jsonwebtoken");
+const { use } = require("../routes/user");
 
 exports.logIn = (req, res) => {
     const email = req.body.email;
@@ -58,4 +58,25 @@ exports.addWalletToUser = (req, res) => {
                 msg: err
             })
         })
+}
+exports.proofCrForUser = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findOne({ email: email });
+        if(!user){
+            return res.status(400).json({
+                msg: "email is required"
+            })
+        }
+        user.iscrproofed = true;
+        await user.save()
+        return res.status(200).json({
+            msg: "ok"
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err
+        })
+    }
 }
