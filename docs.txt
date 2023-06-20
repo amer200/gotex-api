@@ -515,3 +515,43 @@ response
     "msg": "ok",
     "data": " pdf"
 }
+/*********************************anwan*********************************/
+1)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/anwan/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
+}
+response
+{
+    "msg": "ok",
+}
+/****************
+2) create order
+url = http://localhost:3000/anwan/create-user-order
+method = post
+body{    //s = sender       c = receiver
+    "weight": 10,
+    "cod" => if(true){Number = ship value}else{false} 
+    "shipmentValue" => if(cod){shipmentValue is require type Number}
+    "s_phone": "01152306375",
+    "s_name": "عامر مصطفى",
+    "s_email": "amermostaafa@gmail.com",
+    "c_email": "ashar.k@fastcoo.com",
+    "description": "Food Products",
+    "s_city": "Riyadh",
+    "c_phone": "9876543210",
+    "s_address": "Sulayi",
+    "c_name": "Ashar Khan",
+    "c_city": "Riyadh",
+    "pieces": "1",
+    "c_address": "As Sawadi Khaldiyah"
+}

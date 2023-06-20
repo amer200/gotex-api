@@ -1,0 +1,12 @@
+const express = require("express");
+const routes = express.Router();
+const anwanControllers = require("../controller/anwan");
+const userMiddlewares = require('../middleware/user');
+const adminMiddlewares = require("../middleware/admin");
+const anwanMiddleware = require("../middleware/comapny");
+routes.post("/edit", adminMiddlewares.isAuth, anwanControllers.edit);
+routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, anwanMiddleware.anwanCheck, anwanControllers.createUserOrder);
+// routes.get("/cities", gltControllers.getAllCities);
+// routes.get("/get-all-orders", userMiddlewares.isAuth, gltControllers.getUserOrders);
+// routes.get("/print-sticker/:id", gltControllers.getSticker);
+module.exports = routes;

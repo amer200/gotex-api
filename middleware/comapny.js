@@ -3,7 +3,7 @@ const Glt = require("../model/glt");
 const Saee = require("../model/saee");
 const Smsa = require("../model/smsa");
 const User = require("../model/user");
-
+const Anwan = require("../model/anwan");
 
 exports.gltCheck = async (req, res, next) => {
     try {
@@ -242,6 +242,71 @@ exports.smsaCheck = async (req, res, next) => {
         })
     }
 }
+exports.anwanCheck = async (req, res, next) => {
+    try {
+        const cod = req.body.cod; // change to number
+        const userId = req.user.user.id;
+        const userRolle = req.user.user.rolle;
+        const weight = req.body.weight;
+        const shipmentValue = req.body.shipmentValue; // new number must
+        /*********************************************** */
+        const anwan = await Anwan.findOne();
+        const user = await User.findById(userId);
+        /*********************************************** */
+        if (weight <= 15) {
+            var weightPrice = 0;
+        } else {
+            var weightPrice = (weight - 15) * anwan.kgprice;
+        }
+        /*********************************************** */
+        if (cod) {
+            if (!shipmentValue) {
+                return res.status(400).json({
+                    msg: "shippment value is required"
+                })
+            }
+            if (userRolle == "user") {
+                var shipPrice = anwan.codprice;
+            } else {
+                if (cod > anwan.maxcodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is grater than your limit"
+                    })
+                }
+                if (cod < anwan.mincodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is less than your limit"
+                    })
+                }
+                var shipPrice = cod;
+            }
+            const codAmount = shipPrice + weightPrice + shipmentValue; // 10 + (25 - 15)22 + 100
+            res.locals.codAmount = codAmount;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        } else {
+            if (userRolle == "user") {
+                var shipPrice = anwan.userprice;
+            } else {
+                var shipPrice = anwan.marketerprice;
+            }
+            if (user.wallet < (shipPrice + weightPrice)) {
+                return res.status(400).json({
+                    msg: "Your wallet balance is not enough to make the shipment"
+                })
+            }
+            res.locals.codAmount = 0;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+/**************************************************** */
 exports.isCrProofed = (req, res, next) => {
     const userId = req.user.user.id;
     User.findById(userId)
