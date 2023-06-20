@@ -65,7 +65,8 @@ function genRandonString(length) {
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
     var cr = []
-    if (req.files[0]) {
+    // return console.log(req.files);
+    if (req.files) {
         req.files.forEach(f => {
             cr.push(f.path)
         });
