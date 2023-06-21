@@ -79,8 +79,8 @@ exports.edit = (req, res) => {
 
 exports.createOrder = async (req, res) => {
     let ordersNum = await AramexOrder.count();
-    const totalPrice = res.locals.totalPrice;
     const user = await User.findById(req.user.user.id);
+    const totalShipPrice = res.locals.totalShipPrice;
     /************************* */
     const c_name = req.body.c_name;
     const c_company = req.body.c_company;
@@ -90,6 +90,7 @@ exports.createOrder = async (req, res) => {
     const c_line1 = req.body.c_line1;
     const c_city = req.body.c_city;
     const c_CellPhone = req.body.c_CellPhone;
+    const c_StateOrProvinceCode = req.body.c_StateOrProvinceCode;
     //     /************************* */
     const p_name = req.body.p_name;
     const p_company = req.body.p_company;
@@ -106,124 +107,34 @@ exports.createOrder = async (req, res) => {
     const pieces = req.body.pieces;
     const cod = req.body.cod;
     if (cod) {
-        var codAmount = {
-            "CurrencyCode": "SAR",
-            "Value": res.locals.codAmount
-        };
-        var PaymentType = "P";
-        var ThirdParty = {
-            "Reference1": "",
-            "Reference2": "",
-            "AccountNumber": process.env.AR_ACCOUNT,
-            "AccountPin": process.env.AR_PIN,
-            "PartyAddress": {
-                "Line1": p_line1,
-                "Line2": "",
-                "Line3": "",
-                "City": p_city,
-                "StateOrProvinceCode": p_StateOrProvinceCode,
-                "PostCode": p_postCode,
-                "CountryCode": "SA",
-                "Longitude": 0,
-                "Latitude": 0,
-                "BuildingNumber": null,
-                "BuildingName": null,
-                "Floor": null,
-                "Apartment": null,
-                "POBox": null,
-                "Description": null
-            },
-            "Contact": {
-                "Department": "",
-                "PersonName": p_name,
-                "Title": "",
-                "CompanyName": p_company,
-                "PhoneNumber1": p_phone,
-                "PhoneNumber1Ext": p_PhoneNumber1Ext,
-                "PhoneNumber2": "",
-                "PhoneNumber2Ext": "",
-                "FaxNumber": "",
-                "CellPhone": p_CellPhone,
-                "EmailAddress": p_email,
-                "Type": ""
-            }
-        };
-    } else {
-        var codAmount = null;
+        var codAmount = res.locals.codAmount;
         var PaymentType = "p";
-        var ThirdParty = {
-            "Reference1": "",
-            "Reference2": "",
-            "AccountNumber": process.env.AR_ACCOUNT,
-            "AccountPin": process.env.AR_PIN,
-            "PartyAddress": {
-                "Line1": p_line1,
-                "Line2": "",
-                "Line3": "",
-                "City": p_city,
-                "StateOrProvinceCode": p_StateOrProvinceCode,
-                "PostCode": p_postCode,
-                "CountryCode": "SA",
-                "Longitude": 0,
-                "Latitude": 0,
-                "BuildingNumber": null,
-                "BuildingName": null,
-                "Floor": null,
-                "Apartment": null,
-                "POBox": null,
-                "Description": null
-            },
-            "Contact": {
-                "Department": "",
-                "PersonName": p_name,
-                "Title": "",
-                "CompanyName": p_company,
-                "PhoneNumber1": p_phone,
-                "PhoneNumber1Ext": p_PhoneNumber1Ext,
-                "PhoneNumber2": "",
-                "PhoneNumber2Ext": "",
-                "FaxNumber": "",
-                "CellPhone": p_CellPhone,
-                "EmailAddress": p_email,
-                "Type": ""
-            }
-        };
+        var PaymentOptions = "ACCT"
+    } else {
+        var codAmount = 0;
+        var PaymentType = "P";
+        var PaymentOptions = "ACCT"
     }
-
     /*************************************** */
     const shipmentDate = Date.now();
     var data = JSON.stringify({
-        "ClientInfo": {
-            "UserName": process.env.AR_USERNAME,
-            "Password": process.env.AR_PASSWORD,
-            "Version": "v1.0",
-            "AccountNumber": process.env.AR_ACCOUNT,
-            "AccountPin": process.env.AR_PIN,
-            "AccountEntity": "JED",
-            "AccountCountryCode": "SA",
-            "Source": 24
-        },
-        "LabelInfo": {
-            "ReportID": 9729,
-            "ReportType": "URL"
-        },
         "Shipments": [
             {
-                "Reference1": "",
-                "Reference2": "",
-                "Reference3": "",
+                "Reference1": "Shipment Reference",
+                "Reference2": null,
+                "Reference3": null,
                 "Shipper": {
-                    "Reference1": "",
-                    "Reference2": "",
+                    "Reference1": "Shipper Reference -gotex",
+                    "Reference2": null,
                     "AccountNumber": process.env.AR_ACCOUNT,
                     "AccountEntity": "JED",
                     "PartyAddress": {
                         "Line1": p_line1,
-                        "Line2": "",
+                        "Line2": null,
                         "Line3": "",
                         "City": p_city,
-                        "StateOrProvinceCode": "JED",
-                        "PostCode": '22233',
+                        "StateOrProvinceCode": p_StateOrProvinceCode,
+                        "PostCode": "",
                         "CountryCode": "SA",
                         "Longitude": 0,
                         "Latitude": 0,
@@ -235,100 +146,128 @@ exports.createOrder = async (req, res) => {
                         "Description": null
                     },
                     "Contact": {
-                        "Department": "",
+                        "Department": null,
                         "PersonName": p_name,
-                        "Title": "",
+                        "Title": null,
                         "CompanyName": p_company,
                         "PhoneNumber1": p_phone,
-                        "PhoneNumber1Ext": p_PhoneNumber1Ext,
+                        "PhoneNumber1Ext": "",
                         "PhoneNumber2": "",
                         "PhoneNumber2Ext": "",
-                        "FaxNumber": "",
+                        "FaxNumber": null,
                         "CellPhone": p_CellPhone,
                         "EmailAddress": p_email,
                         "Type": ""
                     }
                 },
                 "Consignee": {
-                    "Reference1": "",
-                    "Reference2": "",
+                    "Reference1": null,
+                    "Reference2": null,
                     "AccountNumber": process.env.AR_ACCOUNT,
                     "AccountEntity": "JED",
                     "PartyAddress": {
                         "Line1": c_line1,
-                        "Line2": "",
-                        "Line3": "",
+                        "Line2": null,
+                        "Line3": null,
                         "City": c_city,
-                        "StateOrProvinceCode": "JED",
-                        "PostCode": '22233',
+                        "StateOrProvinceCode": c_StateOrProvinceCode,
+                        "PostCode": "",
                         "CountryCode": "SA",
                         "Longitude": 0,
                         "Latitude": 0,
-                        "BuildingNumber": "",
-                        "BuildingName": "",
-                        "Floor": "",
-                        "Apartment": "",
+                        "BuildingNumber": null,
+                        "BuildingName": null,
+                        "Floor": null,
+                        "Apartment": null,
                         "POBox": null,
                         "Description": null
                     },
                     "Contact": {
-                        "Department": "",
+                        "Department": null,
                         "PersonName": c_name,
-                        "Title": "",
+                        "Title": null,
                         "CompanyName": c_company,
                         "PhoneNumber1": c_phone,
-                        "PhoneNumber1Ext": c_PhoneNumber1Ext,
+                        "PhoneNumber1Ext": "",
                         "PhoneNumber2": "",
                         "PhoneNumber2Ext": "",
-                        "FaxNumber": "",
+                        "FaxNumber": null,
                         "CellPhone": c_CellPhone,
                         "EmailAddress": c_email,
                         "Type": ""
                     }
                 },
-                "ThirdParty": ThirdParty,
+                "ThirdParty": null,
                 "ShippingDateTime": `/Date(${shipmentDate}+0530)/`,
-                "Comments": "",
-                "PickupLocation": "",
-                "OperationsInstructions": "",
-                "AccountingInstrcutions": "",
+                "Comments": null,
+                "PickupLocation": null,
+                "OperationsInstructions": null,
+                "AccountingInstrcutions": null,
                 "Details": {
                     "Dimensions": null,
                     "ActualWeight": {
                         "Unit": "KG",
                         "Value": weight
                     },
-                    "ChargeableWeight": null,
-                    "DescriptionOfGoods": null,
-                    "GoodsOriginCountry": "IN",
+                    "ChargeableWeight": {
+                        "Unit": "KG",
+                        "Value": weight
+                    },
+                    "DescriptionOfGoods": "Items",
+                    "GoodsOriginCountry": "SA",
                     "NumberOfPieces": pieces,
                     "ProductGroup": "DOM",
                     "ProductType": "CDS",
                     "PaymentType": PaymentType,
-                    "PaymentOptions": "",
-                    "CustomsValueAmount": null,
-                    "CashOnDeliveryAmount": codAmount,
-                    "InsuranceAmount": null,
-                    "CashAdditionalAmount": null,
-                    "CashAdditionalAmountDescription": "",
-                    "CollectAmount": null,
+                    "PaymentOptions": PaymentOptions,
+                    "CustomsValueAmount": {
+                        "CurrencyCode": "SAR",
+                        "Value": 0
+                    },
+                    "CashOnDeliveryAmount": {
+                        "CurrencyCode": "SAR",
+                        "Value": codAmount
+                    },
+                    "InsuranceAmount": {
+                        "CurrencyCode": "SAR",
+                        "Value": 0
+                    },
+                    "CashAdditionalAmount": {
+                        "CurrencyCode": "SAR",
+                        "Value": 0
+                    },
+                    "CashAdditionalAmountDescription": null,
+                    "CollectAmount": {
+                        "CurrencyCode": "SAR",
+                        "Value": 0
+                    },
                     "Services": "",
-                    "Items": null
+                    "Items": null,
+                    "DeliveryInstructions": null,
+                    "AdditionalProperties": null,
+                    "ContainsDangerousGoods": false
                 },
-                "Attachments": [],
-                "ForeignHAWB": "",
+                "Attachments": null,
+                "ForeignHAWB": null,
                 "TransportType ": 0,
-                "PickupGUID": "",
+                "PickupGUID": null,
                 "Number": null,
                 "ScheduledDelivery": null
             }
         ],
-        "Transaction": {
-            "Reference1": "",
-            "Reference2": "",
-            "Reference3": "",
-            "Reference4": "",
-            "Reference5": ""
+        "LabelInfo": {
+            "ReportID": 9729,
+            "ReportType": "URL"
+        },
+        "ClientInfo": {
+            "UserName": process.env.AR_USERNAME,
+            "Password": process.env.AR_PASSWORD,
+            "Version": "v1.0",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "AccountEntity": "JED",
+            "AccountCountryCode": "SA",
+            "Source": 24
         }
     });
     var config = {
@@ -339,7 +278,6 @@ exports.createOrder = async (req, res) => {
         },
         data: data
     };
-    console.log(data)
     axios(config)
         .then(function (response) {
             if (response.data.HasErrors) {
@@ -347,22 +285,41 @@ exports.createOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                user.wallet = user.wallet - totalPrice;
-                user.save()
-                    .then(u => {
-                        const newO = new AramexOrder({
-                            user: req.user.user.id,
-                            company: "aramex",
-                            ordernumber: ordersNum + 2,
-                            data: response.data
-                        })
-                        newO.save()
-                            .then(o => {
-                                res.status(200).json({
-                                    data: response.data
-                                })
-                            })
+                if (cod) {
+                    const newO = new AramexOrder({
+                        user: req.user.user.id,
+                        company: "aramex",
+                        ordernumber: ordersNum + 2,
+                        data: response.data,
+                        paytype: "cod",
+                        price: totalShipPrice
                     })
+                    newO.save()
+                        .then(o => {
+                            res.status(200).json({
+                                data: response.data
+                            })
+                        })
+                } else {
+                    user.wallet = user.wallet - totalShipPrice;
+                    user.save()
+                        .then(u => {
+                            const newO = new AramexOrder({
+                                user: req.user.user.id,
+                                company: "aramex",
+                                ordernumber: ordersNum + 2,
+                                data: response.data,
+                                paytype: "cc",
+                                price: totalShipPrice
+                            })
+                            newO.save()
+                                .then(o => {
+                                    res.status(200).json({
+                                        data: response.data
+                                    })
+                                })
+                        })
+                }
             }
         })
         .catch(function (error) {
@@ -398,4 +355,51 @@ exports.getSticker = (req, res) => {
         .catch(err => {
             console.log(err)
         })
+}
+exports.getCities = (req, res) => {
+    var data = JSON.stringify({
+        "ClientInfo": {
+            "UserName": process.env.AR_USERNAME,
+            "Password": process.env.AR_PASSWORD,
+            "Version": "v1.0",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "AccountEntity": "JED",
+            "AccountCountryCode": "SA",
+            "Source": 24
+        },
+        "CountryCode": "SA",
+        "NameStartsWith": "",
+        "State": "",
+        "Transaction": {
+            "Reference1": "",
+            "Reference2": "",
+            "Reference3": "",
+            "Reference4": "",
+            "Reference5": ""
+        }
+    });
+
+    var config = {
+        method: 'post',
+        url: 'https://ws.aramex.net/ShippingAPI.V2/Location/Service_1_0.svc/json/FetchCities',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+
+    axios(config)
+        .then(function (response) {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: error
+            })
+        });
+
 }

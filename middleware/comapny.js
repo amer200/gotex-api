@@ -135,42 +135,61 @@ exports.saeeCheck = async (req, res, next) => {
 }
 exports.aramexCheck = async (req, res, next) => {
     try {
-        const cod = req.body.cod;
+        const cod = req.body.cod; // change to number
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
+        const shipmentValue = req.body.shipmentValue; // new number must
+        /*********************************************** */
         const aramex = await Aramex.findOne();
         const user = await User.findById(userId);
-        if (userRolle == "user") {
-            var shipPrice = aramex.userprice;
-        } else {
-            var shipPrice = aramex.marketerprice;
-        }
+        /*********************************************** */
         if (weight <= 15) {
             var weightPrice = 0;
         } else {
             var weightPrice = (weight - 15) * aramex.kgprice;
         }
-        const totalPrice = shipPrice + weightPrice;
-
-        /**************************************** */
+        /*********************************************** */
         if (cod) {
-            // res.locals.codAmount = totalPrice
-            // res.locals.totalPrice = totalPrice
-            // return next()
-            return res.status(400).json({
-                msg: " cod is stoped !!"
-            })
+            if (!shipmentValue) {
+                return res.status(400).json({
+                    msg: "shippment value is required"
+                })
+            }
+            if (userRolle == "user") {
+                var shipPrice = aramex.codprice;
+            } else {
+                if (cod > aramex.maxcodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is grater than your limit"
+                    })
+                }
+                if (cod < aramex.mincodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is less than your limit"
+                    })
+                }
+                var shipPrice = cod;
+            }
+            const codAmount = shipPrice + weightPrice + shipmentValue; // 10 + (25 - 15)22 + 100
+            res.locals.codAmount = codAmount;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        } else {
+            if (userRolle == "user") {
+                var shipPrice = aramex.userprice;
+            } else {
+                var shipPrice = aramex.marketerprice;
+            }
+            if (user.wallet < (shipPrice + weightPrice)) {
+                return res.status(400).json({
+                    msg: "Your wallet balance is not enough to make the shipment"
+                })
+            }
+            res.locals.codAmount = 0;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
         }
-        /*********************** */
-        if (user.wallet < totalPrice) {
-            return res.status(400).json({
-                msg: "Your wallet balance is not enough to make the shipment"
-            })
-        }
-        res.locals.totalPrice = totalPrice
-        res.locals.codAmount = 0
-        next()
     } catch (err) {
         console.log(err)
         res.status(500).json({

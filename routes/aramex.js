@@ -8,4 +8,5 @@ routes.post("/edit", adminMiddlewares.isAuth, aramexControllers.edit);
 routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, aramexMiddleware.aramexCheck, aramexControllers.createOrder);
 routes.get("/get-all-orders", userMiddlewares.isAuth, aramexControllers.getUserOrders);
 routes.get("/print-sticker/:id", aramexControllers.getSticker);
+routes.get("/cities", userMiddlewares.isAuth, aramexControllers.getCities);
 module.exports = routes;
