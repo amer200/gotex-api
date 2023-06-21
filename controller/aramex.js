@@ -150,7 +150,7 @@ exports.createOrder = async (req, res) => {
         };
     } else {
         var codAmount = null;
-        var PaymentType = "3";
+        var PaymentType = "p";
         var ThirdParty = {
             "Reference1": "",
             "Reference2": "",
