@@ -118,3 +118,50 @@ exports.createUserOrder = async (req, res) => {
             console.log(error);
         });
 }
+exports.getCities = (req, res) => {
+    var data = JSON.stringify({
+        "ClientInfo": {
+            "UserName": process.env.AR_USERNAME,
+            "Password": process.env.AR_PASSWORD,
+            "Version": "v1.0",
+            "AccountNumber": process.env.AR_ACCOUNT,
+            "AccountPin": process.env.AR_PIN,
+            "AccountEntity": "JED",
+            "AccountCountryCode": "SA",
+            "Source": 24
+        },
+        "CountryCode": "SA",
+        "NameStartsWith": "",
+        "State": "",
+        "Transaction": {
+            "Reference1": "",
+            "Reference2": "",
+            "Reference3": "",
+            "Reference4": "",
+            "Reference5": ""
+        }
+    });
+
+    var config = {
+        method: 'post',
+        url: 'https://ws.aramex.net/ShippingAPI.V2/Location/Service_1_0.svc/json/FetchCities',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+
+    axios(config)
+        .then(function (response) {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.status(500).json({
+                msg: error
+            })
+        });
+
+}

@@ -54,7 +54,10 @@ const axios = require("axios");
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
+    const userCodPrice = req.body.userCodPrice;
     const marketerprice = req.body.marketerprice;
+    const mincodmarkteer = req.body.mincodmarkteer;
+    const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
     Aramex.findOne()
         .then(a => {
@@ -62,6 +65,9 @@ exports.edit = (req, res) => {
             a.userprice = userprice;
             a.marketerprice = marketerprice;
             a.kgprice = kgprice;
+            a.maxcodmarkteer = maxcodmarkteer;
+            a.mincodmarkteer = mincodmarkteer;
+            a.codprice = userCodPrice
             return a.save()
         })
         .then(a => {

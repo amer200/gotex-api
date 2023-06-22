@@ -555,3 +555,7 @@ body{    //s = sender       c = receiver
     "pieces": "1",
     "c_address": "As Sawadi Khaldiyah"
 }
+/*******************
+3)get cities for anwan
+url = https://dashboard.go-tex.net/api/anwan/getCities
+method = get
