@@ -170,9 +170,14 @@ exports.getSticker = (req, res) => {
     const orderId = req.params.id;
     AnwanOrder.findById(orderId)
         .then(o => {
-            console.log(o)
+            res.status(200).json({
+                data: o.data.label_print
+            })
         })
-        .catch(err => {
-            console.log(err)
+        .catch(error => {
+            console.log(error);
+            res.status(500).json({
+                msg: error
+            })
         })
 }

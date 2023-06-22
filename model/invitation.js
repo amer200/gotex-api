@@ -1,7 +1,8 @@
 const mongoose = require("mongoose");
 
-const invitLinkSchema = mongoose.Schema({
+const invitationSchema = mongoose.Schema({
     code: String,
+    clintemail: String,
     clint: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     companies: Array,
@@ -10,4 +11,4 @@ const invitLinkSchema = mongoose.Schema({
         default: false
     }
 })
-module.exports = mongoose.model("Invitlink", invitLinkSchema);
+module.exports = mongoose.model("Invitation", invitationSchema);

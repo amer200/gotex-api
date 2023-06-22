@@ -330,6 +330,9 @@ exports.isCrProofed = (req, res, next) => {
     const userId = req.user.user.id;
     User.findById(userId)
         .then(u => {
+            if (u.rolle == "marketer") {
+                next()
+            }
             if (u.iscrproofed) {
                 next()
             } else {

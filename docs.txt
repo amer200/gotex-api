@@ -559,3 +559,10 @@ body{    //s = sender       c = receiver
 3)get cities for anwan
 url = https://dashboard.go-tex.net/api/anwan/cities
 method = get
+/*******************
+4) get sticker
+url = https://dashboard.go-tex.net/api/anwan/print-sticker/{id}
+method = get
+response{
+    "data": "https://api.fastcoo-tech.com/API/Print/ANW1060379564"
+}
