@@ -36,6 +36,7 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
+    console.log(req.body)
     let ordersNum = await AnwanOrder.count();
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
@@ -164,4 +165,14 @@ exports.getCities = (req, res) => {
             })
         });
 
+}
+exports.getSticker = (req, res) => {
+    const orderId = req.params.id;
+    AnwanOrder.findById(orderId)
+        .then(o => {
+            console.log(o)
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }

@@ -2,8 +2,10 @@ const mongoose = require("mongoose");
 
 const invitLinkSchema = mongoose.Schema({
     code: String,
+    clint: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    isused: {
+    companies: Array,
+    isapproved: {
         type: Boolean,
         default: false
     }

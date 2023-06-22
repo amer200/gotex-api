@@ -557,5 +557,5 @@ body{    //s = sender       c = receiver
 }
 /*******************
 3)get cities for anwan
-url = https://dashboard.go-tex.net/api/anwan/getCities
+url = https://dashboard.go-tex.net/api/anwan/cities
 method = get
