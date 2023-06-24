@@ -601,7 +601,10 @@ body{
     "cr": files   //optional,
     "invCode": ""   
 }
-
+/*******************
+3)get-invitations-wait (for admin)
+url= https://dashboard.go-tex.net/api/invatation/get-invitations-wait
+method = get
 //////////**************************************/
 1)مكشلة الerror object object (working)
 2)المدن في كل الشركات(working)

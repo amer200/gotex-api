@@ -1,7 +1,8 @@
-const e = require("express");
-const invitation = require("../model/invitation");
+const { exist } = require("joi");
 const Invitation = require("../model/invitation");
-const User = require("../model/invitation");
+const User = require("../model/user");
+const bcrypt = require('bcrypt');
+const salt = 10;
 
 exports.create = (req, res) => {
     const mId = req.user.user.id;
@@ -39,13 +40,13 @@ exports.create = (req, res) => {
 }
 exports.createInivtedUser = async (req, res) => {
     try {
+        const { name, password, email, mobile, address, location, invCode } = req.body;
         const isEmailUsed = await User.findOne({ email: email });
         if (isEmailUsed) {
             return res.status(400).json({
                 msg: "this mail is already used"
             })
         }
-        const { name, password, email, mobile, address, location, invCode } = req.body;
         const inv = await Invitation.findOne({ code: invCode });
         if (!inv) {
             return res.status(400).json({
@@ -78,6 +79,28 @@ exports.createInivtedUser = async (req, res) => {
         })
     }
 }
-exports.getInvtationWaitingForAdmin = (req, res) =>{
-    Invitation.find()
+exports.getInvtationWaitingForAdmin = (req, res) => {
+    Invitation.find({ clint: { $exists: true } })
+        .populate("clint markter")
+        .then(invs => {
+            res.status(200).json({
+                data: invs
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
+        })
+}
+/********************************** */
+function genRandonString(length) {
+    var chars = '0123456789';
+    var charLength = chars.length;
+    var result = '';
+    for (var i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
 }
