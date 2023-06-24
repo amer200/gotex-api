@@ -19,6 +19,16 @@ exports.check = async (req, res, next) => {
         let myAnwan = [];
         let myGlt = [];
         let mySmsa = [];
+        let errMsg;
+        var valueArr = companies.map(function (item) { return item.name });
+        var isDuplicate = valueArr.some(function (item, idx) {
+            return valueArr.indexOf(item) != idx
+        });
+        if (isDuplicate) {
+            return res.status(400).json({
+                msg: "companies name is duplicated"
+            })
+        }
         /*************************************** */
         if (req.user.user.rolle !== "marketer") {
             return res.status(400).json({
@@ -41,73 +51,59 @@ exports.check = async (req, res, next) => {
             })
         }
         companies.forEach(c => {
-            if (c.name == aramex.company) {
+            if (c.name == aramex.name) {
                 if (c.onlinePayment < aramex.marketerprice) {
-                    return res.status(400).json({
-                        msg: "online price is less than your limit"
-                    })
+                    return errMsg = `online price is less than your limit for ${c.name}`
                 }
                 if (c.cod < aramex.marketerprice) {
-                    return res.status(400).json({
-                        msg: "cod price is less than your limit"
-                    })
+                    return errMsg = `cod price is less than your limit for ${c.name}`
                 }
                 myAramex.push(c)
-            } else if (c.name == saee.company) {
+            } else if (c.name == saee.name) {
                 if (c.onlinePayment < saee.marketerprice) {
-                    return res.status(400).json({
-                        msg: "online price is less than your limit"
-                    })
+
+                    return errMsg = `online price is less than your limit for ${c.name}`
+
                 }
                 if (c.cod < saee.marketerprice) {
-                    return res.status(400).json({
-                        msg: "cod price is less than your limit"
-                    })
+                    return errMsg = `cod price is less than your limit for ${c.name}`
                 }
                 mySaee.push(c)
-            } else if (c.name == anwan.company) {
+            } else if (c.name == anwan.name) {
                 if (c.onlinePayment < anwan.marketerprice) {
-                    return res.status(400).json({
-                        msg: "online price is less than your limit"
-                    })
+                    return errMsg = `online price is less than your limit for ${c.name}`
                 }
                 if (c.cod < anwan.marketerprice) {
-                    return res.status(400).json({
-                        msg: "cod price is less than your limit"
-                    })
+                    return errMsg = `cod price is less than your limit for ${c.name}`
                 }
                 myAnwan.push(c)
-            } else if (c.name == glt.company) {
+            } else if (c.name == glt.name) {
                 if (c.onlinePayment < glt.marketerprice) {
-                    return res.status(400).json({
-                        msg: "online price is less than your limit"
-                    })
+                    return errMsg = `online price is less than your limit for ${c.name}`
                 }
                 if (c.cod < glt.marketerprice) {
-                    return res.status(400).json({
-                        msg: "cod price is less than your limit"
-                    })
+                    return errMsg = `cod price is less than your limit for ${c.name}`
                 }
                 myGlt.push(c)
-            } else if (c.name == smsa.company) {
+            } else if (c.name == smsa.name) {
                 if (c.onlinePayment < smsa.marketerprice) {
-                    return res.status(400).json({
-                        msg: "online price is less than your limit"
-                    })
+                    return errMsg = `online price is less than your limit for ${c.name}`
                 }
                 if (c.cod < smsa.marketerprice) {
-                    return res.status(400).json({
-                        msg: "cod price is less than your limit"
-                    })
+                    return errMsg = `cod price is less than your limit for ${c.name}`
                 }
                 mySmsa.push(c)
             } else {
-                return res.status(400).json({
-                    msg: `${c} is not a valid company check name`
-                })
+                return errMsg = `${c.name} is not a valid name check name`
             }
-            next();
         });
+        if (errMsg) {
+            res.status(400).json({
+                msg: errMsg
+            })
+        } else {
+            next();
+        }
     } catch (err) {
         console.log(err)
         res.status(500).json({

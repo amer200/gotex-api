@@ -21,7 +21,8 @@ const userSchema = mongoose.Schema({
     iscrproofed: {
         type: Boolean,
         default: false
-    }
+    },
+    inv: { type: mongoose.Schema.Types.ObjectId, ref: 'Invitation' }
 })
 
 module.exports = mongoose.model("User", userSchema);

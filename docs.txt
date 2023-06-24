@@ -587,6 +587,21 @@ body{
     ];
     const clintemail = req.body.clintemail;
 }
+/*********************
+2) invated user signUp
+url= https://dashboard.go-tex.net/api/invatation/invited-user-signup
+method = post
+body{
+    "name": "",
+    "mobile": "",
+    "email": "",
+    "password": "",
+    "address": "",
+    "location": "",
+    "cr": files   //optional,
+    "invCode": ""   
+}
+
 //////////**************************************/
 1)مكشلة الerror object object (working)
 2)المدن في كل الشركات(working)
