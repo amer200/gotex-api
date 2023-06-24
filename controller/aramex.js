@@ -109,6 +109,7 @@ exports.createOrder = async (req, res) => {
     const p_StateOrProvinceCode = req.body.p_StateOrProvinceCode;
     const p_postCode = req.body.p_postCode;
     //     /***************************** */
+    const markterCode = req.body.markterCode;
     const weight = req.body.weight;
     const pieces = req.body.pieces;
     const cod = req.body.cod;
@@ -316,7 +317,8 @@ exports.createOrder = async (req, res) => {
                                 ordernumber: ordersNum + 2,
                                 data: response.data,
                                 paytype: "cc",
-                                price: totalShipPrice
+                                price: totalShipPrice,
+                                marktercode: markterCode
                             })
                             newO.save()
                                 .then(o => {

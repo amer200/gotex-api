@@ -58,6 +58,7 @@ exports.createUserOrder = async (req, res) => {
     const c_areaName = req.body.c_areaName;
     const c_city = req.body.c_city;
     const c_mobile = req.body.c_mobile;
+    const markterCode = req.body.markterCode;
     /**************************** */
     const cod = req.body.cod;
     if (cod) {
@@ -127,7 +128,8 @@ exports.createUserOrder = async (req, res) => {
                     ordernumber: ordersNum + 1,
                     paytype: paytype,
                     data: result,
-                    price: totalShipPrice
+                    price: totalShipPrice,
+                    marktercode: markterCode
                 })
                 return newOrder.save();
             }

@@ -36,8 +36,8 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    console.log(req.body)
     let ordersNum = await AnwanOrder.count();
+    const markterCode = req.body.markterCode;
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight } = req.body
@@ -95,7 +95,8 @@ exports.createUserOrder = async (req, res) => {
                     ordernumber: ordersNum + 2,
                     paytype: paytype,
                     data: response.data,
-                    price: totalShipPrice
+                    price: totalShipPrice,
+                    marktercode: markterCode
                 })
                 newOrder.save()
                     .then(o => {

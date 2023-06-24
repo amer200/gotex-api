@@ -57,6 +57,7 @@ exports.createUserOrder = async (req, res) => {
     const description = req.body.description;
     const value = req.body.Value;
     const cod = req.body.cod;
+    const markterCode = req.body.markterCode;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -121,7 +122,8 @@ exports.createUserOrder = async (req, res) => {
                     company: "smsa",
                     ordernumber: ordersNum + 1,
                     data: response.data,
-                    paytype: paytype
+                    paytype: paytype,
+                    marktercode: markterCode
                 })
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
@@ -134,7 +136,7 @@ exports.createUserOrder = async (req, res) => {
                                         data: o
                                     })
                                 })
-                        }else{
+                        } else {
                             res.status(200).json({
                                 data: o
                             })
