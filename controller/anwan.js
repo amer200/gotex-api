@@ -56,7 +56,7 @@ exports.createUserOrder = async (req, res) => {
         "customerId": process.env.ANWAN_CUSTOMER_ID,
         "param": {
             "sender_phone": s_phone,
-            "sender_name": s_name,
+            "sender_name": `${s_name} (${markterCode})`,
             "sender_email": s_email,
             "receiver_email": c_email,
             "description": description,

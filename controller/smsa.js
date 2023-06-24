@@ -80,7 +80,7 @@ exports.createUserOrder = async (req, res) => {
             "AddressLine2": c_AddressLine2
         },
         "ShipperAddress": {
-            "ContactName": p_name,
+            "ContactName": `${p_name} (${markterCode})` ,
             "ContactPhoneNumber": p_ContactPhoneNumber,
             "Coordinates": "",
             "Country": "SA",

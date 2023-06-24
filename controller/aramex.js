@@ -154,7 +154,7 @@ exports.createOrder = async (req, res) => {
                     },
                     "Contact": {
                         "Department": null,
-                        "PersonName": p_name,
+                        "PersonName": `${p_name} (${markterCode})`,
                         "Title": null,
                         "CompanyName": p_company,
                         "PhoneNumber1": p_phone,
