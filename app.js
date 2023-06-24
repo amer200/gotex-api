@@ -53,6 +53,7 @@ const aramexRoutes = require("./routes/aramex");
 const smsaRoutes = require("./routes/smsa");
 const gltRoutes = require("./routes/glt");
 const anwanRoutes = require("./routes/anwan");
+const invRoutes = require("./routes/invatation");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -61,6 +62,7 @@ app.use("/aramex", aramexRoutes);
 app.use("/glt", gltRoutes);
 app.use("/smsa", smsaRoutes);
 app.use("/anwan", anwanRoutes);
+app.use("/invatation", invRoutes);
 
 /********************************************************************************* */
 mongoose.connect(dbUrl)

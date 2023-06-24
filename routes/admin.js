@@ -6,4 +6,5 @@ routes.post('/login', adminControllers.logIn);
 routes.get('/get-all-users', adminMiddleware.isAuth, adminControllers.getAllUsers);
 routes.post('/add-deposit-to-user', adminMiddleware.isAuth, adminControllers.addWalletToUser);
 routes.post("/proof-user-cr", adminMiddleware.isAuth, adminControllers.proofCrForUser);
+routes.post("/un-proof-user-cr", adminMiddleware.isAuth, adminControllers.unProofCrForUser);
 module.exports = routes;

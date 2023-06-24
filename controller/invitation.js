@@ -23,7 +23,8 @@ exports.create = (req, res) => {
                 invitation.save()
                     .then(i => {
                         res.status(200).json({
-                            code: i.code
+                            code: i.code,
+                            invitation: i
                         })
                     })
             }

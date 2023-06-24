@@ -109,13 +109,7 @@ exports.signUp = (req, res) => {
         })
 }
 exports.MarkterSignUp = (req, res) => {
-    const { name, password, email, mobile, address, location } = req.body;
-    var cr = []
-    if (req.files[0]) {
-        req.files.forEach(f => {
-            cr.push(f.path)
-        });
-    }
+    const { name, password, email, mobile, address, location, code } = req.body;
     const hash = bcrypt.hashSync(password, salt);
     User.findOne({ email: email })
         .then(u => {
@@ -134,7 +128,6 @@ exports.MarkterSignUp = (req, res) => {
                     verified: false,
                     emailcode: genRandonString(4),
                     rolle: "marketer",
-                    cr: cr
                 })
                 user.save()
                     .then(u => {

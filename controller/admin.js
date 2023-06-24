@@ -63,7 +63,7 @@ exports.proofCrForUser = async (req, res) => {
     try {
         const email = req.body.email;
         const user = await User.findOne({ email: email });
-        if(!user){
+        if (!user) {
             return res.status(400).json({
                 msg: "email is required"
             })
@@ -79,4 +79,29 @@ exports.proofCrForUser = async (req, res) => {
             msg: err
         })
     }
+}
+exports.unProofCrForUser = (req, res) => {
+    const email = req.body.email;
+    User.findOne({ email: email })
+        .then(u => {
+            if (!u) {
+                return res.status(400).json({
+                    msg: "erro email not found"
+                })
+            } else {
+                u.iscrproofed = false;
+                u.save()
+                    .then(u => {
+                        return res.status(200).json({
+                            msg: "ok"
+                        })
+                    })
+            }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                error: "err"
+            })
+        })
 }

@@ -4,12 +4,7 @@ const Saee = require("../model/saee");
 const Anwan = require("../model/anwan");
 const Glt = require("../model/glt");
 const Smsa = require("../model/smsa");
-exports.check = async (req, res) => {
-    const cExample = {
-        name: "s",
-        onlinePayment: 5,
-        cod: 5
-    }
+exports.check = async (req, res, next) => {
     try {
         const companies = req.body.companies;
         const clintemail = req.body.clintemail;
@@ -94,23 +89,24 @@ exports.check = async (req, res) => {
                     })
                 }
                 myGlt.push(c)
-            } else if (c.name == glt.company) {
-                if (c.onlinePayment < glt.marketerprice) {
+            } else if (c.name == smsa.company) {
+                if (c.onlinePayment < smsa.marketerprice) {
                     return res.status(400).json({
                         msg: "online price is less than your limit"
                     })
                 }
-                if (c.cod < glt.marketerprice) {
+                if (c.cod < smsa.marketerprice) {
                     return res.status(400).json({
                         msg: "cod price is less than your limit"
                     })
                 }
-                myGlt.push(c)
+                mySmsa.push(c)
             } else {
                 return res.status(400).json({
                     msg: `${c} is not a valid company check name`
                 })
             }
+            next();
         });
     } catch (err) {
         console.log(err)
