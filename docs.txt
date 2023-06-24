@@ -104,6 +104,13 @@ method = post
 body{
     "email": "" 
 }
+/*******************
+5)un proof cr for user
+url = https://dashboard.go-tex.net/api/admin/un-proof-user-cr
+method = post
+body{
+    "email": "" 
+}
 /*********************************companies***********************/
 1)get all (token is not require)
 url = https://dashboard.go-tex.net/api/companies/get-all
@@ -566,3 +573,28 @@ method = get
 response{
     "data": "https://api.fastcoo-tech.com/API/Print/ANW1060379564"
 }
+/****************************************invatation************************/
+1)create inv
+url= https://dashboard.go-tex.net/api/invatation/create-invitation
+method = post
+body{
+    companies: [
+        {
+            name: String, 
+            onlinePayment: number,
+            cod: number
+        },
+    ];
+    const clintemail = req.body.clintemail;
+}
+//////////**************************************/
+1)مكشلة الerror object object (working)
+2)المدن في كل الشركات(working)
+3) marketer signUp (done)
+4)edit gotex (working)
+5) عرض اسعار الشركات (working)
+6) رمز المسوقة (المدخلة) (working)
+7)العلم عند رقم الجوال (working)
+8) رقم المرسل في glt  ****
+9) اسم العمي glt = شركة الجواد المميز للخدمات الوجستية
+10) توثيق الحساب (done)
