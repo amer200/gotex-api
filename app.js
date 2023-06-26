@@ -25,6 +25,7 @@ const crStorage = multer.diskStorage({
 const upload = multer({ storage: crStorage });
 app.post('/user/signup', upload.array('cr'));
 app.post('/user/marketer-signup', upload.array('cr'));
+app.post('/invatation/invited-user-signup', upload.array('cr'));
 /********************************************************************************** */
 // const store = new MongoDBStore({
 //     uri: dbUrl,

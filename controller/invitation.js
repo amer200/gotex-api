@@ -41,7 +41,12 @@ exports.create = (req, res) => {
 exports.createInivtedUser = async (req, res) => {
     try {
         const { name, password, email, mobile, address, location, invCode } = req.body;
-        console.log(req.body)
+        var cr = []
+        if (req.files) {
+            req.files.forEach(f => {
+                cr.push(f.path)
+            });
+        }
         const isEmailUsed = await User.findOne({ email: email });
         if (isEmailUsed) {
             return res.status(400).json({
@@ -65,7 +70,8 @@ exports.createInivtedUser = async (req, res) => {
             verified: false,
             emailcode: genRandonString(4),
             rolle: "user",
-            inv: inv._id
+            inv: inv._id,
+            cr: cr
         })
         await newUser.save()
         inv.clint = newUser._id;
