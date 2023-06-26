@@ -41,6 +41,7 @@ exports.create = (req, res) => {
 exports.createInivtedUser = async (req, res) => {
     try {
         const { name, password, email, mobile, address, location, invCode } = req.body;
+        console.log(req.body)
         const isEmailUsed = await User.findOne({ email: email });
         if (isEmailUsed) {
             return res.status(400).json({
