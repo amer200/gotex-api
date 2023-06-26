@@ -605,6 +605,10 @@ body{
 3)get-invitations-wait (for admin)
 url= https://dashboard.go-tex.net/api/invatation/get-invitations-wait
 method = get
+/************
+4)aproove invatation
+url = https://dashboard.go-tex.net/api/invatation/accept-invitation/{id}
+method = get
 //////////**************************************/
 1)مكشلة الerror object object (working)
 2)المدن في كل الشركات(working)

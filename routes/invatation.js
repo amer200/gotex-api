@@ -7,4 +7,5 @@ const adminMiddleware = require("../middleware/admin");
 routes.post("/create-invitation", userMiddlewares.isAuth, invMiddleware.check, invControllers.create);
 routes.post("/invited-user-signup", invControllers.createInivtedUser);
 routes.get("/get-invitations-wait", adminMiddleware.isAuth, invControllers.getInvtationWaitingForAdmin);
+routes.get("/accept-invitation/:id", invControllers.proveInv);
 module.exports = routes

@@ -94,6 +94,26 @@ exports.getInvtationWaitingForAdmin = (req, res) => {
             })
         })
 }
+exports.proveInv = (req, res) => {
+    const id = req.params.id;
+    Invitation.findById(id)
+        .then(inv => {
+            inv.isapproved = true
+            return inv.save()
+        })
+        .then(inv => {
+            res.status(200).json({
+                msg: "ok",
+                inv: inv
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
+        })
+}
 /********************************** */
 function genRandonString(length) {
     var chars = '0123456789';
