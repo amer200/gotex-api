@@ -35,6 +35,7 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
+    console.log(req.body)
     const user = await User.findById(req.user.user.id);
     let ordersNum = await SaeeOrder.count();
     const p_name = req.body.p_name;

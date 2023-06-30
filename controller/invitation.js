@@ -47,7 +47,7 @@ exports.createInivtedUser = async (req, res) => {
                 cr.push(f.path)
             });
         }
-        console.log(req)
+        // console.log(req)
         const isEmailUsed = await User.findOne({ email: email });
         if (isEmailUsed) {
             return res.status(400).json({
