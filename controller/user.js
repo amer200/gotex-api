@@ -186,7 +186,8 @@ exports.logIn = (req, res) => {
                     const user = {
                         id: u._id,
                         name: u.name,
-                        rolle: u.rolle
+                        rolle: u.rolle,
+                        iscrproofed: u.iscrproofed
                     }
                     console.log(user)
                     const token = jwt.sign({
