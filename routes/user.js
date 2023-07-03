@@ -9,4 +9,6 @@ routes.post('/marketer-signup', userMiddlewares.isValide, userControllers.Markte
 routes.post('/login', userControllers.logIn);
 routes.get('/get-user-balance', userMiddlewares.isAuth, userControllers.getUserBalance);
 routes.get("/resend-activate-code", userMiddlewares.isAuth, userControllers.reSendActivateCode);
+routes.post("/send-email-update-password", userControllers.createNewPassword);
+routes.post("/update-password", userControllers.updatePassword);
 module.exports = routes;

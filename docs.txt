@@ -71,6 +71,21 @@ method = get
 response{
     "msg": "email send"
 }
+/***************
+7)send-email-update-password
+url = https://dashboard.go-tex.net/api/user/send-email-update-password
+method = post
+body{
+  "email": ""
+}
+/*****************
+8) update password
+url = https://dashboard.go-tex.net/api/user/send-email-update-password
+method = post
+body{
+  "password": "",
+  "code": ""
+}
 /*********************************admin*************************/
 1) login
 url = https://dashboard.go-tex.net/api/admin/login

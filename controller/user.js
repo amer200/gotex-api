@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const salt = 10;
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
-const sendEmail = async (email, text, id) => {
+const sendEmail = async (email, text, id, temp) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.hostinger.com",
@@ -16,7 +16,7 @@ const sendEmail = async (email, text, id) => {
                 pass: process.env.EMAILPASSWORD,
             },
         });
-        ejs.renderFile(__dirname + "/emailTemp.ejs", { code: text, id: id }, async function (err, data) {
+        ejs.renderFile(__dirname + temp, { code: text, id: id }, async function (err, data) {
             if (err) {
                 console.log(err);
             } else {
@@ -93,7 +93,7 @@ exports.signUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode, u._id);
+                        sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -131,7 +131,7 @@ exports.MarkterSignUp = (req, res) => {
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode, u._id);
+                        sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -225,7 +225,7 @@ exports.reSendActivateCode = (req, res) => {
             return u.save()
         })
         .then(u => {
-            sendEmail(u.email, u.emailcode, u._id);
+            sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
             res.status(200).json({
                 msg: "email send"
             })
@@ -252,4 +252,51 @@ exports.getUserBalance = (req, res) => {
                 msg: err
             })
         })
+}
+exports.createNewPassword = async (req, res) => {
+    try {
+        const email = req.body.email;
+        const user = await User.findOne({ email: email });
+        if (!user) {
+            return res.status(400).json({
+                msg: "user email not found"
+            })
+        }
+        user.emailcode = genRandonString(4);
+        console.log(user.emailcode);
+        await user.save();
+        sendEmail(user.email, user.emailcode, user._id, "/password_mail.ejs");
+        return res.status(200).json({
+            msg: "the email has been sent"
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.updatePassword = async (req, res) => {
+    try {
+        const password = req.body.password;
+        const hash = bcrypt.hashSync(password, salt);
+        const code = req.body.code;
+        const user = await User.findOne({ emailcode: code });
+        if (!user) {
+            return res.status(400).json({
+                msg: "wrong code"
+            })
+        }
+        user.password = hash;
+        user.emailcode = "0000"
+        await user.save()
+        res.status(200).json({
+            msg: "ok"
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
 }
