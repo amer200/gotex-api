@@ -84,10 +84,10 @@ exports.createUserOrder = async (req, res) => {
     // }
     const data = {
         secret: process.env.SAEE_KEY_P,
-        name: p_name,
-        city: p_city,
-        mobile: p_mobile,
-        streetaddress: p_streetaddress,
+        name: c_name,
+        city: c_city,
+        mobile: c_mobile,
+        streetaddress: c_streetaddress,
         cashondelivery: cashondelivery,
         weight: weight,
         quantity: quantity,
