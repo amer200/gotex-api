@@ -122,6 +122,11 @@ exports.createOrder = async (req, res) => {
         var PaymentType = "P";
         var PaymentOptions = "ACCT"
     }
+    if (markterCode) {
+        var nameCode = `${p_name} (${markterCode})`;
+    } else {
+        var nameCode = p_name;
+    }
     /*************************************** */
     const shipmentDate = Date.now();
     var data = JSON.stringify({
@@ -154,7 +159,7 @@ exports.createOrder = async (req, res) => {
                     },
                     "Contact": {
                         "Department": null,
-                        "PersonName": `${p_name} (${markterCode})`,
+                        "PersonName": nameCode,
                         "Title": null,
                         "CompanyName": p_company,
                         "PhoneNumber1": p_phone,

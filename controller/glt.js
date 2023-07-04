@@ -70,6 +70,11 @@ exports.createUserOrder = async (req, res) => {
         var codAmount = null;
         var paytype = "cc";
     }
+    if (markterCode) {
+        var nameCode = `${sender} (${markterCode})`;
+    } else {
+        var nameCode = sender;
+    }
     let data = {
         orders: [
             {
@@ -98,7 +103,7 @@ exports.createUserOrder = async (req, res) => {
                     },
                     mobile1: c_mobile
                 },
-                sender: `${sender} (${markterCode})`,
+                sender: nameCode,
                 weight: weight
             },
         ]

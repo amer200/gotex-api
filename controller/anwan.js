@@ -50,13 +50,18 @@ exports.createUserOrder = async (req, res) => {
         var codValue = 0;
         var paytype = "cc";
     }
+    if (markterCode) {
+        var nameCode = `${s_name} (${markterCode})`;
+    } else {
+        var nameCode = s_name;
+    }
     var data = {
         "format": "json",
         "secret_key": process.env.ANWAN_SECRET_KEY,
         "customerId": process.env.ANWAN_CUSTOMER_ID,
         "param": {
             "sender_phone": s_phone,
-            "sender_name": `${s_name} (${markterCode})`,
+            "sender_name": nameCode,
             "sender_email": s_email,
             "receiver_email": c_email,
             "description": description,

@@ -65,6 +65,11 @@ exports.createUserOrder = async (req, res) => {
         var cashondelivery = 0;
         var paytype = "p";
     }
+    if (markterCode) {
+        var nameCode = `${p_name} (${markterCode})`;
+    } else {
+        var nameCode = p_name;
+    }
     const date = new Date().toISOString().split('T')[0];
     var data = JSON.stringify({
         "ConsigneeAddress": {
@@ -80,7 +85,7 @@ exports.createUserOrder = async (req, res) => {
             "AddressLine2": c_AddressLine2
         },
         "ShipperAddress": {
-            "ContactName": `${p_name} (${markterCode})` ,
+            "ContactName": nameCode,
             "ContactPhoneNumber": p_ContactPhoneNumber,
             "Coordinates": "",
             "Country": "SA",

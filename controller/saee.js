@@ -35,7 +35,6 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    console.log(req.body)
     const user = await User.findById(req.user.user.id);
     let ordersNum = await SaeeOrder.count();
     const p_name = req.body.p_name;
@@ -58,14 +57,14 @@ exports.createUserOrder = async (req, res) => {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cc";
     }
-    // let weightPrice = 1;
-    // if (weight > 15) {
-    //     weightPrice = (weight - 15) * saee.kgprice;
-    //     cashondelivery = saee.userprice + weightPrice
-    // }
+    if (markterCode) {
+        var nameCode = `${p_name} (${markterCode})`;
+    } else {
+        var nameCode = p_name;
+    }
     const data = {
         secret: process.env.SAEE_KEY_P,
-        name: `${p_name} (${markterCode})`,
+        name: nameCode,
         city: p_city,
         mobile: p_mobile,
         streetaddress: p_streetaddress,
