@@ -102,6 +102,7 @@ exports.createUserOrder = async (req, res) => {
         sendercity: p_city,
         sendercountry: "SA"
     }
+    console.log(data)
     axios({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
