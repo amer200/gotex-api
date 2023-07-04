@@ -62,9 +62,29 @@ exports.createUserOrder = async (req, res) => {
     } else {
         var nameCode = p_name;
     }
+    // const data = {
+    //     secret: process.env.SAEE_KEY_P,
+    //     name: nameCode,
+    //     city: p_city,
+    //     mobile: p_mobile,
+    //     streetaddress: p_streetaddress,
+    //     cashondelivery: cashondelivery,
+    //     weight: weight,
+    //     quantity: quantity,
+    //     c_name: c_name,
+    //     c_city: c_city,
+    //     c_streetaddress: c_streetaddress,
+    //     c_mobile: c_mobile,
+    //     ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+    //     sendername: p_name,
+    //     senderphone: p_mobile,
+    //     senderaddress: p_streetaddress,
+    //     sendercity: p_city,
+    //     sendercountry: "SA"
+    // }
     const data = {
         secret: process.env.SAEE_KEY_P,
-        name: nameCode,
+        name: p_name,
         city: p_city,
         mobile: p_mobile,
         streetaddress: p_streetaddress,
@@ -76,7 +96,7 @@ exports.createUserOrder = async (req, res) => {
         c_streetaddress: c_streetaddress,
         c_mobile: c_mobile,
         ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
-        sendername: p_name,
+        sendername: nameCode,
         senderphone: p_mobile,
         senderaddress: p_streetaddress,
         sendercity: p_city,
