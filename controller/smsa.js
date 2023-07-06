@@ -154,7 +154,7 @@ exports.createUserOrder = async (req, res) => {
             }
         })
         .catch(function (error) {
-            console.log(error.status);
+            console.log(error);
             res.status(500).json({
                 msg: error
             })
