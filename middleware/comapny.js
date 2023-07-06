@@ -330,16 +330,12 @@ exports.isCrProofed = (req, res, next) => {
     const userId = req.user.user.id;
     User.findById(userId)
         .then(u => {
-            if (u.rolle == "marketer") {
-                next()
+            if (u.rolle == "marketer" || u.iscrproofed == true) {
+                return next()
             }
-            if (u.iscrproofed) {
-                next()
-            } else {
-                return res.status(400).json({
-                    msg: "The commercial registry must be documented to make shipments to this company"
-                })
-            }
+            return res.status(400).json({
+                msg: "The commercial registry must be documented to make shipments to this company"
+            })
         })
         .catch(err => {
             console.log(err)
