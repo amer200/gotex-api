@@ -209,7 +209,42 @@ exports.createOrder = async (req, res) => {
                         "Type": ""
                     }
                 },
-                "ThirdParty": null,
+                "ThirdParty": {
+                    "Reference1": "",
+                    "Reference2": "",
+                    "AccountNumber": process.env.AR_ACCOUNT,
+                    "PartyAddress": {
+                        "Line1": "",
+                        "Line2": "",
+                        "Line3": "",
+                        "City": p_city,
+                        "StateOrProvinceCode": "",
+                        "PostCode": "",
+                        "CountryCode": "SA",
+                        "Longitude": 0,
+                        "Latitude": 0,
+                        "BuildingNumber": null,
+                        "BuildingName": null,
+                        "Floor": null,
+                        "Apartment": null,
+                        "POBox": null,
+                        "Description": null
+                    },
+                    "Contact": {
+                        "Department": "",
+                        "PersonName": "gotex",
+                        "Title": "",
+                        "CompanyName": "",
+                        "PhoneNumber1": "96656501313",
+                        "PhoneNumber1Ext": "",
+                        "PhoneNumber2": "",
+                        "PhoneNumber2Ext": "",
+                        "FaxNumber": "",
+                        "CellPhone": "920013156",
+                        "EmailAddress": "",
+                        "Type": ""
+                    }
+                },
                 "ShippingDateTime": `/Date(${shipmentDate}+0530)/`,
                 "Comments": null,
                 "PickupLocation": null,
@@ -230,8 +265,8 @@ exports.createOrder = async (req, res) => {
                     "NumberOfPieces": pieces,
                     "ProductGroup": "DOM",
                     "ProductType": "CDS",
-                    "PaymentType": PaymentType,
-                    "PaymentOptions": PaymentOptions,
+                    "PaymentType": 3,
+                    "PaymentOptions": "",
                     "CustomsValueAmount": {
                         "CurrencyCode": "SAR",
                         "Value": 0
