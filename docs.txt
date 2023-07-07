@@ -222,7 +222,7 @@ response{    // just use trackingnum && status
 url = https://dashboard.go-tex.net/api/saee/get-cities
 method = get 
 response{
-    
+
 }
 /*****************************************************glt************************************/
 1)edit info (must be admin)
@@ -595,6 +595,10 @@ method = get
 response{
     "data": "https://api.fastcoo-tech.com/API/Print/ANW1060379564"
 }
+/*******************
+5) get all user order
+url = https://dashboard.go-tex.net/api/anwan/get-all-orders
+method = get
 /****************************************invatation************************/
 1)create inv
 url= https://dashboard.go-tex.net/api/invatation/create-invitation

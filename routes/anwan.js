@@ -7,6 +7,6 @@ const anwanMiddleware = require("../middleware/comapny");
 routes.post("/edit", adminMiddlewares.isAuth, anwanControllers.edit);
 routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, anwanMiddleware.anwanCheck, anwanControllers.createUserOrder);
 routes.get("/cities", userMiddlewares.isAuth, anwanControllers.getCities);
-// routes.get("/get-all-orders", userMiddlewares.isAuth, gltControllers.getUserOrders);
+routes.get("/get-all-orders", userMiddlewares.isAuth, anwanControllers.getUserOrders);
 routes.get("/print-sticker/:id", anwanControllers.getSticker);
 module.exports = routes;

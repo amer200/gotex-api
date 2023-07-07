@@ -187,3 +187,15 @@ exports.getSticker = (req, res) => {
             })
         })
 }
+exports.getUserOrders = (req, res) => {
+    const userId = req.user.user.id;
+    AnwanOrder.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}
