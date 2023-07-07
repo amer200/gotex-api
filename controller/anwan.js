@@ -74,7 +74,7 @@ exports.createUserOrder = async (req, res) => {
             "pieces": pieces,
             "weight": weight,
             "receiver_address": c_address,
-            "reference_id": `gotex-${ordersNum + 10}`,
+            "reference_id": `gotex-${ordersNum + 100}`,
             "codValue": codValue,
             "productType": "Parcel"
         }
