@@ -217,6 +217,13 @@ response{    // just use trackingnum && status
         ]
     }
 }
+/**************
+6) get all cities
+url = https://dashboard.go-tex.net/api/saee/get-cities
+method = get 
+response{
+    
+}
 /*****************************************************glt************************************/
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/glt/edit

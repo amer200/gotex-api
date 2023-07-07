@@ -2,6 +2,7 @@ const axios = require("axios");
 const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
+const { response } = require("express");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -201,5 +202,26 @@ exports.trakingOrderByNum = async (req, res) => {
         })
         .catch(err => {
             console.log(err)
+        })
+}
+exports.getCities = (req, res) => {
+    axios({
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'secret': `${process.env.SAEE_KEY_P}`
+        },
+        url: `https://corporate.saeex.com/deliveryrequest/getallcities`
+    })
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                error: err
+            })
         })
 }
