@@ -11,7 +11,7 @@ exports.gltCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const shipmentValue = req.body.shipmentValue; // new number must
+        let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const glt = await Glt.findOne();
         const user = await User.findById(userId);
@@ -24,9 +24,7 @@ exports.gltCheck = async (req, res, next) => {
         /*********************************************** */
         if (cod) {
             if (!shipmentValue) {
-                return res.status(400).json({
-                    msg: "shippment value is required"
-                })
+                shipmentValue = 0
             }
             if (userRolle == "user") {
                 var shipPrice = glt.codprice;
@@ -75,7 +73,7 @@ exports.saeeCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const shipmentValue = req.body.shipmentValue; // new number must
+        let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const saee = await Saee.findOne();
         const user = await User.findById(userId);
@@ -88,9 +86,7 @@ exports.saeeCheck = async (req, res, next) => {
         /*********************************************** */
         if (cod) {
             if (!shipmentValue) {
-                return res.status(400).json({
-                    msg: "shippment value is required"
-                })
+                shipmentValue = 0
             }
             if (userRolle == "user") {
                 var shipPrice = saee.codprice;
@@ -139,7 +135,7 @@ exports.aramexCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const shipmentValue = req.body.shipmentValue; // new number must
+        let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const aramex = await Aramex.findOne();
         const user = await User.findById(userId);
@@ -152,9 +148,7 @@ exports.aramexCheck = async (req, res, next) => {
         /*********************************************** */
         if (cod) {
             if (!shipmentValue) {
-                return res.status(400).json({
-                    msg: "shippment value is required"
-                })
+                shipmentValue = 0
             }
             if (userRolle == "user") {
                 var shipPrice = aramex.codprice;
@@ -203,7 +197,7 @@ exports.smsaCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const shipmentValue = req.body.shipmentValue; // new number must
+        let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const smsa = await Smsa.findOne();
         const user = await User.findById(userId);
@@ -216,9 +210,8 @@ exports.smsaCheck = async (req, res, next) => {
         /*********************************************** */
         if (cod) {
             if (!shipmentValue) {
-                return res.status(400).json({
-                    msg: "shippment value is required"
-                })
+                shipmentValue = 0
+
             }
             if (userRolle == "user") {
                 var shipPrice = smsa.codprice;
@@ -267,7 +260,7 @@ exports.anwanCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        const shipmentValue = req.body.shipmentValue; // new number must
+        let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const anwan = await Anwan.findOne();
         const user = await User.findById(userId);
@@ -280,9 +273,8 @@ exports.anwanCheck = async (req, res, next) => {
         /*********************************************** */
         if (cod) {
             if (!shipmentValue) {
-                return res.status(400).json({
-                    msg: "shippment value is required"
-                })
+                shipmentValue = 0
+
             }
             if (userRolle == "user") {
                 var shipPrice = anwan.codprice;
