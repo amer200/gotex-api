@@ -41,6 +41,7 @@ exports.createUserOrder = async (req, res) => {
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight } = req.body
+    console.log(req.body)
     if (cod) {
         var BookingMode = "COD"
         var codValue = res.locals.codAmount;;
