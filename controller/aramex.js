@@ -358,7 +358,8 @@ exports.createOrder = async (req, res) => {
                                 data: response.data,
                                 paytype: "cc",
                                 price: totalShipPrice,
-                                marktercode: markterCode
+                                marktercode: markterCode,
+                                createdate: new Date()
                             })
                             newO.save()
                                 .then(o => {

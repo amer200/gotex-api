@@ -8,7 +8,7 @@ const gltOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     marktercode: String,
-
+    createdate: String
 })
 
 module.exports = mongoose.model("GltOrder", gltOrderSchema);

@@ -7,7 +7,9 @@ const anwanOrderSchema = mongoose.Schema({
     data: Object,
     paytype: String,
     price: Number,
-    marktercode: String
+    marktercode: String,
+    createdate: String
+
 })
 
 module.exports = mongoose.model("AnwanOrder", anwanOrderSchema);

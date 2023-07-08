@@ -134,7 +134,8 @@ exports.createUserOrder = async (req, res) => {
                     paytype: paytype,
                     data: result,
                     price: totalShipPrice,
-                    marktercode: markterCode
+                    marktercode: markterCode,
+                    createdate: new Date()
                 })
                 return newOrder.save();
             }

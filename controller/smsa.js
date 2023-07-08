@@ -128,7 +128,8 @@ exports.createUserOrder = async (req, res) => {
                     ordernumber: ordersNum + 1,
                     data: response.data,
                     paytype: paytype,
-                    marktercode: markterCode
+                    marktercode: markterCode,
+                    createdate: new Date()
                 })
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
