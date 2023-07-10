@@ -63,7 +63,7 @@ exports.createUserOrder = async (req, res) => {
         var paytype = "cod";
     } else {
         var cashondelivery = 0;
-        var paytype = "p";
+        var paytype = "cc";
     }
     if (markterCode) {
         var nameCode = `${p_name} (${markterCode})`;
