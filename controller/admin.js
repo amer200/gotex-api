@@ -1,7 +1,11 @@
 const User = require("../model/user");
 const jwt = require("jsonwebtoken");
-const { use } = require("../routes/user");
-
+const SmsaOrders = require("../model/smsaorders");
+const AnwanOrders = require("../model/anwanorders");
+const AramexOrders = require("../model/aramexorders");
+const GltOrder = require("../model/gltorders");
+const SaeeOrders = require("../model/saeeorders");
+const user = require("../model/user");
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -104,4 +108,16 @@ exports.unProofCrForUser = (req, res) => {
                 error: "err"
             })
         })
+}
+exports.getUserOrders = async (req, res) => {
+    const uId = req.params.uId;
+    const smsaorders = await SmsaOrders.find({ user: uId }).populate("user");
+    const saeeorders = await SaeeOrders.find({ user: uId }).populate("user");
+    const aramexOrder = await AramexOrders.find({ user: uId }).populate("user");
+    const gltorders = await GltOrder.find({ user: uId }).populate("user");
+    const anwanorders = await AnwanOrders.find({ user: uId }).populate("user");
+    let data = [...smsaorders, ...saeeorders, ...aramexOrder, ...gltorders, ...anwanorders];
+    res.status(200).json({
+        data: data
+    })
 }
