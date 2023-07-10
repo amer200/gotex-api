@@ -111,13 +111,16 @@ exports.unProofCrForUser = (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const uId = req.params.uId;
-    const smsaorders = await SmsaOrders.find({ user: uId }).populate("user");
-    const saeeorders = await SaeeOrders.find({ user: uId }).populate("user");
-    const aramexOrder = await AramexOrders.find({ user: uId }).populate("user");
-    const gltorders = await GltOrder.find({ user: uId }).populate("user");
-    const anwanorders = await AnwanOrders.find({ user: uId }).populate("user");
-    let data = [...smsaorders, ...saeeorders, ...aramexOrder, ...gltorders, ...anwanorders];
+    const smsaorders = await SmsaOrders.find({ user: uId });
+    const saeeorders = await SaeeOrders.find({ user: uId });
+    const aramexOrder = await AramexOrders.find({ user: uId });
+    const gltorders = await GltOrder.find({ user: uId });
+    const anwanorders = await AnwanOrders.find({ user: uId });
     res.status(200).json({
-        data: data
+        smsa: smsaorders,
+        saee: saeeorders,
+        aramex: aramexOrder,
+        glt: gltorders,
+        anwan: anwanorders
     })
 }
