@@ -59,6 +59,7 @@ exports.createUserOrder = async (req, res) => {
     const c_city = req.body.c_city;
     const c_mobile = req.body.c_mobile;
     const markterCode = req.body.markterCode;
+    console.log(req.body)
     /**************************** */
     const cod = req.body.cod;
     if (cod) {
