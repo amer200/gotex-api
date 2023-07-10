@@ -111,16 +111,23 @@ exports.unProofCrForUser = (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const uId = req.params.uId;
+    const comapny = req.params.co;
     const smsaorders = await SmsaOrders.find({ user: uId });
     const saeeorders = await SaeeOrders.find({ user: uId });
     const aramexOrder = await AramexOrders.find({ user: uId });
     const gltorders = await GltOrder.find({ user: uId });
     const anwanorders = await AnwanOrders.find({ user: uId });
-    res.status(200).json({
+    const orders = {
         smsa: smsaorders,
         saee: saeeorders,
         aramex: aramexOrder,
         glt: gltorders,
         anwan: anwanorders
+    }
+    const data = (co) => {
+        return orders.co
+    }
+    res.status(200).json({
+        data: data(comapny)
     })
 }
