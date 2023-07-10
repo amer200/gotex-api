@@ -128,27 +128,27 @@ exports.getUserOrders = async (req, res) => {
         glt: gltorders,
         anwan: anwanorders
     }
-    if (comapny == smsa) {
+    if (comapny == "smsa") {
         res.status(200).json({
             data: orders.smsa
         })
     }
-    if (comapny == saee) {
+    if (comapny == "saee") {
         res.status(200).json({
             data: orders.saee
         })
     }
-    if (comapny == aramex) {
+    if (comapny == "aramex") {
         res.status(200).json({
             data: orders.aramex
         })
     }
-    if (comapny == glt) {
+    if (comapny == "glt") {
         res.status(200).json({
             data: orders.glt
         })
     }
-    if (comapny == anwan) {
+    if (comapny == "anwan") {
         res.status(200).json({
             data: orders.anwan
         })
