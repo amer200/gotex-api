@@ -6,6 +6,10 @@ const AramexOrders = require("../model/aramexorders");
 const GltOrder = require("../model/gltorders");
 const SaeeOrders = require("../model/saeeorders");
 const user = require("../model/user");
+const smsa = require("../model/smsa");
+const aramex = require("../model/aramex");
+const glt = require("../model/glt");
+const anwan = require("../model/anwan");
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -124,11 +128,29 @@ exports.getUserOrders = async (req, res) => {
         glt: gltorders,
         anwan: anwanorders
     }
-    const data = () => {
-        return orders.comapny
+    if (comapny == smsa) {
+        res.status(200).json({
+            data: orders.smsa
+        })
     }
-    console.log(data());
-    res.status(200).json({
-        data: data()
-    })
+    if (comapny == saee) {
+        res.status(200).json({
+            data: orders.saee
+        })
+    }
+    if (comapny == aramex) {
+        res.status(200).json({
+            data: orders.aramex
+        })
+    }
+    if (comapny == glt) {
+        res.status(200).json({
+            data: orders.glt
+        })
+    }
+    if (comapny == anwan) {
+        res.status(200).json({
+            data: orders.anwan
+        })
+    }
 }
