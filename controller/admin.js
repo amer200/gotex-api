@@ -124,10 +124,11 @@ exports.getUserOrders = async (req, res) => {
         glt: gltorders,
         anwan: anwanorders
     }
-    const data = (co) => {
-        return orders.co
+    const data = () => {
+        return orders.comapny
     }
+    console.log(data());
     res.status(200).json({
-        data: data(comapny)
+        data: data()
     })
 }
