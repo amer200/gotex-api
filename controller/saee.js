@@ -63,32 +63,13 @@ exports.createUserOrder = async (req, res) => {
     } else {
         var nameCode = p_name;
     }
-    // const data = {
-    //     secret: process.env.SAEE_KEY_P,
-    //     name: nameCode,
-    //     city: p_city,
-    //     mobile: p_mobile,
-    //     streetaddress: p_streetaddress,
-    //     cashondelivery: cashondelivery,
-    //     weight: weight,
-    //     quantity: quantity,
-    //     c_name: c_name,
-    //     c_city: c_city,
-    //     c_streetaddress: c_streetaddress,
-    //     c_mobile: c_mobile,
-    //     ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
-    //     sendername: p_name,
-    //     senderphone: p_mobile,
-    //     senderaddress: p_streetaddress,
-    //     sendercity: p_city,
-    //     sendercountry: "SA"
-    // }
     const data = {
         secret: process.env.SAEE_KEY_P,
-        name: c_name,
-        city: c_city,
-        mobile: c_mobile,
-        streetaddress: c_streetaddress,
+        cashonpickup: 0,
+        p_name: p_name,
+        p_city: p_city,
+        p_mobile: p_mobile,
+        p_streetaddress: p_streetaddress,
         cashondelivery: cashondelivery,
         weight: weight,
         quantity: quantity,
@@ -101,13 +82,13 @@ exports.createUserOrder = async (req, res) => {
         senderphone: p_mobile,
         senderaddress: p_streetaddress,
         sendercity: p_city,
-        sendercountry: "SA"
+        // sendercountry: "SA"
     }
-    console.log(data)
+    // console.log(data)
     axios({
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        url: 'https://corporate.saeex.com/deliveryrequest/new',
+        headers: { 'Content-Type': 'application/json;charset=utf-8' },
+        url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
         data: data
     })
         .then(response => {
