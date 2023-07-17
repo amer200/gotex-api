@@ -113,44 +113,22 @@ exports.unProofCrForUser = (req, res) => {
             })
         })
 }
-exports.getUserOrders = async (req, res) => {
-    const uId = req.params.uId;
-    const comapny = req.params.co;
-    const smsaorders = await SmsaOrders.find({ user: uId });
-    const saeeorders = await SaeeOrders.find({ user: uId });
-    const aramexOrder = await AramexOrders.find({ user: uId });
-    const gltorders = await GltOrder.find({ user: uId });
-    const anwanorders = await AnwanOrders.find({ user: uId });
-    const orders = {
-        smsa: smsaorders,
-        saee: saeeorders,
-        aramex: aramexOrder,
-        glt: gltorders,
-        anwan: anwanorders
-    }
-    if (comapny == "smsa") {
+exports.getAllOrders = async (req, res) => {
+    try {
+        const saeeorders = await SaeeOrder.find().populate("user");
+        const gltorders = await GltOrder.find().populate("user");
+        const aramexorders = await AramexOrder.find().populate("user");
+        const smsaorders = await SmsaOrder.find().populate("user");
+        const anwanorders = await AnwanOrder.find().populate("user");
+        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders];
         res.status(200).json({
-            data: orders.smsa
+            data: orders
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            msg: err
         })
     }
-    if (comapny == "saee") {
-        res.status(200).json({
-            data: orders.saee
-        })
-    }
-    if (comapny == "aramex") {
-        res.status(200).json({
-            data: orders.aramex
-        })
-    }
-    if (comapny == "glt") {
-        res.status(200).json({
-            data: orders.glt
-        })
-    }
-    if (comapny == "anwan") {
-        res.status(200).json({
-            data: orders.anwan
-        })
-    }
+
 }

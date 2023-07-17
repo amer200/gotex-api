@@ -1,9 +1,41 @@
-const { exist } = require("joi");
 const Invitation = require("../model/invitation");
+const nodemailer = require("nodemailer");
 const User = require("../model/user");
+const ejs = require("ejs");
 const bcrypt = require('bcrypt');
 const salt = 10;
-
+const sendEmail = async (email, invCode, co, temp) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: "smtp.hostinger.com",
+            port: 465,
+            secure: true,
+            auth: {
+                user: process.env.EMAIL,
+                pass: process.env.EMAILPASSWORD,
+            },
+        });
+        ejs.renderFile(__dirname + temp, { invCode: invCode, co: co }, async function (err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                transporter.sendMail({
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: "سجل معنا في منصة جوتكس الوجستية",
+                    html: data,
+                }, (error, result) => {
+                    if (error) return console.error(error);
+                    return console.log(result);
+                });
+                console.log("email sent sucessfully");
+            }
+        })
+    } catch (error) {
+        console.log("email not sent");
+        console.log(error);
+    }
+};
 exports.create = (req, res) => {
     const mId = req.user.user.id;
     const companies = req.body.companies;
@@ -22,6 +54,7 @@ exports.create = (req, res) => {
                     msg: "error with code try again (resend the request)"
                 })
             } else {
+                sendEmail(clintemail, invitation.code, invitation.companies, "/invitation_mail.ejs")
                 invitation.save()
                     .then(i => {
                         res.status(200).json({
@@ -47,7 +80,6 @@ exports.createInivtedUser = async (req, res) => {
                 cr.push(f.path)
             });
         }
-        // console.log(req)
         const isEmailUsed = await User.findOne({ email: email });
         if (isEmailUsed) {
             return res.status(400).json({

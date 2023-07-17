@@ -263,7 +263,7 @@ exports.anwanCheck = async (req, res, next) => {
         let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const anwan = await Anwan.findOne();
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate("inv");
         /*********************************************** */
         if (weight <= 15) {
             var weightPrice = 0;
@@ -274,10 +274,14 @@ exports.anwanCheck = async (req, res, next) => {
         if (cod) {
             if (!shipmentValue) {
                 shipmentValue = 0
-
             }
             if (userRolle == "user") {
-                var shipPrice = anwan.codprice;
+                if (user.inv) {
+                    var codPrice = user.inv.companies[4].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = anwan.codprice;
+                }
             } else {
                 if (cod > anwan.maxcodmarkteer) {
                     return res.status(400).json({
@@ -297,7 +301,12 @@ exports.anwanCheck = async (req, res, next) => {
             next()
         } else {
             if (userRolle == "user") {
-                var shipPrice = anwan.userprice;
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[4].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = anwan.userprice;
+                }
             } else {
                 var shipPrice = anwan.marketerprice;
             }
