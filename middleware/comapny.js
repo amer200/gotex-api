@@ -27,7 +27,12 @@ exports.gltCheck = async (req, res, next) => {
                 shipmentValue = 0
             }
             if (userRolle == "user") {
-                var shipPrice = glt.codprice;
+                if (user.inv) {
+                    var codPrice = user.inv.companies[1].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = glt.codprice;
+                }
             } else {
                 if (cod > glt.maxcodmarkteer) {
                     return res.status(400).json({
@@ -47,7 +52,12 @@ exports.gltCheck = async (req, res, next) => {
             next()
         } else {
             if (userRolle == "user") {
-                var shipPrice = glt.userprice;
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[1].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = glt.userprice;
+                }
             } else {
                 var shipPrice = glt.marketerprice;
             }
@@ -89,7 +99,12 @@ exports.saeeCheck = async (req, res, next) => {
                 shipmentValue = 0
             }
             if (userRolle == "user") {
-                var shipPrice = saee.codprice;
+                if (user.inv) {
+                    var codPrice = user.inv.companies[0].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = saee.codprice;
+                }
             } else {
                 if (cod > saee.maxcodmarkteer) {
                     return res.status(400).json({
@@ -109,7 +124,12 @@ exports.saeeCheck = async (req, res, next) => {
             next()
         } else {
             if (userRolle == "user") {
-                var shipPrice = saee.userprice;
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[0].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = saee.userprice;
+                }
             } else {
                 var shipPrice = saee.marketerprice;
             }
@@ -151,7 +171,12 @@ exports.aramexCheck = async (req, res, next) => {
                 shipmentValue = 0
             }
             if (userRolle == "user") {
-                var shipPrice = aramex.codprice;
+                if (user.inv) {
+                    var codPrice = user.inv.companies[3].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = aramex.codprice;
+                }
             } else {
                 if (cod > aramex.maxcodmarkteer) {
                     return res.status(400).json({
@@ -171,7 +196,12 @@ exports.aramexCheck = async (req, res, next) => {
             next()
         } else {
             if (userRolle == "user") {
-                var shipPrice = aramex.userprice;
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[3].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = aramex.userprice;
+                }
             } else {
                 var shipPrice = aramex.marketerprice;
             }
@@ -211,10 +241,14 @@ exports.smsaCheck = async (req, res, next) => {
         if (cod) {
             if (!shipmentValue) {
                 shipmentValue = 0
-
             }
             if (userRolle == "user") {
-                var shipPrice = smsa.codprice;
+                if (user.inv) {
+                    var codPrice = user.inv.companies[2].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = smsa.codprice;
+                }
             } else {
                 if (cod > smsa.maxcodmarkteer) {
                     return res.status(400).json({
@@ -234,7 +268,12 @@ exports.smsaCheck = async (req, res, next) => {
             next()
         } else {
             if (userRolle == "user") {
-                var shipPrice = smsa.userprice;
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[2].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = smsa.userprice;
+                }
             } else {
                 var shipPrice = smsa.marketerprice;
             }
