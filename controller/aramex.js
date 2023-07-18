@@ -112,6 +112,7 @@ exports.createOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const weight = req.body.weight;
     const pieces = req.body.pieces;
+    const desc = req.body.description;
     const cod = req.body.cod;
     if (cod) {
         var codAmount = res.locals.codAmount;
@@ -136,7 +137,7 @@ exports.createOrder = async (req, res) => {
                 "Reference2": null,
                 "Reference3": null,
                 "Shipper": {
-                    "Reference1": "Shipper Reference -gotex",
+                    "Reference1": "www.go-tex.net",
                     "Reference2": null,
                     "AccountNumber": process.env.AR_ACCOUNT,
                     "AccountEntity": "JED",
@@ -260,7 +261,7 @@ exports.createOrder = async (req, res) => {
                         "Unit": "KG",
                         "Value": weight
                     },
-                    "DescriptionOfGoods": "Items",
+                    "DescriptionOfGoods": desc,
                     "GoodsOriginCountry": "SA",
                     "NumberOfPieces": pieces,
                     "ProductGroup": "DOM",
@@ -339,7 +340,9 @@ exports.createOrder = async (req, res) => {
                         ordernumber: ordersNum + 2,
                         data: response.data,
                         paytype: "cod",
-                        price: totalShipPrice
+                        price: totalShipPrice,
+                        marktercode: markterCode,
+                        createdate: new Date()
                     })
                     newO.save()
                         .then(o => {

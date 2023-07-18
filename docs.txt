@@ -388,7 +388,8 @@ body{
     "p_city": "الرياض",
     "p_CellPhone": "546545612",
     "p_postCode": "8151",
-    "weight": 5
+    "weight": 5,
+    "description": ""
 }
 /*********************
 2)edit info (must be admin)
