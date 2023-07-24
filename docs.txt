@@ -86,6 +86,30 @@ body{
   "password": "",
   "code": ""
 }
+/*******************
+9) add new clint (for marketer)
+url = https://dashboard.go-tex.net/api/user/add-new-clint
+method = post
+body{
+    name: name,
+    email: email,
+    mobile: mobile,
+    city: city,
+    address: address
+}
+/***********************
+10) add-clint-deposit (for marketer)
+url = https://dashboard.go-tex.net/api/user/add-clint-deposit
+method = post
+body{
+    deposit: Number,
+    clintid: "",
+    recipt: file
+}
+/*********************
+11) all-markter-clint (for marketer)
+url = https://dashboard.go-tex.net/api/user/all-markter-clint
+method = get
 /*********************************admin*************************/
 1) login
 url = https://dashboard.go-tex.net/api/admin/login

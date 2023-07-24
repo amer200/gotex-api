@@ -3,7 +3,7 @@ const User = require("../model/user");
 const Anwan = require("../model/anwan");
 const AnwanOrder = require("../model/anwanorders");
 const anwanorders = require("../model/anwanorders");
-
+const Clint = require("../model/clint");
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -40,7 +40,7 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
-    let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight } = req.body
+    let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight, clintid } = req.body
     if (cod) {
         var BookingMode = "COD"
         var codValue = res.locals.codAmount;;
@@ -105,9 +105,20 @@ exports.createUserOrder = async (req, res) => {
                     createdate: new Date()
                 })
                 newOrder.save()
-                    .then(o => {
+                    .then(async (o) => {
+                        if (clintid) {
+                            const clint = await Clint.findById(clintid);
+                            const co = {
+                                company: "anwan",
+                                id: o._id
+                            }
+                            clint.wallet = clint.wallet - totalShipPrice;
+                            clint.orders.push(co);
+                            await clint.save();
+                        }
                         if (!cod) {
                             user.wallet = user.wallet - totalShipPrice;
+
                             user.save()
                                 .then(u => {
                                     res.status(200).json({

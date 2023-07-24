@@ -75,6 +75,25 @@ exports.isAuth = (req, res, next) => {
         console.log(`user erro : ${err}`)
     }
 }
+exports.isMarkter = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
+        if (err) {
+            return res.status(400).json({
+                msg: err
+            })
+        }
+        if (user.data.user.rolle == 'marketer') {
+            req.user = user.data
+            next();
+        } else {
+            res.status(304).json({
+                msg: "not allowed"
+            })
+        }
+    })
+}
 exports.isVerfied = (req, res, next) => {
     const userId = req.user.user.id;
     User.findById(userId)

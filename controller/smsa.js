@@ -3,6 +3,7 @@ const SmsaOrder = require("../model/smsaorders");
 const axios = require('axios');
 const base64 = require('base64topdf');
 const User = require("../model/user");
+const Clint = require("../model/clint");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -58,6 +59,7 @@ exports.createUserOrder = async (req, res) => {
     const value = req.body.Value;
     const cod = req.body.cod;
     const markterCode = req.body.markterCode;
+    const clintid = req.body.clintid;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -133,7 +135,17 @@ exports.createUserOrder = async (req, res) => {
                 })
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
-                    .then(o => {
+                    .then(async o => {
+                        if (clintid) {
+                            const clint = await Clint.findById(clintid);
+                            const co = {
+                                company: "saee",
+                                id: o._id
+                            }
+                            clint.wallet = clint.wallet - totalShipPrice;
+                            clint.orders.push(co);
+                            await clint.save();
+                        }
                         if (!cod) {
                             user.wallet = user.wallet - totalShipPrice;
                             user.save()

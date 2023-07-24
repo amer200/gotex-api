@@ -3,6 +3,8 @@ const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
 const User = require("../model/user");
 const axios = require("axios");
+const Clint = require("../model/clint");
+
 // exports.createOrder = async (req, res) => {
 //     try {
 //         clientInfo = new aramex.ClientInfo({
@@ -114,6 +116,7 @@ exports.createOrder = async (req, res) => {
     const pieces = req.body.pieces;
     const desc = req.body.description;
     const cod = req.body.cod;
+    const clintid = req.body.clintid;
     if (cod) {
         var codAmount = res.locals.codAmount;
         var PaymentType = "p";
@@ -345,7 +348,17 @@ exports.createOrder = async (req, res) => {
                         createdate: new Date()
                     })
                     newO.save()
-                        .then(o => {
+                        .then(async o => {
+                            if (clintid) {
+                                const clint = await Clint.findById(clintid);
+                                const co = {
+                                    company: "aramex",
+                                    id: o._id
+                                }
+                                clint.wallet = clint.wallet - totalShipPrice;
+                                clint.orders.push(co);
+                                await clint.save();
+                            }
                             res.status(200).json({
                                 data: response.data
                             })
@@ -365,7 +378,17 @@ exports.createOrder = async (req, res) => {
                                 createdate: new Date()
                             })
                             newO.save()
-                                .then(o => {
+                                .then(async o => {
+                                    if (clintid) {
+                                        const clint = await Clint.findById(clintid);
+                                        const co = {
+                                            company: "aramex",
+                                            id: o._id
+                                        }
+                                        clint.wallet = clint.wallet - totalShipPrice;
+                                        clint.orders.push(co);
+                                        await clint.save();
+                                    }
                                     res.status(200).json({
                                         data: response.data
                                     })

@@ -6,6 +6,8 @@ const User = require("../model/user");
 const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
+const Clint = require("../model/clint");
+
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -59,7 +61,7 @@ exports.createUserOrder = async (req, res) => {
     const c_city = req.body.c_city;
     const c_mobile = req.body.c_mobile;
     const markterCode = req.body.markterCode;
-    console.log(req.body)
+    const clintid = req.body.clintid;
     /**************************** */
     const cod = req.body.cod;
     if (cod) {
@@ -141,7 +143,17 @@ exports.createUserOrder = async (req, res) => {
                 return newOrder.save();
             }
         })
-        .then(o => {
+        .then(async o => {
+            if (clintid) {
+                const clint = await Clint.findById(clintid);
+                const co = {
+                    company: "glt",
+                    id: o._id
+                }
+                clint.wallet = clint.wallet - totalShipPrice;
+                clint.orders.push(co);
+                await clint.save();
+            }
             if (!cod) {
                 user.wallet = user.wallet - totalShipPrice;
                 user.save()
