@@ -2,7 +2,8 @@ const axios = require("axios");
 const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
-const { response } = require("express");
+const Clint = require("../model/clint");
+
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -51,6 +52,7 @@ exports.createUserOrder = async (req, res) => {
     const cod = req.body.cod;
     const markterCode = req.body.markterCode;
     const totalShipPrice = res.locals.totalShipPrice;
+    const clintid = req.body.clintid;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -111,7 +113,17 @@ exports.createUserOrder = async (req, res) => {
                             createdate: new Date()
                         })
                         order.save()
-                            .then(o => {
+                            .then(async o => {
+                                if (clintid) {
+                                    const clint = await Clint.findById(clintid);
+                                    const co = {
+                                        company: "saee",
+                                        id: o._id
+                                    }
+                                    clint.wallet = clint.wallet - totalShipPrice;
+                                    clint.orders.push(co);
+                                    await clint.save();
+                                }
                                 res.status(200).json({
                                     msg: "order created",
                                     data: o
