@@ -64,7 +64,9 @@ const aramexRoutes = require("./routes/aramex");
 const smsaRoutes = require("./routes/smsa");
 const gltRoutes = require("./routes/glt");
 const anwanRoutes = require("./routes/anwan");
+const splRoutes = require("./routes/spl");
 const invRoutes = require("./routes/invatation");
+const spl = require('./model/spl');
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -73,6 +75,7 @@ app.use("/aramex", aramexRoutes);
 app.use("/glt", gltRoutes);
 app.use("/smsa", smsaRoutes);
 app.use("/anwan", anwanRoutes);
+app.use("/spl", splRoutes);
 app.use("/invatation", invRoutes);
 
 /********************************************************************************* */
