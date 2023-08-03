@@ -80,10 +80,10 @@ exports.creteNewOrder = async (req, res) => {
                     'ShortAddress': deliveryShortAddress
                 },
                 'PiecesCount': PiecesCount,
-                "ItemPieces":{
+                "ItemPieces": [{
                     "PieceWeight": 10,
                     "PieceDescription": "p book"
-                }
+                }]
             }
         ]
     })
