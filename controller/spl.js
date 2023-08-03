@@ -71,13 +71,15 @@ exports.creteNewOrder = async (req, res) => {
                     'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': pickUpDistrictID,
-                    'AddressLine1': pickUpShortAddress
+                    'AddressLine1': pickUpShortAddress,
+                    "AddressLine1": "address 2 s"
                 },
                 'ReceiverAddressDetail': {
                     'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': deliveryDistrictID,
-                    'AddressLine1': deliveryShortAddress
+                    'AddressLine1': deliveryShortAddress,
+                    "AddressLine1": "address 2 r"
                 },
                 'PiecesCount': PiecesCount,
                 "ItemPieces": [{
