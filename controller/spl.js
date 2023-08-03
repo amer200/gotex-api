@@ -102,3 +102,57 @@ exports.creteNewOrder = async (req, res) => {
             console.log(err)
         })
 }
+exports.getCountries = (req, res) => {
+    var config = {
+        method: 'get',
+        url: 'https://gateway-minasapre.sp.com.sa/api/Location/GetCountries',
+        headers: {
+            'Authorization': process.env.spl_token
+        }
+    }
+    axios(config)
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+exports.getCities = (req, res) => {
+    var config = {
+        method: 'get',
+        url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetCitiesByRegion',
+        headers: {
+            'Authorization': process.env.spl_token
+        }
+    }
+    axios(config)
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+exports.getDistrict = (req, res) => {
+    var config = {
+        method: 'get',
+        url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetDistricts',
+        headers: {
+            'Authorization': process.env.spl_token
+        }
+    }
+    axios(config)
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
