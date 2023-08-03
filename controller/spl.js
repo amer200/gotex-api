@@ -36,16 +36,16 @@ exports.creteNewOrder = async (req, res) => {
     const ContentPrice = req.body.ContentPrice;
     const ContentDescription = req.body.ContentDescription;
     const Weight = req.body.Weight;
-    const pickUpCityId = req.body.pickUpCityId;
     const pickUpDistrictID = req.body.pickUpDistrictID;
-    const pickUpShortAddress = req.body.pickUpShortAddress;
-    const deliveryCityId = req.body.deliveryCityId;
+    const pickUpAddress1 = req.body.pickUpAddress1;
+    const pickUpAddress2 = req.body.pickUpAddress2;
     const deliveryDistrictID = req.body.deliveryDistrictID;
-    const deliveryShortAddress = req.body.deliveryShortAddress;
-    const PiecesCount = req.body.PiecesCount;
+    const deliveryAddress1 = req.body.deliveryAddress1;
+    const deliveryAddress2 = req.body.deliveryAddress2;
+    const Pieces = req.body.Pieces;
     if (cod) {
         var PaymentType = 2;
-        var TotalAmount = 25;
+        var TotalAmount = 30;
     } else {
         var PaymentType = 1;
         var TotalAmount = null;
@@ -61,31 +61,28 @@ exports.creteNewOrder = async (req, res) => {
         'SenderMobileNumber': SenderMobileNumber,
         'Items': [
             {
-                'ReferenceId': "ddsjnjhdasdas",
+                'ReferenceId': `${Date.now()} + Gotex`,
                 'PaymentType': PaymentType,
                 'ContentPrice': ContentPrice,
                 'ContentDescription': ContentDescription,
-                'Weight': Weight + 10,
+                'Weight': Weight,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': pickUpDistrictID,
-                    'AddressLine1': pickUpShortAddress,
-                    "AddressLine2": "address 2 s"
+                    'AddressLine1': pickUpAddress1,
+                    "AddressLine2": pickUpAddress2
                 },
                 'ReceiverAddressDetail': {
                     'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': deliveryDistrictID,
-                    'AddressLine1': deliveryShortAddress,
-                    "AddressLine2": "address 2 r"
+                    'AddressLine1': deliveryAddress1,
+                    "AddressLine2": deliveryAddress2
                 },
-                'PiecesCount': PiecesCount,
-                "ItemPieces": [{
-                    "PieceWeight": 10,
-                    "PieceDescription": "p book"
-                }]
+                'PiecesCount': Pieces.length + 1,
+                "ItemPieces": Pieces
             }
         ]
     })
