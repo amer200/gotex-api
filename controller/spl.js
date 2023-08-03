@@ -107,7 +107,7 @@ exports.getCountries = (req, res) => {
         'CountryID': 1
     })
     var config = {
-        method: 'get',
+        method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/Location/GetCountries',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
