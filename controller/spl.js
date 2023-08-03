@@ -65,8 +65,7 @@ exports.creteNewOrder = async (req, res) => {
                 'PaymentType': PaymentType,
                 'ContentPrice': ContentPrice,
                 'ContentDescription': ContentDescription,
-                'Weight': Weight,
-                'PieceWeight': +Weight,
+                'Weight': Weight + 10,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
@@ -81,7 +80,10 @@ exports.creteNewOrder = async (req, res) => {
                     'ShortAddress': deliveryShortAddress
                 },
                 'PiecesCount': PiecesCount,
-                "ItemPieces": PiecesCount - 1
+                "ItemPieces":{
+                    "PieceWeight": 10,
+                    "PieceDescription": "p book"
+                }
             }
         ]
     })
