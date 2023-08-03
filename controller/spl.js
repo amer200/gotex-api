@@ -69,13 +69,13 @@ exports.creteNewOrder = async (req, res) => {
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 10,
-                    'LocationId': pickUpCityId,
+                    'LocationId': 21,
                     'DistrictID': pickUpDistrictID,
                     'ShortAddress': pickUpShortAddress
                 },
                 'ReceiverAddressDetail': {
                     'AddressTypeID': 10,
-                    'LocationId': deliveryCityId,
+                    'LocationId': 21,
                     'DistrictID': deliveryDistrictID,
                     'ShortAddress': deliveryShortAddress
                 },
@@ -127,12 +127,16 @@ exports.getCountries = (req, res) => {
         })
 }
 exports.getCities = (req, res) => {
+    var data = qs.stringify({
+        'language': "A"
+    })
     var config = {
-        method: 'get',
+        method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetCitiesByRegion',
         headers: {
             'Authorization': process.env.spl_token
-        }
+        },
+        data: data
     }
     axios(config)
         .then(response => {
@@ -145,12 +149,17 @@ exports.getCities = (req, res) => {
         })
 }
 exports.getDistrict = (req, res) => {
+    var data = qs.stringify({
+        'language': "A",
+        "RegionId": req.body.rId
+    })
     var config = {
-        method: 'get',
+        method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetDistricts',
         headers: {
             'Authorization': process.env.spl_token
-        }
+        },
+        data: data
     }
     axios(config)
         .then(response => {
