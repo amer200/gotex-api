@@ -68,13 +68,13 @@ exports.creteNewOrder = async (req, res) => {
                 'Weight': Weight,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
-                    'AddressTypeID': 10,
+                    'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': pickUpDistrictID,
                     'ShortAddress': pickUpShortAddress
                 },
                 'ReceiverAddressDetail': {
-                    'AddressTypeID': 10,
+                    'AddressTypeID': 6,
                     'LocationId': 21,
                     'DistrictID': deliveryDistrictID,
                     'ShortAddress': deliveryShortAddress
