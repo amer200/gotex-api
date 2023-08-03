@@ -79,7 +79,8 @@ exports.creteNewOrder = async (req, res) => {
                     'DistrictID': deliveryDistrictID,
                     'ShortAddress': deliveryShortAddress
                 },
-                'PiecesCount': PiecesCount
+                'PiecesCount': PiecesCount,
+                "ItemPieces": PiecesCount -1
             }
         ]
     })
