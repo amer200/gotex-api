@@ -92,4 +92,13 @@ exports.creteNewOrder = async (req, res) => {
         },
         data: data
     };
+    axios(config)
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
 }
