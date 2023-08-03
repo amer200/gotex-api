@@ -104,7 +104,7 @@ exports.creteNewOrder = async (req, res) => {
 }
 exports.getCountries = (req, res) => {
     var data = qs.stringify({
-        'CountryID': 1
+        'CountryID': req.body.id
     })
     var config = {
         method: 'post',
@@ -117,6 +117,7 @@ exports.getCountries = (req, res) => {
     }
     axios(config)
         .then(response => {
+            console.log(response)
             res.status(200).json({
                 data: response.data
             })
