@@ -103,12 +103,17 @@ exports.creteNewOrder = async (req, res) => {
         })
 }
 exports.getCountries = (req, res) => {
+    var data = qs.stringify({
+        'CountryID': 1
+    })
     var config = {
         method: 'get',
         url: 'https://gateway-minasapre.sp.com.sa/api/Location/GetCountries',
         headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
             'Authorization': process.env.spl_token
-        }
+        },
+        data: data
     }
     axios(config)
         .then(response => {
