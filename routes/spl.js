@@ -7,6 +7,6 @@ const saeeMiddleware = require("../middleware/comapny");
 routes.get("/token", splControllers.getToken);
 routes.post("/crete-new-order", splControllers.creteNewOrder);
 routes.post("/get-countries", splControllers.getCountries);
-routes.get("/get-districts", splControllers.getDistrict);
-
+routes.post("/get-districts", splControllers.getDistrict);
+routes.get("/get-cities", splControllers.getCities);
 module.exports = routes;
