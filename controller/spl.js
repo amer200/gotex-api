@@ -3,11 +3,11 @@ const axios = require("axios");
 const qs = require("qs");
 exports.getToken = (req, res) => {
     const grant_type = "password";
-    const UserName = "ExtrCarriyo";
+    const UserName = "extrAccount";
     const Password = process.env.spl_password;
     var data = qs.stringify({
         'grant_type': 'password',
-        'UserName': 'ExtrCarriyo',
+        'UserName': UserName,
         'Password': process.env.spl_password
     });
     var config = {
