@@ -7,8 +7,8 @@ exports.getToken = (req, res) => {
     const Password = process.env.spl_password;
     var data = qs.stringify({
         'grant_type': 'password',
-        'UserName': "extrAccount",
-        'Password': "P@ssw0rd#"
+        'UserName': UserName,
+        'Password': process.env.spl_password
     });
     var config = {
         method: 'post',
