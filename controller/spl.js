@@ -68,7 +68,8 @@ exports.creteNewOrder = async (req, res) => {
         };
 
         const t_res = await axios(t_config);
-        console.log(t_res);
+        const j_t_res = await t_res.json();
+        console.log(j_t_res);
     }
     /////////////////////////////////////////////////
     /* const data = qs.stringify({
