@@ -2,7 +2,7 @@ const Spl = require("../model/spl");
 const axios = require("axios");
 const qs = require("qs");
 const spl = require("../model/spl");
-const { response } = require("express");
+var CronJob = require('cron').CronJob;
 exports.getToken = (req, res) => {
     const grant_type = "password";
     const UserName = "extrAccount";
@@ -53,34 +53,6 @@ exports.creteNewOrder = async (req, res) => {
         var PaymentType = 1;
         var TotalAmount = null;
     }
-    if (spl.token == "false") {
-        const grant_type = "password";
-        const UserName = "extrAccount";
-        const Password = process.env.spl_password;
-        const data = qs.stringify({
-            'grant_type': 'password',
-            'UserName': UserName,
-            'Password': Password
-        });
-        const config = {
-            method: 'post',
-            url: 'https://gateway-minasapre.sp.com.sa/token',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: data
-        };
-
-        axios(config)
-            .then(response => {
-                spl.token = response.data.access_token;
-                return spl.save();
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-    /////////////////////////////////////////////////
     const data = qs.stringify({
         'CRMAccountId': 31314344634,
         'BranchId': 0,
@@ -126,21 +98,17 @@ exports.creteNewOrder = async (req, res) => {
         },
         data: data
     };
-    const s_response = await axios(config);
-    console.log(s_response.json().data)
-    // .then(response => {
-    //     res.status(200).json({
-    //         data: response.data
-    //     })
-    // })
-    // .catch(err => {
-    //     if(err.status == 401){
-
-    //     }
-    //     res.status(500).json({
-    //         err: err
-    //     })
-    // })
+    axios(config)
+        .then(response => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: err
+            })
+        })
 
 }
 exports.getCountries = (req, res) => {
@@ -213,10 +181,41 @@ exports.getDistrict = (req, res) => {
         })
 }
 /********************************** */
-const getSplToken = async () => {
+
+var job = new CronJob('00 00 00 * * *', function () {
+    /*
+     * Runs every day
+     * at 00:00:00 AM. 
+     */
+    const spl = Spl.findOne();
     const grant_type = "password";
     const UserName = "extrAccount";
     const Password = process.env.spl_password;
-    const spl = await Spl.findOne();
+    var data = qs.stringify({
+        'grant_type': 'password',
+        'UserName': UserName,
+        'Password': Password
+    });
+    var config = {
+        method: 'post',
+        url: 'https://gateway-minasapre.sp.com.sa/token',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: data
+    };
 
-}
+    axios(config)
+        .then(response => {
+            // console.log(response.data.access_token);
+            spl.token = response.data.access_token;
+            return spl.save()
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}, function () {
+    /* This function is executed when the job stops */
+},
+    true /* Start the job right now */
+);
