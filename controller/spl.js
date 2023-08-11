@@ -132,7 +132,9 @@ exports.creteNewOrder = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err.response)
+            res.status(500).json({
+                err: err
+            })
         })
 
 }
