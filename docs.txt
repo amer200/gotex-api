@@ -674,11 +674,9 @@ body
     "ContentPrice": 12,
     "ContentDescription": "books",
     "Weight": 10.5,
-    "pickUpCityId": 21,
     "pickUpDistrictID": 4799,
     "pickUpAddress1": "short address",
     "pickUpAddress2": "short address 2",
-    "deliveryCityId": 21,
     "deliveryDistrictID": 4799,
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
@@ -691,3 +689,40 @@ body
         "PieceDescription": "ffff"
     }]
 response
+
+{
+    "reciver": {
+        "name": "عامر مصطفى عامر",
+        "mobile": "565011313",
+        "city": 4799,
+        "AddressLine1": "short address",
+        "AddressLine2": "short address 2"
+    },
+    "sender": {
+        "name": "gotex",
+        "mobile": "50706615",
+        "city": 4799,
+        "AddressLine1": "d short address",
+        "AddressLine2": "d short address 2"
+    },
+    "data": {
+        "Items": [
+            {
+                "ReferenceId": "1691776614179 + Gotex",
+                "ItemStatus": 1,
+                "Message": "Success",
+                "Barcode": "CRDSAL0600478823",
+                "ItemPiecesResponse": null
+            }
+        ],
+        "Status": 1,
+        "Message": "Success"
+    }
+}
+//////**********//////////
+2)get cities  (use city id in create order)
+url = https://dashboard.go-tex.net/api/spl/get-cities  
+method  = get 
+response {
+
+}
