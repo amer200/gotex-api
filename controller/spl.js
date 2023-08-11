@@ -127,7 +127,7 @@ exports.creteNewOrder = async (req, res) => {
         data: data
     };
     const s_response = await axios(config);
-    console.log(s_response.json())
+    console.log(s_response.json().data)
     // .then(response => {
     //     res.status(200).json({
     //         data: response.data
