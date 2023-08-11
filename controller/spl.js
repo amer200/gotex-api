@@ -53,6 +53,7 @@ exports.creteNewOrder = async (req, res) => {
     }
     console.log(spl.token)
     if (!spl.token) {
+        console.log("from if")
         var t_data = qs.stringify({
             'grant_type': 'password',
             'UserName': "extrAccount",
@@ -66,10 +67,16 @@ exports.creteNewOrder = async (req, res) => {
             },
             data: t_data
         };
-
-        const t_res = await axios(t_config);
-        const j_t_res = await t_res.json();
-        console.log(j_t_res);
+        axios(t_config)
+            .then(res => {
+                console.log(res.data);
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        // const t_res = await axios(t_config);
+        // const j_t_res = await t_res.json();
+        // console.log(j_t_res);
     }
     /////////////////////////////////////////////////
     /* const data = qs.stringify({
