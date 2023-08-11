@@ -73,6 +73,8 @@ exports.creteNewOrder = async (req, res) => {
         axios(config)
             .then(response => {
                 console.log(response.data.access_token);
+                spl.token = response.data.access_token;
+                return spl.save();
             })
             .catch(err => {
                 console.log(err)
