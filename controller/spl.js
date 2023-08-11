@@ -52,7 +52,7 @@ exports.creteNewOrder = async (req, res) => {
         var PaymentType = 1;
         var TotalAmount = null;
     }
-    if (!spl.token) {
+    if (spl.token == "false") {
         const grant_type = "password";
         const UserName = "extrAccount";
         const Password = process.env.spl_password;
