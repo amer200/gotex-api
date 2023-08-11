@@ -8,7 +8,7 @@ exports.getToken = (req, res) => {
     var data = qs.stringify({
         'grant_type': 'password',
         'UserName': UserName,
-        'Password': process.env.spl_password
+        'Password': Password
     });
     var config = {
         method: 'post',
@@ -28,6 +28,7 @@ exports.getToken = (req, res) => {
         })
 }
 exports.creteNewOrder = async (req, res) => {
+    const spl = await Spl.findeOne();
     const reciverName = req.body.reciverName;
     const reciverMobile = req.body.reciverMobile;
     const SenderName = req.body.SenderName;
@@ -91,7 +92,7 @@ exports.creteNewOrder = async (req, res) => {
         url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': process.env.spl_token
+            'Authorization': spl.token
         },
         data: data
     };
@@ -102,7 +103,7 @@ exports.creteNewOrder = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.data)
         })
 }
 exports.getCountries = (req, res) => {

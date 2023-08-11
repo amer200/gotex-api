@@ -32,6 +32,9 @@ const splSchema = mongoose.Schema({
     maxcodmarkteer: {
         type: Number,
         default: 10
+    },
+    token: {
+        type: String
     }
 })
 module.exports = mongoose.model("Spl", splSchema);
