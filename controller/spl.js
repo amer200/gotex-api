@@ -88,7 +88,32 @@ exports.creteNewOrder = async (req, res) => {
         ]
     })
     if (!spl.token) {
-        await getSplToken()
+        var t_data = qs.stringify({
+            'grant_type': 'password',
+            'UserName': UserName,
+            'Password': Password
+        });
+        var t_config = {
+            method: 'post',
+            url: 'https://gateway-minasapre.sp.com.sa/token',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: t_data
+        };
+
+        axios(t_config)
+            .then(response => {
+                console.log(response.data.token);
+                spl.token = response.data.token
+                return spl.save()
+            })
+            .then(s => {
+                return s.token;
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
     var config = {
         method: 'post',
@@ -184,30 +209,5 @@ const getSplToken = async () => {
     const UserName = "extrAccount";
     const Password = process.env.spl_password;
     const spl = await Spl.findOne();
-    var data = qs.stringify({
-        'grant_type': 'password',
-        'UserName': UserName,
-        'Password': Password
-    });
-    var config = {
-        method: 'post',
-        url: 'https://gateway-minasapre.sp.com.sa/token',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        data: data
-    };
 
-    axios(config)
-        .then(response => {
-            console.log(response.data.token);
-            spl.token = response.data.token
-            return spl.save()
-        })
-        .then(s => {
-            return s.token;
-        })
-        .catch(err => {
-            console.log(err)
-        })
 }
