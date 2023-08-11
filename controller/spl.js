@@ -149,7 +149,7 @@ exports.creteNewOrder = async (req, res) => {
         url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': spl.token
+            'Authorization': `bearer ${spl.token}`
         },
         data: data
     };
@@ -160,7 +160,7 @@ exports.creteNewOrder = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err.data)
+            console.log(err)
         })
 
 }
