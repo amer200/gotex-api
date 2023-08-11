@@ -100,7 +100,7 @@ exports.creteNewOrder = async (req, res) => {
     };
     axios(config)
         .then(response => {
-            console.log(response.data.status)
+            console.log(response.data)
             res.status(200).json({
                 reciver: {
                     name: reciverName,
