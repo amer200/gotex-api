@@ -51,34 +51,30 @@ exports.creteNewOrder = async (req, res) => {
         var PaymentType = 1;
         var TotalAmount = null;
     }
-    console.log(spl.token)
-    if (!spl.token) {
-        console.log("from if")
-        const grant_type = "password";
-        const UserName = "extrAccount";
-        const Password = process.env.spl_password;
-        var data = qs.stringify({
-            'grant_type': 'password',
-            'UserName': UserName,
-            'Password': Password
-        });
-        var config = {
-            method: 'post',
-            url: 'https://gateway-minasapre.sp.com.sa/token',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: data
-        };
+    const grant_type = "password";
+    const UserName = "extrAccount";
+    const Password = process.env.spl_password;
+    var data = qs.stringify({
+        'grant_type': 'password',
+        'UserName': UserName,
+        'Password': Password
+    });
+    var config = {
+        method: 'post',
+        url: 'https://gateway-minasapre.sp.com.sa/token',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: data
+    };
 
-        axios(config)
-            .then(response => {
-                console.log(response);
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+    axios(config)
+        .then(response => {
+            console.log(response);
+        })
+        .catch(err => {
+            console.log(err)
+        })
     /////////////////////////////////////////////////
     /* const data = qs.stringify({
          'CRMAccountId': 31314344634,
