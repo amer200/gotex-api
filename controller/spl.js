@@ -100,24 +100,29 @@ exports.creteNewOrder = async (req, res) => {
     };
     axios(config)
         .then(response => {
-            console.log(response.data.Status)
-            res.status(200).json({
-                reciver: {
-                    name: reciverName,
-                    mobile: reciverMobile,
-                    city: pickUpDistrictID,
-                    AddressLine1: pickUpAddress1,
-                    AddressLine2: pickUpAddress2
-                },
-                sender: {
-                    name: SenderName,
-                    mobile: SenderMobileNumber,
-                    city: deliveryDistrictID,
-                    AddressLine1: deliveryAddress1,
-                    AddressLine2: deliveryAddress2
-                },
-                data: response.data
-            })
+            if (response.data.Status != 1) {
+                res.status(400).json({
+                    data: response.data
+                })
+            } else {
+                res.status(200).json({
+                    reciver: {
+                        name: reciverName,
+                        mobile: reciverMobile,
+                        city: pickUpDistrictID,
+                        AddressLine1: pickUpAddress1,
+                        AddressLine2: pickUpAddress2
+                    },
+                    sender: {
+                        name: SenderName,
+                        mobile: SenderMobileNumber,
+                        city: deliveryDistrictID,
+                        AddressLine1: deliveryAddress1,
+                        AddressLine2: deliveryAddress2
+                    },
+                    data: response.data
+                })
+            }
         })
         .catch(err => {
             res.status(500).json({
@@ -126,16 +131,17 @@ exports.creteNewOrder = async (req, res) => {
         })
 
 }
-exports.getCountries = (req, res) => {
+exports.getCountries = async (req, res) => {
+    const spl = await Spl.findOne();
     var data = qs.stringify({
-        'CountryID': req.body.id
+        'CountryID': null
     })
     var config = {
         method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/Location/GetCountries',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': process.env.spl_token
+            'Authorization': `bearer ${spl.token}`
         },
         data: data
     }
@@ -150,7 +156,8 @@ exports.getCountries = (req, res) => {
             console.log(err)
         })
 }
-exports.getCities = (req, res) => {
+exports.getCities = async(req, res) => {
+    const spl = await Spl.findOne();
     var data = qs.stringify({
         'language': "A"
     })
@@ -158,7 +165,7 @@ exports.getCities = (req, res) => {
         method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetCitiesByRegion',
         headers: {
-            'Authorization': process.env.spl_token
+            'Authorization': `bearer ${spl.token}`
         },
         data: data
     }
@@ -172,16 +179,17 @@ exports.getCities = (req, res) => {
             console.log(err)
         })
 }
-exports.getDistrict = (req, res) => {
+exports.getDistrict = async (req, res) => {
+    const spl = await Spl.findOne();
     var data = qs.stringify({
         'language': "A",
-        "RegionId": req.body.rId
+        "RegionId": null
     })
     var config = {
         method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/GIS/GetDistricts',
         headers: {
-            'Authorization': process.env.spl_token
+            'Authorization': `bearer ${spl.token}`
         },
         data: data
     }
