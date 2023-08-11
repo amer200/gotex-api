@@ -116,34 +116,6 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     })
-    if (!spl.token) {
-        var t_data = qs.stringify({
-            'grant_type': 'password',
-            'UserName': "extrAccount",
-            'Password': process.env.spl_password
-        });
-        var t_config = {
-            method: 'post',
-            url: 'https://gateway-minasapre.sp.com.sa/token',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: t_data
-        };
-
-        axios(t_config)
-            .then(response => {
-                console.log(response.data.token);
-                spl.token = response.data.token
-                return spl.save()
-            })
-            .then(s => {
-                return s.token;
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
     var config = {
         method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
@@ -160,7 +132,7 @@ exports.creteNewOrder = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.statusText)
         })
 
 }
