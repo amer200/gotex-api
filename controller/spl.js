@@ -51,6 +51,7 @@ exports.creteNewOrder = async (req, res) => {
         var PaymentType = 1;
         var TotalAmount = null;
     }
+    console.log(spl.token)
     if (!spl.token) {
         var t_data = qs.stringify({
             'grant_type': 'password',
