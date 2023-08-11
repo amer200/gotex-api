@@ -28,7 +28,7 @@ exports.getToken = (req, res) => {
         })
 }
 exports.creteNewOrder = async (req, res) => {
-    const spl = await Spl.findeOne();
+    const spl = await Spl.findOne();
     const reciverName = req.body.reciverName;
     const reciverMobile = req.body.reciverMobile;
     const SenderName = req.body.SenderName;
