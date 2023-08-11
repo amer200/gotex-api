@@ -28,29 +28,29 @@ exports.getToken = (req, res) => {
         })
 }
 exports.creteNewOrder = async (req, res) => {
-    const spl = await Spl.findOne();
-    const reciverName = req.body.reciverName;
-    const reciverMobile = req.body.reciverMobile;
-    const SenderName = req.body.SenderName;
-    const SenderMobileNumber = req.body.SenderMobileNumber;
-    const cod = req.body.cod;
-    const ContentPrice = req.body.ContentPrice;
-    const ContentDescription = req.body.ContentDescription;
-    const Weight = req.body.Weight;
-    const pickUpDistrictID = req.body.pickUpDistrictID;
-    const pickUpAddress1 = req.body.pickUpAddress1;
-    const pickUpAddress2 = req.body.pickUpAddress2;
-    const deliveryDistrictID = req.body.deliveryDistrictID;
-    const deliveryAddress1 = req.body.deliveryAddress1;
-    const deliveryAddress2 = req.body.deliveryAddress2;
-    const Pieces = req.body.Pieces;
-    if (cod) {
-        var PaymentType = 2;
-        var TotalAmount = 30;
-    } else {
-        var PaymentType = 1;
-        var TotalAmount = null;
-    }
+    // const spl = await Spl.findOne();
+    // const reciverName = req.body.reciverName;
+    // const reciverMobile = req.body.reciverMobile;
+    // const SenderName = req.body.SenderName;
+    // const SenderMobileNumber = req.body.SenderMobileNumber;
+    // const cod = req.body.cod;
+    // const ContentPrice = req.body.ContentPrice;
+    // const ContentDescription = req.body.ContentDescription;
+    // const Weight = req.body.Weight;
+    // const pickUpDistrictID = req.body.pickUpDistrictID;
+    // const pickUpAddress1 = req.body.pickUpAddress1;
+    // const pickUpAddress2 = req.body.pickUpAddress2;
+    // const deliveryDistrictID = req.body.deliveryDistrictID;
+    // const deliveryAddress1 = req.body.deliveryAddress1;
+    // const deliveryAddress2 = req.body.deliveryAddress2;
+    // const Pieces = req.body.Pieces;
+    // if (cod) {
+    //     var PaymentType = 2;
+    //     var TotalAmount = 30;
+    // } else {
+    //     var PaymentType = 1;
+    //     var TotalAmount = null;
+    // }
     const grant_type = "password";
     const UserName = "extrAccount";
     const Password = process.env.spl_password;
