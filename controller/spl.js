@@ -2,6 +2,7 @@ const Spl = require("../model/spl");
 const axios = require("axios");
 const qs = require("qs");
 const spl = require("../model/spl");
+const { response } = require("express");
 exports.getToken = (req, res) => {
     const grant_type = "password";
     const UserName = "extrAccount";
@@ -125,17 +126,21 @@ exports.creteNewOrder = async (req, res) => {
         },
         data: data
     };
-    axios(config)
-        .then(response => {
-            res.status(200).json({
-                data: response.data
-            })
-        })
-        .catch(err => {
-            res.status(500).json({
-                err: err
-            })
-        })
+    const s_response = await axios(config).json();
+    console.log(response)
+    // .then(response => {
+    //     res.status(200).json({
+    //         data: response.data
+    //     })
+    // })
+    // .catch(err => {
+    //     if(err.status == 401){
+
+    //     }
+    //     res.status(500).json({
+    //         err: err
+    //     })
+    // })
 
 }
 exports.getCountries = (req, res) => {
