@@ -90,8 +90,8 @@ exports.creteNewOrder = async (req, res) => {
     if (!spl.token) {
         var t_data = qs.stringify({
             'grant_type': 'password',
-            'UserName': UserName,
-            'Password': Password
+            'UserName': "extrAccount",
+            'Password': process.env.spl_password
         });
         var t_config = {
             method: 'post',
