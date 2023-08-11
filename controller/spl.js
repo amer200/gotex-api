@@ -51,42 +51,6 @@ exports.creteNewOrder = async (req, res) => {
         var PaymentType = 1;
         var TotalAmount = null;
     }
-    const data = qs.stringify({
-        'CRMAccountId': 31314344634,
-        'BranchId': 0,
-        'PickupType': 0,
-        'RequestTypeId': 1,
-        'CustomerName': reciverName,
-        'CustomerMobileNumber': reciverMobile,
-        'SenderName': SenderName,
-        'SenderMobileNumber': SenderMobileNumber,
-        'Items': [
-            {
-                'ReferenceId': `${Date.now()} + Gotex`,
-                'PaymentType': PaymentType,
-                'ContentPrice': ContentPrice,
-                'ContentDescription': ContentDescription,
-                'Weight': Weight,
-                'TotalAmount': TotalAmount,
-                'SenderAddressDetail': {
-                    'AddressTypeID': 6,
-                    'LocationId': 21,
-                    'DistrictID': pickUpDistrictID,
-                    'AddressLine1': pickUpAddress1,
-                    "AddressLine2": pickUpAddress2
-                },
-                'ReceiverAddressDetail': {
-                    'AddressTypeID': 6,
-                    'LocationId': 21,
-                    'DistrictID': deliveryDistrictID,
-                    'AddressLine1': deliveryAddress1,
-                    "AddressLine2": deliveryAddress2
-                },
-                'PiecesCount': Pieces.length + 1,
-                "ItemPieces": Pieces
-            }
-        ]
-    })
     if (!spl.token) {
         var t_data = qs.stringify({
             'grant_type': 'password',
@@ -102,37 +66,93 @@ exports.creteNewOrder = async (req, res) => {
             data: t_data
         };
 
-        axios(t_config)
-            .then(response => {
-                console.log(response.data.token);
-                spl.token = response.data.token
-                return spl.save()
-            })
-            .then(s => {
-                return s.token;
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        const t_res = await axios(t_config);
+        console.log(t_res);
     }
-    var config = {
-        method: 'post',
-        url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': spl.token
-        },
-        data: data
-    };
-    axios(config)
-        .then(response => {
-            res.status(200).json({
-                data: response.data
-            })
-        })
-        .catch(err => {
-            console.log(err.data)
-        })
+    /////////////////////////////////////////////////
+    /* const data = qs.stringify({
+         'CRMAccountId': 31314344634,
+         'BranchId': 0,
+         'PickupType': 0,
+         'RequestTypeId': 1,
+         'CustomerName': reciverName,
+         'CustomerMobileNumber': reciverMobile,
+         'SenderName': SenderName,
+         'SenderMobileNumber': SenderMobileNumber,
+         'Items': [
+             {
+                 'ReferenceId': `${Date.now()} + Gotex`,
+                 'PaymentType': PaymentType,
+                 'ContentPrice': ContentPrice,
+                 'ContentDescription': ContentDescription,
+                 'Weight': Weight,
+                 'TotalAmount': TotalAmount,
+                 'SenderAddressDetail': {
+                     'AddressTypeID': 6,
+                     'LocationId': 21,
+                     'DistrictID': pickUpDistrictID,
+                     'AddressLine1': pickUpAddress1,
+                     "AddressLine2": pickUpAddress2
+                 },
+                 'ReceiverAddressDetail': {
+                     'AddressTypeID': 6,
+                     'LocationId': 21,
+                     'DistrictID': deliveryDistrictID,
+                     'AddressLine1': deliveryAddress1,
+                     "AddressLine2": deliveryAddress2
+                 },
+                 'PiecesCount': Pieces.length + 1,
+                 "ItemPieces": Pieces
+             }
+         ]
+     })
+     if (!spl.token) {
+         var t_data = qs.stringify({
+             'grant_type': 'password',
+             'UserName': "extrAccount",
+             'Password': process.env.spl_password
+         });
+         var t_config = {
+             method: 'post',
+             url: 'https://gateway-minasapre.sp.com.sa/token',
+             headers: {
+                 'Content-Type': 'application/x-www-form-urlencoded'
+             },
+             data: t_data
+         };
+ 
+         axios(t_config)
+             .then(response => {
+                 console.log(response.data.token);
+                 spl.token = response.data.token
+                 return spl.save()
+             })
+             .then(s => {
+                 return s.token;
+             })
+             .catch(err => {
+                 console.log(err)
+             })
+     }
+     var config = {
+         method: 'post',
+         url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
+         headers: {
+             'Content-Type': 'application/x-www-form-urlencoded',
+             'Authorization': spl.token
+         },
+         data: data
+     };
+     axios(config)
+         .then(response => {
+             res.status(200).json({
+                 data: response.data
+             })
+         })
+         .catch(err => {
+             console.log(err.data)
+         })
+         */
 }
 exports.getCountries = (req, res) => {
     var data = qs.stringify({
