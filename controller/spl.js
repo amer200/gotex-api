@@ -87,6 +87,9 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     })
+    if (!spl.token) {
+        await getSplToken()
+    }
     var config = {
         method: 'post',
         url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
@@ -170,6 +173,39 @@ exports.getDistrict = (req, res) => {
             res.status(200).json({
                 data: response.data
             })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+/********************************** */
+const getSplToken = async () => {
+    const grant_type = "password";
+    const UserName = "extrAccount";
+    const Password = process.env.spl_password;
+    const spl = await Spl.findOne();
+    var data = qs.stringify({
+        'grant_type': 'password',
+        'UserName': UserName,
+        'Password': Password
+    });
+    var config = {
+        method: 'post',
+        url: 'https://gateway-minasapre.sp.com.sa/token',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: data
+    };
+
+    axios(config)
+        .then(response => {
+            console.log(response.data.token);
+            spl.token = response.data.token
+            return spl.save()
+        })
+        .then(s => {
+            return s.token;
         })
         .catch(err => {
             console.log(err)
