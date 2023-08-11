@@ -54,29 +54,30 @@ exports.creteNewOrder = async (req, res) => {
     console.log(spl.token)
     if (!spl.token) {
         console.log("from if")
-        var t_data = qs.stringify({
+        const grant_type = "password";
+        const UserName = "extrAccount";
+        const Password = process.env.spl_password;
+        var data = qs.stringify({
             'grant_type': 'password',
-            'UserName': "extrAccount",
-            'Password': process.env.spl_password
+            'UserName': UserName,
+            'Password': Password
         });
-        var t_config = {
+        var config = {
             method: 'post',
             url: 'https://gateway-minasapre.sp.com.sa/token',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            data: t_data
+            data: data
         };
-        axios(t_config)
-            .then(res => {
-                console.log(res.data);
+
+        axios(config)
+            .then(response => {
+                console.log(response);
             })
             .catch(err => {
                 console.log(err)
             })
-        // const t_res = await axios(t_config);
-        // const j_t_res = await t_res.json();
-        // console.log(j_t_res);
     }
     /////////////////////////////////////////////////
     /* const data = qs.stringify({
