@@ -100,7 +100,22 @@ exports.creteNewOrder = async (req, res) => {
     };
     axios(config)
         .then(response => {
+            console.log(response.data.status)
             res.status(200).json({
+                reciver: {
+                    name: reciverName,
+                    mobile: reciverMobile,
+                    city: pickUpDistrictID,
+                    AddressLine1: pickUpAddress1,
+                    AddressLine2: pickUpAddress2
+                },
+                sender: {
+                    name: SenderName,
+                    mobile: SenderMobileNumber,
+                    city: deliveryDistrictID,
+                    AddressLine1: deliveryAddress1,
+                    AddressLine2: deliveryAddress2
+                },
                 data: response.data
             })
         })
