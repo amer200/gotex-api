@@ -666,6 +666,8 @@ url = https://dashboard.go-tex.net/api/spl/crete-new-order
 method = post
 body
     {
+    "markterCode": String,
+    "clintid": String,
     "reciverName": "عامر مصطفى عامر",
     "reciverMobile": "565011313",
     "SenderName": "gotex",
@@ -725,4 +727,30 @@ url = https://dashboard.go-tex.net/api/spl/get-cities
 method  = get 
 response {
 
+}
+/******************************/
+3)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/spl/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
+}
+response
+{
+    "msg": "ok",
+}
+/**************
+4) get all user orders
+url = https://dashboard.go-tex.net/spl/get-all-orders
+method = get
+response {
+    "data": []
 }
