@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const splOrderSchema = mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     company: String,
-    ordernumber: Number,
+    ordernumber: String,
     data: Object,
     reciver: Object,
     sender: Object,
