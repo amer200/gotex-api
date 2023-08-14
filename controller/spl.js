@@ -94,6 +94,7 @@ exports.creteNewOrder = async (req, res) => {
     const deliveryAddress2 = req.body.deliveryAddress2;
     const Pieces = req.body.Pieces;
     //********************************** */
+    const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
     const cod = req.body.cod;
     const user = await User.findById(req.user.user.id);
