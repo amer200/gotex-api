@@ -370,7 +370,7 @@ exports.splCheck = async (req, res, next) => {
         const cod = req.body.cod; // change to number
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
-        const weight = req.body.weight;
+        const weight = req.body.Weight;
         let shipmentValue = req.body.shipmentValue; // new number must
         /*********************************************** */
         const spl = await Spl.findOne();
@@ -407,6 +407,9 @@ exports.splCheck = async (req, res, next) => {
                 var shipPrice = cod;
             }
             const codAmount = shipPrice + weightPrice + shipmentValue; // 10 + (25 - 15)22 + 100
+            console.log(shipPrice)
+            console.log(weightPrice)
+            console.log(shipmentValue)
             res.locals.codAmount = codAmount;
             res.locals.totalShipPrice = shipPrice + weightPrice;
             next()
