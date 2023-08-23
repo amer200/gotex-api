@@ -66,7 +66,7 @@ const gltRoutes = require("./routes/glt");
 const anwanRoutes = require("./routes/anwan");
 const splRoutes = require("./routes/spl");
 const invRoutes = require("./routes/invatation");
-const spl = require('./model/spl');
+const daftraRoutes = require("./routes/daftra");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -77,7 +77,7 @@ app.use("/smsa", smsaRoutes);
 app.use("/anwan", anwanRoutes);
 app.use("/spl", splRoutes);
 app.use("/invatation", invRoutes);
-
+app.use("/daftra", daftraRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {
