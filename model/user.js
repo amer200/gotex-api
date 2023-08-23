@@ -22,7 +22,8 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false
     },
-    inv: { type: mongoose.Schema.Types.ObjectId, ref: 'Invitation' }
+    inv: { type: mongoose.Schema.Types.ObjectId, ref: 'Invitation' },
+    daftraid: String
 })
 
 module.exports = mongoose.model("User", userSchema);

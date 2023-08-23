@@ -771,3 +771,11 @@ response
 {
     []
 }
+/***********
+3)connect-markter-with-daftra (admin only)
+url = https://dashboard.go-tex.net/api/daftra/connect-markter-with-daftra
+method = POST
+body{
+    "daftraid": "2",
+    "marketerid": "645e83b6ca532b4bcb6f35d4"
+}
