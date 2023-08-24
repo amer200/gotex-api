@@ -779,3 +779,34 @@ body{
     "daftraid": "2",
     "marketerid": "645e83b6ca532b4bcb6f35d4"
 }
+****************clints************************
+1) get all clint (admin)
+url = https://dashboard.go-tex.net/api/daftra/clients-get-all
+method = get
+/******************
+2) get clint by id (admin)
+url = https://dashboard.go-tex.net/api/client-by-id/{id}
+method = get
+/*****************
+3) get markter clients (marketer)
+url = https://dashboard.go-tex.net/api/get-markter-clints
+method = get
+/****************
+4) add new client (marketer)
+url = https://dashboard.go-tex.net/api/add-new-client
+method = post
+body{
+    {
+    "business_name": "test business_name",
+    "first_name": "Amer",
+    "last_name": "mostafa",
+    "email": "amermostaafa@gmail.com",
+    "address": "test address",
+    "city": "cairo",
+    "state": "test state",
+    "phone": "01152306375",
+    "notes": "test notes",
+    "category": "test notes",
+    "birth_date": "14-6-1998"
+}
+}

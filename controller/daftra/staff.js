@@ -1,6 +1,5 @@
 const axios = require('axios');
 const User = require("../../model/user");
-const { json } = require('body-parser');
 exports.getAllStaff = (req, res) => {
     let config = {
         method: 'get',
@@ -73,14 +72,4 @@ exports.connectMarkterWithDaftra = async (req, res) => {
     } catch (err) {
         console.log(err)
     }
-    // console.log(marketer);
-    // .then(async u => {
-    //     if (!u) {
-    //         res.status(400).json({
-    //             msg: "error markter not found"
-    //         })
-    //     }
-    //     const daftraUser = await axios.request(config);
-    //     console.log(daftraUser)
-    // })
 }

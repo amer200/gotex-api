@@ -48,7 +48,6 @@ function genRandonString(length) {
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
     var cr = []
-    // return console.log(req.files);
     if (req.files) {
         req.files.forEach(f => {
             cr.push(f.path)
@@ -170,7 +169,8 @@ exports.logIn = (req, res) => {
                         id: u._id,
                         name: u.name,
                         rolle: u.rolle,
-                        iscrproofed: u.iscrproofed
+                        iscrproofed: u.iscrproofed,
+                        daftraid: u.daftraid
                     }
                     console.log(user)
                     const token = jwt.sign({
