@@ -754,7 +754,7 @@ method = get
 response {
     "data": []
 }
-/************************daftra**************************/
+/************************daftra************************************************/
 **************staff******************
 1) get all (only admin)
 url = https://dashboard.go-tex.net/api/daftra/staff-get-all
