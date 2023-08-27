@@ -1,24 +1,21 @@
 const axios = require('axios');
 const User = require("../../model/user");
+const { page } = require('pdfkit');
 
-exports.getAllClints = (req, res) => {
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: 'https://aljwadalmomez.daftra.com/api2/clients',
-        headers: {
-            'APIKEY': process.env.daftra_Key
-        }
+exports.getAllClints = async (req, res) => {
+    let allClients = [];
+    const result = await getAllClientsPage(1);
+    allClients.push(...result.clients);
+    var pageCount = result.pageCount;
+    var myPage = result.myPage;
+    for (myPage = 2; myPage <= pageCount; myPage++) {
+        let secResult = await getAllClientsPage(myPage);
+        console.log(secResult)
+        allClients.push(...secResult.clients);
     }
-    axios.request(config)
-        .then((response) => {
-            res.status(200).json({
-                data: response.data
-            })
-        })
-        .catch((error) => {
-            console.log(error.data);
-        });
+    res.status(200).json({
+        data: allClients
+    })
 }
 exports.getClintById = (req, res) => {
     const clintId = req.params.cId;
@@ -43,29 +40,12 @@ exports.getClintById = (req, res) => {
             })
         });
 }
-exports.getClintsByMartker = (req, res) => {
-    const daftraId = req.user.user.daftraid;
-    let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: 'https://aljwadalmomez.daftra.com/api2/clients',
-        headers: {
-            'APIKEY': process.env.daftra_Key
-        }
-    }
-    axios.request(config)
-        .then((response) => {
-            const allClients = response.data.data;
-            const marketerClients = allClients.filter(c => {
-                return c.Client.staff_id = daftraId
-            })
-            res.status(200).json({
-                data: marketerClients
-            })
-        })
-        .catch((error) => {
-            console.log(error.response.data);
-        });
+exports.getClintsByMartker = async (req, res) => {
+    const marketerId = req.user.user.daftraid;
+    const myClients = await getMarkterClient(marketerId);
+    res.status(200).json({
+        data: myClients
+    })
 }
 exports.addNewClient = (req, res) => {
     const marketerId = req.user.user.daftraid;
@@ -143,38 +123,48 @@ exports.editClientInfo = async (req, res) => {
     const category = req.body.category;
     const birth_date = req.body.birth_date;
     //******************************* */
-    // let config = {
-    //     method: 'get',
-    //     maxBodyLength: Infinity,
-    //     url: 'https://aljwadalmomez.daftra.com/api2/clients/',
-    //     headers: {
-    //         'APIKEY': process.env.daftra_Key
-    //     }
-    // }
-    // axios.request(config)
-
-    // const client = await axios(config);
-    // console.log(client)
-    console.log(marketerId)
-    getMarkterClient(marketerId)
+    
 }
 //******************************************** */
-const getMarkterClient = async (markterId) => {
-    let config = {
+const getAllClientsPage = async (page) => {
+    var p = page;
+    const url = `https://aljwadalmomez.daftra.com/api2/clients?page=${p}`;
+    var config = {
         method: 'get',
         maxBodyLength: Infinity,
-        url: 'https://aljwadalmomez.daftra.com/api2/clients?page=2',
+        url: url,
         headers: {
             'APIKEY': process.env.daftra_Key
         }
     }
-    const allClients = await axios.request(config);
-    const myClients = [];
-    // const myClients = await allClients.data.data.filter(c => c.Client.staff_id == markterId)
-    allClients.data.data.forEach(c => {
-        if (c.Client.staff_id == "2") {
-            myClients.push(c)
-        }
-    });
-    console.log(myClients)
+    const response = await axios(config);
+    let clients = response.data.data;
+    let page_count = response.data.pagination.page_count;
+    let myPage = response.data.pagination.page;
+    const result = {
+        clients: clients,
+        pageCount: page_count,
+        myPage: myPage
+    }
+    return result
+}
+const getMarkterClient = async (markterId) => {
+    const all = await allClients();
+    const result = all.filter(c => {
+        return c.Client.staff_id == markterId;
+    })
+    return result
+}
+const allClients = async () => {
+    let allClients = [];
+    const result = await getAllClientsPage(1);
+    allClients.push(...result.clients);
+    var pageCount = result.pageCount;
+    var myPage = result.myPage;
+    for (myPage = 2; myPage <= pageCount; myPage++) {
+        let secResult = await getAllClientsPage(myPage);
+        console.log(secResult)
+        allClients.push(...secResult.clients);
+    }
+    return allClients
 }
