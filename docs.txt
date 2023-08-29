@@ -848,3 +848,11 @@ body{
 2) get-all-client-credit-order (admin)
 url = https://dashboard.go-tex.net/api/daftra/get-all-client-credit-order
 method = get
+/********************
+3) change-credit-order-status
+url = https://dashboard.go-tex.net/api/daftra/change-credit-order-status
+method = post
+body{
+    "orderid": "64edd9c7121e3a8a6e31c237",
+    "status": "1"    // "1" for accept any value other will remove order
+}
