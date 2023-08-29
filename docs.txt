@@ -810,3 +810,11 @@ body{
     "birth_date": "14-6-1998"
 }
 }
+/**************************invoces*************************/
+1)get All (admin)
+url = https://dashboard.go-tex.net/api/daftra/inovic-get-all
+method = get
+/******************
+2)get marketer inovic
+url = https://dashboard.go-tex.net/api/daftra/get-all-markter-invoices
+method = get
