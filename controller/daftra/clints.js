@@ -207,7 +207,42 @@ exports.getAllCreditOrder = (req, res) => {
             console.log(err)
         })
 }
-// exports.
+exports.ChangeCreditOrderStatus = async (req, res) => {
+    const orderId = req.body.orderid;
+    const status = req.body.status;
+    const o = await CreditOrder.findById(orderId);
+    if (status == 1) {
+        o.status = true;
+        let data = JSON.stringify({
+            "Client": {
+                "credit_limit": o.credit_limit,
+                "credit_period": o.credit_period
+            }
+        });
+
+        let config = {
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: `https://aljwadalmomez.daftra.com/api2/clients/${o.clientid}`,
+            headers: {
+                'APIKEY': process.env.daftra_Key,
+                'Content-Type': 'application/json',
+            },
+            data: data
+        };
+        const response = await axios(config)
+        res.status(200).json({
+            msg: "ok accepted request",
+            data: response.data
+        })
+    } else {
+        const removeO = await CreditOrder.findByIdAndRemove(orderId)
+        res.status(200).json({
+            msg: "ok removed",
+            data: removeO
+        })
+    }
+}
 //******************************************** */
 const getAllClientsPage = async (page) => {
     var p = page;
