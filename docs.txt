@@ -810,6 +810,24 @@ body{
     "birth_date": "14-6-1998"
 }
 }
+/**************
+5)edit client (markter)
+url = https://dashboard.go-tex.net/api/daftra/edit-client-info
+method = post
+body{
+    "client_id": "23"
+    "business_name": "test business_name",
+    "first_name": "Amer",
+    "last_name": "mostafa",
+    "email": "amermostaafa@gmail.com",
+    "address": "test address",
+    "city": "cairo",
+    "state": "test state",
+    "phone": "01152306375",
+    "notes": "test notes",
+    "category": "test notes",
+    "birth_date": "14-6-1998"
+}
 /**************************invoces*************************/
 1)get All (admin)
 url = https://dashboard.go-tex.net/api/daftra/inovic-get-all
