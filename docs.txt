@@ -836,3 +836,15 @@ method = get
 2)get marketer inovic
 url = https://dashboard.go-tex.net/api/daftra/get-all-markter-invoices
 method = get
+/**********************credit*****************************/
+1)markter-add-credit-for-client 
+url = https://dashboard.go-tex.net/api/daftra/markter-add-credit-for-client
+method = post
+body{
+    "credit_limit": 250,
+    "client_id": 29
+}
+/*********************
+2) get-all-client-credit-order (admin)
+url = https://dashboard.go-tex.net/api/daftra/get-all-client-credit-order
+method = get

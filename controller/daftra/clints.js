@@ -1,6 +1,6 @@
 const axios = require('axios');
 const User = require("../../model/user");
-const { page } = require('pdfkit');
+const CreditOrder = require("../../model/clientscreaditorders");
 
 exports.getAllClints = async (req, res) => {
     let allClients = [];
@@ -174,6 +174,40 @@ exports.editClientInfo = async (req, res) => {
         });
 
 }
+exports.addCreaditByMarkter = async (req, res) => {
+    try {
+        const marketerId = req.user.user.id;
+        const client_id = req.body.client_id;
+        const credit_limit = req.body.credit_limit;
+        const credit_period = (4 - new Date().getDay());
+        const o = new CreditOrder({
+            markterid: marketerId,
+            clientid: client_id,
+            credit_period: credit_period,
+            credit_limit: credit_limit,
+            status: false
+        })
+        await o.save();
+        res.status(200).json({
+            msg: "ok , wait for admin approve"
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
+exports.getAllCreditOrder = (req, res) => {
+    CreditOrder.find()
+        .populate("markterid")
+        .then(c => {
+            res.status(200).json({
+                msg: c
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+}
+// exports.
 //******************************************** */
 const getAllClientsPage = async (page) => {
     var p = page;
