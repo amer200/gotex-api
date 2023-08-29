@@ -122,8 +122,57 @@ exports.editClientInfo = async (req, res) => {
     const notes = req.body.notes;
     const category = req.body.category;
     const birth_date = req.body.birth_date;
-    //******************************* */
-    
+    const cId = req.body.client_id;
+    //*************************** */
+    let data = JSON.stringify({
+        "Client": {
+            "is_offline": true,
+            "staff_id": marketerId,
+            "business_name": business_name,
+            "first_name": first_name,
+            "last_name": last_name,
+            "email": email,
+            "address1": address,
+            "city": city,
+            "state": state,
+            "phone1": phone,
+            "country_code": "SA",
+            "notes": notes,
+            "default_currency_code": "SAR",
+            "category": category,
+            "timezone": 0,
+            "starting_balance": null,
+            "type": 2,
+            "birth_date": birth_date,
+            "credit_limit": 0,
+            "credit_period": 0
+        }
+    });
+
+    let config = {
+        method: 'put',
+        maxBodyLength: Infinity,
+        url: `https://aljwadalmomez.daftra.com/api2/clients/${cId}`,
+        headers: {
+            'APIKEY': process.env.daftra_Key,
+            'Content-Type': 'application/json',
+        },
+        data: data
+    };
+
+    axios.request(config)
+        .then((response) => {
+            res.status(200).json({
+                data: response.data
+            })
+        })
+        .catch((error) => {
+            console.log(error.response.data);
+            res.status(400).json({
+                err: error.response.data
+            })
+        });
+
 }
 //******************************************** */
 const getAllClientsPage = async (page) => {
