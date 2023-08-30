@@ -338,7 +338,7 @@ exports.createOrder = async (req, res) => {
                 })
             } else {
                 if (cod) {
-                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
+                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                     const newO = new AramexOrder({
                         user: req.user.user.id,
                         company: "aramex",

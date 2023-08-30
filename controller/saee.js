@@ -104,7 +104,7 @@ exports.createUserOrder = async (req, res) => {
                 }
                 user.save()
                     .then(async u => {
-                        const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
+                        const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                         const order = new SaeeOrder({
                             user: req.user.user.id,
                             company: "saee",

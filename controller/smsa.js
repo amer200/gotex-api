@@ -126,7 +126,7 @@ exports.createUserOrder = async (req, res) => {
     axios(config)
         .then(async (response) => {
             if (response.status == 200) {
-                const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                 const o = new SmsaOrder({
                     user: req.user.user.id,
                     company: "smsa",

@@ -96,7 +96,7 @@ exports.createUserOrder = async (req, res) => {
                     error: response.data
                 })
             } else {
-                const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                 const newOrder = new anwanorders({
                     user: req.user.user.id,
                     company: "anwan",
