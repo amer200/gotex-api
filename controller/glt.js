@@ -7,7 +7,6 @@ const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const Clint = require("../model/clint");
-
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -138,7 +137,8 @@ exports.createUserOrder = async (req, res) => {
                     data: result,
                     price: totalShipPrice,
                     marktercode: markterCode,
-                    createdate: new Date()
+                    createdate: new Date(),
+                    invoice: ""
                 })
                 return newOrder.save();
             }
