@@ -6,6 +6,7 @@ const User = require("../model/user");
 const Clint = require("../model/clint");
 const splorders = require("../model/splorders");
 const CronJob = require('cron').CronJob;
+const Daftra = require("../modules/daftra");
 
 //********************************************* */
 exports.edit = (req, res) => {
@@ -98,6 +99,7 @@ exports.creteNewOrder = async (req, res) => {
     const clintid = req.body.clintid;
     const cod = req.body.cod;
     const user = await User.findById(req.user.user.id);
+    const dafraid = req.body.dafraid;
     let ordersNum = await SplOrder.count();
     if (markterCode) {
         var nameCode = `${SenderName} (${markterCode})`;
@@ -160,12 +162,13 @@ exports.creteNewOrder = async (req, res) => {
         data: data
     };
     axios(config)
-        .then(response => {
+        .then(async response => {
             if (response.data.Status != 1) {
                 res.status(400).json({
                     data: response.data
                 })
             } else {
+                const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
                 const o = new SplOrder({
                     user: user._id,
                     company: "Spl",
@@ -188,7 +191,8 @@ exports.creteNewOrder = async (req, res) => {
                     paytype: paytype,
                     price: totalShipPrice,
                     marktercode: markterCode,
-                    createdate: new Date()
+                    createdate: new Date(),
+                    inovicedaftra: invo
                 })
                 o.save()
                     .then(async o => {

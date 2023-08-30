@@ -4,7 +4,7 @@ const AramexOrder = require("../model/aramexorders");
 const User = require("../model/user");
 const axios = require("axios");
 const Clint = require("../model/clint");
-
+const Daftra = require("../modules/daftra");
 // exports.createOrder = async (req, res) => {
 //     try {
 //         clientInfo = new aramex.ClientInfo({
@@ -132,6 +132,7 @@ exports.createOrder = async (req, res) => {
         var nameCode = p_name;
     }
     /*************************************** */
+    const dafraid = req.body.dafraid;
     const shipmentDate = Date.now();
     var data = JSON.stringify({
         "Shipments": [
@@ -330,13 +331,14 @@ exports.createOrder = async (req, res) => {
         data: data
     };
     axios(config)
-        .then(function (response) {
+        .then(async (response) => {
             if (response.data.HasErrors) {
                 res.status(400).json({
                     data: response.data
                 })
             } else {
                 if (cod) {
+                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
                     const newO = new AramexOrder({
                         user: req.user.user.id,
                         company: "aramex",
@@ -345,7 +347,8 @@ exports.createOrder = async (req, res) => {
                         paytype: "cod",
                         price: totalShipPrice,
                         marktercode: markterCode,
-                        createdate: new Date()
+                        createdate: new Date(),
+                        inovicedaftra: invo
                     })
                     newO.save()
                         .then(async o => {
@@ -365,6 +368,7 @@ exports.createOrder = async (req, res) => {
                         })
                 } else {
                     user.wallet = user.wallet - totalShipPrice;
+                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
                     user.save()
                         .then(u => {
                             const newO = new AramexOrder({
@@ -375,7 +379,8 @@ exports.createOrder = async (req, res) => {
                                 paytype: "cc",
                                 price: totalShipPrice,
                                 marktercode: markterCode,
-                                createdate: new Date()
+                                createdate: new Date(),
+                                inovicedaftra: invo
                             })
                             newO.save()
                                 .then(async o => {

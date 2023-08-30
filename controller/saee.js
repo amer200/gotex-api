@@ -3,6 +3,7 @@ const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
 const Clint = require("../model/clint");
+const Daftra = require("../modules/daftra");
 
 
 exports.edit = (req, res) => {
@@ -53,6 +54,7 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
+    const dafraid = req.body.dafraid;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -101,7 +103,8 @@ exports.createUserOrder = async (req, res) => {
                     user.wallet = user.wallet
                 }
                 user.save()
-                    .then(u => {
+                    .then(async u => {
+                        const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
                         const order = new SaeeOrder({
                             user: req.user.user.id,
                             company: "saee",
@@ -110,7 +113,8 @@ exports.createUserOrder = async (req, res) => {
                             paytype: paytype,
                             price: totalShipPrice,
                             marktercode: markterCode,
-                            createdate: new Date()
+                            createdate: new Date(),
+                            inovicedaftra: invo
                         })
                         order.save()
                             .then(async o => {

@@ -4,6 +4,7 @@ const axios = require('axios');
 const base64 = require('base64topdf');
 const User = require("../model/user");
 const Clint = require("../model/clint");
+const Daftra = require("../modules/daftra");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -60,6 +61,7 @@ exports.createUserOrder = async (req, res) => {
     const cod = req.body.cod;
     const markterCode = req.body.markterCode;
     const clintid = req.body.clintid;
+    const dafraid = req.body.dafraid;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -122,8 +124,9 @@ exports.createUserOrder = async (req, res) => {
         data: data
     };
     axios(config)
-        .then(function (response) {
+        .then(async (response) => {
             if (response.status == 200) {
+                const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
                 const o = new SmsaOrder({
                     user: req.user.user.id,
                     company: "smsa",
@@ -131,7 +134,8 @@ exports.createUserOrder = async (req, res) => {
                     data: response.data,
                     paytype: paytype,
                     marktercode: markterCode,
-                    createdate: new Date()
+                    createdate: new Date(),
+                    inovicedaftra: invo
                 })
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
