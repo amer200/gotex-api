@@ -99,7 +99,7 @@ exports.creteNewOrder = async (req, res) => {
     const clintid = req.body.clintid;
     const cod = req.body.cod;
     const user = await User.findById(req.user.user.id);
-    const dafraid = req.body.dafraid;
+    const daftraid = req.body.daftraid;
     let ordersNum = await SplOrder.count();
     if (markterCode) {
         var nameCode = `${SenderName} (${markterCode})`;
@@ -168,7 +168,7 @@ exports.creteNewOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                 const o = new SplOrder({
                     user: user._id,
                     company: "Spl",

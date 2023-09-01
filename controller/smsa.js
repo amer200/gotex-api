@@ -61,7 +61,7 @@ exports.createUserOrder = async (req, res) => {
     const cod = req.body.cod;
     const markterCode = req.body.markterCode;
     const clintid = req.body.clintid;
-    const dafraid = req.body.dafraid;
+    const daftraid = req.body.daftraid;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -126,7 +126,7 @@ exports.createUserOrder = async (req, res) => {
     axios(config)
         .then(async (response) => {
             if (response.status == 200) {
-                const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice);
                 const o = new SmsaOrder({
                     user: req.user.user.id,
                     company: "smsa",
@@ -143,7 +143,7 @@ exports.createUserOrder = async (req, res) => {
                         if (clintid) {
                             const clint = await Clint.findById(clintid);
                             const co = {
-                                company: "saee",
+                                company: "smsa",
                                 id: o._id
                             }
                             clint.wallet = clint.wallet - totalShipPrice;

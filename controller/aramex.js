@@ -132,7 +132,7 @@ exports.createOrder = async (req, res) => {
         var nameCode = p_name;
     }
     /*************************************** */
-    const dafraid = req.body.dafraid;
+    const daftraid = req.body.daftraid;
     const shipmentDate = Date.now();
     var data = JSON.stringify({
         "Shipments": [
@@ -338,7 +338,7 @@ exports.createOrder = async (req, res) => {
                 })
             } else {
                 if (cod) {
-                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                    const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
                     const newO = new AramexOrder({
                         user: req.user.user.id,
                         company: "aramex",
@@ -363,12 +363,12 @@ exports.createOrder = async (req, res) => {
                                 await clint.save();
                             }
                             res.status(200).json({
-                                data: response.data
+                                data: o
                             })
                         })
                 } else {
                     user.wallet = user.wallet - totalShipPrice;
-                    const invo = await Daftra.CreateInvo(dafraid, req.user.user.dafraid, description, BookingMode, totalShipPrice);
+                    const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
                     user.save()
                         .then(u => {
                             const newO = new AramexOrder({
@@ -395,7 +395,7 @@ exports.createOrder = async (req, res) => {
                                         await clint.save();
                                     }
                                     res.status(200).json({
-                                        data: response.data
+                                        data: o
                                     })
                                 })
                         })

@@ -54,7 +54,8 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
-    const dafraid = req.body.dafraid;
+    const daftraid = req.body.daftraid;
+    const description = req.body.description;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
         var paytype = "cod";
@@ -104,7 +105,7 @@ exports.createUserOrder = async (req, res) => {
                 }
                 user.save()
                     .then(async u => {
-                        const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                        const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice);
                         const order = new SaeeOrder({
                             user: req.user.user.id,
                             company: "saee",
@@ -136,7 +137,7 @@ exports.createUserOrder = async (req, res) => {
                     })
             } else {
                 res.status(400).json({
-                    msg: response.data.error
+                    msg: response.data
                 })
             }
         })

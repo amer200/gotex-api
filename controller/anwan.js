@@ -42,7 +42,7 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
-    let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight, clintid, dafraid } = req.body
+    let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight, clintid, daftraid } = req.body
     if (cod) {
         var BookingMode = "COD"
         var codValue = res.locals.codAmount;;
@@ -96,7 +96,7 @@ exports.createUserOrder = async (req, res) => {
                     error: response.data
                 })
             } else {
-                const invo = await Daftra.CreateInvo(dafraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
                 const newOrder = new anwanorders({
                     user: req.user.user.id,
                     company: "anwan",
