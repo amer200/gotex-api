@@ -8,7 +8,7 @@ const Smsa = require("../model/smsa");
 const SmsaOrder = require("../model/smsaorders");
 const Anwan = require("../model/anwan");
 const AnwanOrder = require("../model/anwanorders");
-
+const Imile = require("../model/imile");
 exports.getAllCompanies = async (req, res) => {
     try {
         const saee = await Saee.findOne();
@@ -16,7 +16,8 @@ exports.getAllCompanies = async (req, res) => {
         const aramex = await Aramex.findOne();
         const smsa = await Smsa.findOne();
         const anwan = await Anwan.findOne();
-        let companies = [saee, glt, smsa, aramex, anwan];
+        const imile = await Imile.findOne();
+        let companies = [saee, glt, smsa, aramex, anwan, imile];
         res.status(200).json({
             data: companies
         })
