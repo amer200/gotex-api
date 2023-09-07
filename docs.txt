@@ -856,3 +856,58 @@ body{
     "orderid": "64edd9c7121e3a8a6e31c237",
     "status": "1"    // "1" for accept any value other will remove order
 }
+//********************************imile**********************************//
+1)edit info (must be admin)
+url = https://dashboard.go-tex.net/api/imile/edit
+method = post
+
+body 
+{
+   status => bollean
+   userprice => Number 
+   marketerprice => Number
+   kgprice => Number
+   codprice  => Number
+   maxcodmarkteer  => Number
+   mincodmarkteer  => Number
+}
+response
+{
+    "msg": "ok",
+}
+//*********
+3)add-client 
+url = https://dashboard.go-tex.net/api/imile/add-client
+method = post
+body {
+        "companyName": "",
+        "contacts": "",
+        "city": "",
+        "area": "",
+        "address": "",
+        "phone": "",
+        "email": "",
+        "backupPhone": "",
+        "attentions": ""
+}
+response
+{
+    "data": {
+        "companyName": "Amer'ssaasddsshdajsadaa",
+        "contacts": "AmerMostafa",
+        "country": "KSA",
+        "city": "TESt-Southern",
+        "address": "test address",
+        "phone": "9665442342",
+        "email": "imile@google.com",
+        "backupPhone": "",
+        "attentions": "this is consignor address",
+        "defaultOption": "0",
+        "_id": "64fa0c68811a6f6e7f463d07",
+        "__v": 0
+    }
+}
+//*****************
+4) get-all-client
+url = https://dashboard.go-tex.net/api/imile/get-all-clients
+method = get

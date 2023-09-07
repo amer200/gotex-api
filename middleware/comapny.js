@@ -5,6 +5,8 @@ const Smsa = require("../model/smsa");
 const User = require("../model/user");
 const Anwan = require("../model/anwan");
 const Spl = require("../model/spl");
+const Imile = require("../model/imile");
+const Jt = require("../model/jt");
 exports.gltCheck = async (req, res, next) => {
     try {
         const cod = req.body.cod; // change to number
@@ -423,6 +425,150 @@ exports.splCheck = async (req, res, next) => {
                 }
             } else {
                 var shipPrice = spl.marketerprice;
+            }
+            if (user.wallet < (shipPrice + weightPrice)) {
+                return res.status(400).json({
+                    msg: "Your wallet balance is not enough to make the shipment"
+                })
+            }
+            res.locals.codAmount = 0;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.imileCheck = async (req, res, next) => {
+    try {
+        const cod = req.body.cod; // change to number
+        const userId = req.user.user.id;
+        const userRolle = req.user.user.rolle;
+        const weight = req.body.weight;
+        let shipmentValue = req.body.goodsValue; // new number must
+        /*********************************************** */
+        const imile = await Imile.findOne();
+        const user = await User.findById(userId);
+        /*********************************************** */
+        if (weight <= 15) {
+            var weightPrice = 0;
+        } else {
+            var weightPrice = (weight - 15) * imile.kgprice;
+        }
+        /*********************************************** */
+        if (cod) {
+            if (!shipmentValue) {
+                shipmentValue = 0
+            }
+            if (userRolle == "user") {
+                if (user.inv) {
+                    var codPrice = user.inv.companies[3].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = imile.codprice;
+                }
+            } else {
+                if (cod > imile.maxcodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is grater than your limit"
+                    })
+                }
+                if (cod < imile.mincodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is less than your limit"
+                    })
+                }
+                var shipPrice = cod;
+            }
+            const codAmount = shipPrice + weightPrice + shipmentValue; // 10 + (25 - 15)22 + 100
+            res.locals.codAmount = codAmount;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        } else {
+            if (userRolle == "user") {
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[3].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = imile.userprice;
+                }
+            } else {
+                var shipPrice = imile.marketerprice;
+            }
+            if (user.wallet < (shipPrice + weightPrice)) {
+                return res.status(400).json({
+                    msg: "Your wallet balance is not enough to make the shipment"
+                })
+            }
+            res.locals.codAmount = 0;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.jtCheck = async (req, res, next) => {
+    try {
+        const cod = req.body.cod; // change to number
+        const userId = req.user.user.id;
+        const userRolle = req.user.user.rolle;
+        const weight = req.body.weight;
+        let shipmentValue = req.body.goodsValue; // new number must
+        /*********************************************** */
+        const jt = await Jt.findOne();
+        const user = await User.findById(userId);
+        /*********************************************** */
+        if (weight <= 15) {
+            var weightPrice = 0;
+        } else {
+            var weightPrice = (weight - 15) * jt.kgprice;
+        }
+        /*********************************************** */
+        if (cod) {
+            if (!shipmentValue) {
+                shipmentValue = 0
+            }
+            if (userRolle == "user") {
+                if (user.inv) {
+                    var codPrice = user.inv.companies[3].cod;
+                    var shipPrice = codPrice;
+                } else {
+                    var shipPrice = jt.codprice;
+                }
+            } else {
+                if (cod > jt.maxcodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is grater than your limit"
+                    })
+                }
+                if (cod < jt.mincodmarkteer) {
+                    return res.status(400).json({
+                        msg: "cod price is less than your limit"
+                    })
+                }
+                var shipPrice = cod;
+            }
+            const codAmount = shipPrice + weightPrice + shipmentValue; // 10 + (25 - 15)22 + 100
+            res.locals.codAmount = codAmount;
+            res.locals.totalShipPrice = shipPrice + weightPrice;
+            next()
+        } else {
+            if (userRolle == "user") {
+                if (user.inv) {
+                    var onlinePrice = user.inv.companies[3].onlinePayment;
+                    var shipPrice = onlinePrice;
+                } else {
+                    var shipPrice = jt.userprice;
+                }
+            } else {
+                var shipPrice = jt.marketerprice;
             }
             if (user.wallet < (shipPrice + weightPrice)) {
                 return res.status(400).json({

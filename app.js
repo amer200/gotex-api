@@ -67,6 +67,8 @@ const anwanRoutes = require("./routes/anwan");
 const splRoutes = require("./routes/spl");
 const invRoutes = require("./routes/invatation");
 const daftraRoutes = require("./routes/daftra");
+const imileRoutes = require("./routes/imile");
+const jtRouters = require("./routes/jt");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -78,6 +80,8 @@ app.use("/anwan", anwanRoutes);
 app.use("/spl", splRoutes);
 app.use("/invatation", invRoutes);
 app.use("/daftra", daftraRoutes);
+app.use("/imile", imileRoutes);
+app.use("/jt", jtRouters);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {
