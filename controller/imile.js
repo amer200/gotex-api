@@ -12,9 +12,9 @@ exports.edit = (req, res) => {
     const mincodmarkteer = req.body.mincodmarkteer;
     const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
-    const codprice = req.bod.codprice;
     Imile.findOne()
         .then(a => {
+            console.log(a)
             a.status = status;
             a.userprice = userprice;
             a.marketerprice = marketerprice;
@@ -294,7 +294,7 @@ exports.createOrder = async (req, res) => {
             })
         });
 }
-/************************************** */
+/**************************************  */
 cron.schedule('0 */2 * * *', async () => {
     try {
         const imile = await Imile.findOne();
