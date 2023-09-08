@@ -862,14 +862,14 @@ url = https://dashboard.go-tex.net/api/imile/edit
 method = post
 
 body 
-{
-   status => bollean
-   userprice => Number 
-   marketerprice => Number
-   kgprice => Number
-   codprice  => Number
-   maxcodmarkteer  => Number
-   mincodmarkteer  => Number
+   {
+    "status": "true",
+    "userprice": 20,
+    "userCodPrice": 30,
+    "marketerprice": 40,
+    "mincodmarkteer": 30,
+    "maxcodmarkteer": 20,
+    "kgprice": 20
 }
 response
 {
