@@ -12,6 +12,7 @@ exports.edit = (req, res) => {
     const mincodmarkteer = req.body.mincodmarkteer;
     const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
+    const codprice = req.bod.codprice;
     Imile.findOne()
         .then(a => {
             a.status = status;
