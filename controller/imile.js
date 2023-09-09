@@ -4,6 +4,8 @@ const ImileOrder = require("../model/imileorders");
 const ImileClient = require("../model/imileclients");
 const axios = require("axios");
 const cron = require('node-cron');
+const Daftra = require("../modules/daftra");
+
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -153,6 +155,7 @@ exports.createOrder = async (req, res) => {
     // }
     /*************************************** */
     const daftraid = req.body.daftraid;
+    const clintid = req.body.clintid;
     const shipmentDate = Date.now();
     var data = JSON.stringify({
         "customerId": process.env.imile_customerid,
@@ -166,16 +169,16 @@ exports.createOrder = async (req, res) => {
         "param": {
             "orderCode": `gotex#${Date.now()}`,
             "orderType": "100",
-            "consignor": "DubaiWareHouse",
+            "consignor": p_company,
             "consignee": c_company,
             "consigneeContact": c_name,
             "consigneePhone": c_mobile,
-            "consigneeCountry": "UAE",
+            "consigneeCountry": "KSA",
             "consigneeProvince": "",
-            "consigneeCity": "Dubai", // c_city
-            "consigneeArea": "Deira", //c_area
+            "consigneeCity": c_city, // c_city
+            "consigneeArea": "", //c_area
             "consigneeSuburb": "",
-            "consigneeZipCode": "80184",
+            "consigneeZipCode": "",
             "consigneeStreet": c_street,
             "consigneeExternalNo": "",
             "consigneeInternalNo": "",
@@ -193,7 +196,7 @@ exports.createOrder = async (req, res) => {
             "buyerId": "",
             "platform": "",
             "isInsurance": 0,
-            "pickDate": "2023-01-29",
+            "pickDate": `2023-01-29`,
             "pickType": "0",
             "batterType": "Normal",
             "currency": "Local",
@@ -216,17 +219,16 @@ exports.createOrder = async (req, res) => {
     console.log(data)
     axios(config)
         .then(async (response) => {
-            return console.log(response.data)
-            if (response.data.HasErrors) {
+            if (response.data.code != '200') {
                 res.status(400).json({
-                    data: response.data
+                    msg: response.data
                 })
             } else {
                 if (cod) {
                     const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
-                    const newO = new AramexOrder({
+                    const newO = new ImileOrder({
                         user: req.user.user.id,
-                        company: "aramex",
+                        company: "imile",
                         ordernumber: ordersNum + 2,
                         data: response.data,
                         paytype: "cod",
@@ -240,7 +242,7 @@ exports.createOrder = async (req, res) => {
                             if (clintid) {
                                 const clint = await Clint.findById(clintid);
                                 const co = {
-                                    company: "aramex",
+                                    company: "imile",
                                     id: o._id
                                 }
                                 clint.wallet = clint.wallet - totalShipPrice;
@@ -256,9 +258,9 @@ exports.createOrder = async (req, res) => {
                     const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
                     user.save()
                         .then(u => {
-                            const newO = new AramexOrder({
+                            const newO = new ImileOrder({
                                 user: req.user.user.id,
-                                company: "aramex",
+                                company: "imile",
                                 ordernumber: ordersNum + 2,
                                 data: response.data,
                                 paytype: "cc",
@@ -272,7 +274,7 @@ exports.createOrder = async (req, res) => {
                                     if (clintid) {
                                         const clint = await Clint.findById(clintid);
                                         const co = {
-                                            company: "aramex",
+                                            company: "imile",
                                             id: o._id
                                         }
                                         clint.wallet = clint.wallet - totalShipPrice;

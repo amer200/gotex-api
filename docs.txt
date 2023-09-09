@@ -911,3 +911,48 @@ response
 4) get-all-client
 url = https://dashboard.go-tex.net/api/imile/get-all-clients
 method = get
+/****************
+2)create order
+url = https://dashboard.go-tex.net/api/imile/create-user-order
+method = post
+body{
+    {
+    "p_company": "p_test name1",
+    "c_company": "c_test_name",
+    "c_name": "Amer Mostafa Amer",
+    "c_mobile": "01152306375",
+    "c_city": "macca123",
+    "c_area": "areaaaa",
+    "c_street": "asdxczcklms",
+    "c_address": "c_address",
+    "goodsValue": 10,
+    "skuName": "name",
+    "weight": 10,
+    "skuDetailList": [
+        {
+            "skuName": "Samsung Mobile S21",
+            "skuNo": "SAMSUNGM00234",
+            "skuDesc": "Samsung Mobile S21",
+            "skuQty": 1,
+            "skuGoodsValue": "2000",
+            "skuUrl": "",
+            "skuWeight": "",
+            "skuHsCode": ""
+        },
+        {
+            "skuName": "Iphone 13 Pro",
+            "skuNo": "IPHONE13PRO234234",
+            "skuDesc": "Iphone 13 ProMax",
+            "skuQty": 1,
+            "skuGoodsValue": "3000",
+            "skuUrl": "",
+            "skuWeight": "",
+            "skuHsCode": ""
+        }
+    ],
+    "markterCode": "4s",
+    "description": "books",
+    "cod": 10,
+    "daftraid": 30
+}
+}
