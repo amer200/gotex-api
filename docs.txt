@@ -912,7 +912,7 @@ response
 url = https://dashboard.go-tex.net/api/imile/get-all-clients
 method = get
 /****************
-2)create order
+5)create order
 url = https://dashboard.go-tex.net/api/imile/create-user-order
 method = post
 body{
@@ -956,3 +956,7 @@ body{
     "daftraid": 30
 }
 }
+/********
+6)get-all-orders
+url = https://dashboard.go-tex.net/api/imile/get-all-orders
+method = get

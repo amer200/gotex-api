@@ -9,6 +9,7 @@ const SmsaOrder = require("../model/smsaorders");
 const Anwan = require("../model/anwan");
 const AnwanOrder = require("../model/anwanorders");
 const Imile = require("../model/imile");
+const ImileOrder = require("../model/imileorders");
 exports.getAllCompanies = async (req, res) => {
     try {
         const saee = await Saee.findOne();
@@ -35,7 +36,8 @@ exports.getAllOrders = async (req, res) => {
         const aramexorders = await AramexOrder.find().populate("user");
         const smsaorders = await SmsaOrder.find().populate("user");
         const anwanorders = await AnwanOrder.find().populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders];
+        const imileorders = await ImileOrder.find.populate("user");
+        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders];
         res.status(200).json({
             data: orders
         })

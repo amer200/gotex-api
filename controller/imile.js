@@ -5,6 +5,7 @@ const ImileClient = require("../model/imileclients");
 const axios = require("axios");
 const cron = require('node-cron');
 const Daftra = require("../modules/daftra");
+const imileorders = require("../model/imileorders");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -216,9 +217,9 @@ exports.createOrder = async (req, res) => {
         },
         data: data
     };
-    console.log(data)
     axios(config)
         .then(async (response) => {
+            console.log(response.data)
             if (response.data.code != '200') {
                 res.status(400).json({
                     msg: response.data
@@ -333,3 +334,15 @@ cron.schedule('0 */2 * * *', async () => {
         console.log(err)
     }
 });
+exports.getUserOrders = (req, res) => {
+    const userId = req.user.user.id;
+    imileorders.find({ user: userId })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+        })
+}
