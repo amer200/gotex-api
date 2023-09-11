@@ -93,6 +93,7 @@ exports.creteNewOrder = async (req, res) => {
     const deliveryDistrictID = req.body.deliveryDistrictID;
     const deliveryAddress1 = req.body.deliveryAddress1;
     const deliveryAddress2 = req.body.deliveryAddress2;
+    const description = req.body.description;
     if (req.body.Pieces.length <= 0) {
         var Pieces = [];
         var PiecesCount = 1;
@@ -184,23 +185,24 @@ exports.creteNewOrder = async (req, res) => {
                     reciver: {
                         name: reciverName,
                         mobile: reciverMobile,
-                        city: pickUpDistrictID,
-                        AddressLine1: pickUpAddress1,
-                        AddressLine2: pickUpAddress2
+                        city: deliveryDistrictID,
+                        AddressLine1: deliveryAddress1,
+                        AddressLine2: deliveryAddress2
                     },
                     sender: {
                         name: SenderName,
                         mobile: SenderMobileNumber,
-                        city: deliveryDistrictID,
-                        AddressLine1: deliveryAddress1,
-                        AddressLine2: deliveryAddress2
+                        city: pickUpDistrictID,
+                        AddressLine1: pickUpAddress1,
+                        AddressLine2: pickUpAddress2
                     },
                     paytype: paytype,
                     price: totalShipPrice,
                     marktercode: markterCode,
                     createdate: new Date(),
                     inovicedaftra: invo,
-                    Weight: Weight
+                    weight: Weight,
+                    desc: description
                 })
                 o.save()
                     .then(async o => {
