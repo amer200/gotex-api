@@ -209,6 +209,7 @@ exports.createOrder = async (req, res) => {
             "skuDetailList": skuDetailList
         }
     });
+    console.log(data)
     var config = {
         method: 'post',
         url: 'https://openapi.52imile.cn/client/order/createOrder',
