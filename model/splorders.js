@@ -11,7 +11,9 @@ const splOrderSchema = mongoose.Schema({
     price: Number,
     marktercode: String,
     createdate: String,
-    inovicedaftra: Object
+    inovicedaftra: Object,
+    weight: Number,
+    desc: String
 })
 
 module.exports = mongoose.model("splOrder", splOrderSchema);
