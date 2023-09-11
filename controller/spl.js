@@ -94,7 +94,7 @@ exports.creteNewOrder = async (req, res) => {
     const deliveryAddress1 = req.body.deliveryAddress1;
     const deliveryAddress2 = req.body.deliveryAddress2;
     if (req.body.Pieces.length <= 0) {
-        var Pieces = null;
+        var Pieces = [];
         var PiecesCount = 1;
     } else {
         var Pieces = req.body.Pieces;
