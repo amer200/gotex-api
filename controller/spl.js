@@ -202,7 +202,7 @@ exports.creteNewOrder = async (req, res) => {
                     createdate: new Date(),
                     inovicedaftra: invo,
                     weight: Weight,
-                    desc: description
+                    desc: ContentDescription
                 })
                 o.save()
                     .then(async o => {
