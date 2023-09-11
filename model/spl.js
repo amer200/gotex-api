@@ -35,6 +35,8 @@ const splSchema = mongoose.Schema({
     },
     token: {
         type: String
-    }
+    },
+    weight: Number,
+    desc: String
 })
 module.exports = mongoose.model("Spl", splSchema);
