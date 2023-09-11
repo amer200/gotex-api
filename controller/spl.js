@@ -163,6 +163,7 @@ exports.creteNewOrder = async (req, res) => {
     };
     axios(config)
         .then(async response => {
+            console.log(response)
             if (response.data.Status != 1) {
                 res.status(400).json({
                     data: response.data
