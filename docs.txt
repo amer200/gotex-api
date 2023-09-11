@@ -682,6 +682,7 @@ body
     "deliveryDistrictID": 4799,
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
+    "description: ""
     "Pieces":[{ 
         "PieceWeight": 3,
         "PieceDescription": "book"
