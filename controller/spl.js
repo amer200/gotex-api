@@ -169,7 +169,7 @@ exports.creteNewOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice);
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, " ", BookingMode, totalShipPrice);
                 const o = new SplOrder({
                     user: user._id,
                     company: "Spl",
