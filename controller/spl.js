@@ -163,7 +163,7 @@ exports.creteNewOrder = async (req, res) => {
     };
     axios(config)
         .then(async response => {
-            console.log(response)
+            console.log(response.data)
             if (response.data.Status != 1) {
                 res.status(400).json({
                     data: response.data
@@ -197,16 +197,16 @@ exports.creteNewOrder = async (req, res) => {
                 })
                 o.save()
                     .then(async o => {
-                        if (clintid) {
-                            const clint = await Clint.findById(clintid);
-                            const co = {
-                                company: "saee",
-                                id: o._id
-                            }
-                            clint.wallet = clint.wallet - totalShipPrice;
-                            clint.orders.push(co);
-                            await clint.save();
-                        }
+                        // if (clintid) {
+                        //     const clint = await Clint.findById(clintid);
+                        //     const co = {
+                        //         company: "spl",
+                        //         id: o._id
+                        //     }
+                        //     clint.wallet = clint.wallet - totalShipPrice;
+                        //     clint.orders.push(co);
+                        //     await clint.save();
+                        // }
                         res.status(200).json({
                             reciver: {
                                 name: reciverName,
