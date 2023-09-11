@@ -95,8 +95,10 @@ exports.creteNewOrder = async (req, res) => {
     const deliveryAddress2 = req.body.deliveryAddress2;
     if (req.body.Pieces.length <= 0) {
         var Pieces = null;
+        var PiecesCount = 1;
     } else {
         var Pieces = req.body.Pieces;
+        var PiecesCount = Pieces.length + 1
     }
     //********************************** */
     const totalShipPrice = res.locals.totalShipPrice;
@@ -151,7 +153,7 @@ exports.creteNewOrder = async (req, res) => {
                     'AddressLine1': deliveryAddress1,
                     "AddressLine2": deliveryAddress2
                 },
-                'PiecesCount': Pieces.length + 1,
+                'PiecesCount': PiecesCount,
                 "ItemPieces": Pieces
             }
         ]
