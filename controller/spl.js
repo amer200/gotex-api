@@ -199,7 +199,8 @@ exports.creteNewOrder = async (req, res) => {
                     price: totalShipPrice,
                     marktercode: markterCode,
                     createdate: new Date(),
-                    inovicedaftra: invo
+                    inovicedaftra: invo,
+                    Weight: Weight
                 })
                 o.save()
                     .then(async o => {
