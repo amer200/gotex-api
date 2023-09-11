@@ -93,7 +93,11 @@ exports.creteNewOrder = async (req, res) => {
     const deliveryDistrictID = req.body.deliveryDistrictID;
     const deliveryAddress1 = req.body.deliveryAddress1;
     const deliveryAddress2 = req.body.deliveryAddress2;
-    const Pieces = req.body.Pieces;
+    if (req.body.Pieces.length <= 0) {
+        var Pieces = null;
+    } else {
+        var Pieces = req.body.Pieces;
+    }
     //********************************** */
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
