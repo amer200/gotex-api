@@ -126,7 +126,7 @@ exports.createUserOrder = async (req, res) => {
     axios(config)
         .then(async (response) => {
             if (response.status == 200) {
-                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice);
+                // const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice);
                 const o = new SmsaOrder({
                     user: req.user.user.id,
                     company: "smsa",
@@ -135,7 +135,7 @@ exports.createUserOrder = async (req, res) => {
                     paytype: paytype,
                     marktercode: markterCode,
                     createdate: new Date(),
-                    inovicedaftra: invo
+                    // inovicedaftra: invo
                 })
                 base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
                 o.save()
