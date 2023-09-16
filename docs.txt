@@ -567,7 +567,10 @@ method = get
 response
 {
     "msg": "ok",
-    "data": " pdf"
+    "data": [
+        "/smsaAwb/49-p1.pdf",
+        "/smsaAwb/49-p2.pdf"
+    ]
 }
 /*********************************anwan*********************************/
 1)edit info (must be admin)

@@ -137,7 +137,11 @@ exports.createUserOrder = async (req, res) => {
                     createdate: new Date(),
                     // inovicedaftra: invo
                 })
-                base64.base64Decode(response.data.waybills[0].awbFile, `public/smsaAwb/${ordersNum + 1}.pdf`);
+                let i = 1;
+                response.data.waybills.forEach(a => {
+                    base64.base64Decode(a.awbFile, `public/smsaAwb/${ordersNum + 1}-p${i}.pdf`);
+                    i++
+                })
                 o.save()
                     .then(async o => {
                         if (clintid) {
@@ -194,9 +198,15 @@ exports.getSticker = (req, res) => {
     const orderId = req.params.id;
     SmsaOrder.findById(orderId)
         .then(o => {
+            let routes = [];
+            let i = 1;
+            o.data.waybills.forEach(w => {
+                routes.push(`/smsaAwb/${o.ordernumber}-p${i}.pdf`);
+                i++
+            })
             res.status(200).json({
                 msg: "ok",
-                data: `/smsaAwb/${o.ordernumber}.pdf`
+                data: routes
             })
         })
 }
