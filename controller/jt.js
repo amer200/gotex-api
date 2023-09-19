@@ -4,6 +4,7 @@ const Jt = require("../model/jt");
 const JtOrder = require("../model/jtorders");
 var crypto = require('crypto');
 const qs = require('qs');
+const { config } = require("dotenv");
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -105,14 +106,11 @@ exports.createUserOrder = async (req, res) => {
         "payType":"PP_PM",
         "isUnpackEnabled":0
      }`;
-    // console.log(bizContent)
     let data = qs.stringify({
         bizContent: bizContent
     });
-    // return console.log(bizContent)
     let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
     var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
-    // console.log(md5Hash)
     let config = {
         method: 'post',
         url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/addOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
@@ -143,7 +141,7 @@ exports.createUserOrder = async (req, res) => {
             createdate: new Date(),
             // inovicedaftra: invo
         })
-        await newOrder.save;
+        await newOrder.save();
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save()
@@ -153,6 +151,43 @@ exports.createUserOrder = async (req, res) => {
         })
     } catch (error) {
         console.log(error);
+        res.status(500).json({
+            error: error
+        })
+    }
+}
+exports.getSticker = async (req, res) => {
+    const oId = req.params.oId;
+    const order = await JtOrder.findById(oId);
+    const billCode = order.data.data.billCode;
+    try {
+        const bizContent = `{
+            "customerCode":"J0086024173",
+            "digest":"VdlpKaoq64AZ0yEsBkvt1A==",
+            "billCode":"${billCode}"
+         }`;
+        let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
+        var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
+        let data = qs.stringify({
+            bizContent: bizContent
+        });
+        let config = {
+            method: 'post',
+            url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/printOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+            headers: {
+                'apiAccount': '292508153084379141',
+                'digest': `${md5Hash}`,
+                'timestamp': '1638428570653',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: data
+        };
+        const response = await axios(config);
+        res.status(200).json({
+            data: response.data
+        })
+    } catch (error) {
+        console.log(error)
         res.status(500).json({
             error: error
         })

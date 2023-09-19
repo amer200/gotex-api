@@ -8,6 +8,6 @@ routes.post("/edit", adminMiddlewares.isAuth, jtControllers.edit);
 routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, jtMiddleware.jtCheck, jtControllers.createUserOrder);
 // routes.get("/cities", gltControllers.getAllCities);
 // routes.get("/get-all-orders", userMiddlewares.isAuth, gltControllers.getUserOrders);
-// routes.get("/print-sticker/:id", gltControllers.getSticker);
+routes.get("/print-sticker/:oId", jtControllers.getSticker);
 // routes.post("/track-order-by-number", userMiddlewares.isAuth, gltControllers.trakingOrderByNum);
 module.exports = routes;

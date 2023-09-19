@@ -1009,3 +1009,7 @@ body   // s = sender re = receiver
         }
     ]
 }
+/************
+2)print sticker
+url https://dashboard.go-tex.net/api/jt/print-sticker/{orderId}
+method = get
