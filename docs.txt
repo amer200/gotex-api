@@ -1011,5 +1011,18 @@ body   // s = sender re = receiver
 }
 /************
 2)print sticker
-url https://dashboard.go-tex.net/api/jt/print-sticker/{orderId}
+url = https://dashboard.go-tex.net/api/jt/print-sticker/{orderId}
 method = get
+/*********
+3) edit info
+url = https://dashboard.go-tex.net/api/jt/edit
+method = post
+body{
+    status;
+    userprice;
+    userCodPrice;
+    marketerprice;
+    mincodmarkteer;
+    maxcodmarkteer;
+    kgprice;
+}
