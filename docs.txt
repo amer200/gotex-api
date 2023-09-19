@@ -964,3 +964,48 @@ body{
 6)get-all-orders
 url = https://dashboard.go-tex.net/api/imile/get-all-orders
 method = get
+/**************************jt*************************/
+1)create order
+url= https://dashboard.go-tex.net/api/jt/create-user-order
+method = post
+body   // s = sender re = receiver
+{
+    "cod": 40,
+    "weight": "10",
+    "markterCode": "3w",
+    "description": "description test",
+    "re_address": "Riyadh, 20 st",
+    "re_city": "Riyadh",
+    "re_mobile": "966565011313",
+    "re_name": "Amer Mostafa",
+    "re_prov": "Riyadh",
+    "goodsType": "ITN1", //ITN1  = Clothes ,ITN2 Document, ITN3 = Food ,ITN4 = others ,ITN5 = Digital product ,ITN6 = Daily necessities ,ITN7 = Fragile Items
+    "s_address": "test  sender address",
+    "s_city": "Meccah",
+    "s_mobile": "966565011313",
+    "s_name": "Mohamed Mostafa",
+    "s_prov": "Abha",
+    "goodsValue": "1000",
+    "items": [
+        {
+            "englishName": "iphone",
+            "number": 2,
+            "itemType": "ITN1",
+            "itemName": "",
+            "priceCurrency": "SAR",
+            "itemValue": "2000",
+            "itemUrl": "",
+            "desc": "file"
+        },
+        {
+            "englishName": "iphone",
+            "number": 2,
+            "itemType": "ITN1", //ITN1  = Clothes ,ITN2 Document, ITN3 = Food ,ITN4 = others ,ITN5 = Digital product ,ITN6 = Daily necessities ,ITN7 = Fragile Items
+            "itemName": "",
+            "priceCurrency": "SAR",
+            "itemValue": "2000",
+            "itemUrl": "",
+            "desc": "file"
+        }
+    ]
+}

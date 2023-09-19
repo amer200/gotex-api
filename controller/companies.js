@@ -10,6 +10,8 @@ const Anwan = require("../model/anwan");
 const AnwanOrder = require("../model/anwanorders");
 const Imile = require("../model/imile");
 const ImileOrder = require("../model/imileorders");
+const Jt = require("../model/jt");
+const JtOrder = require("../model/jtorders");
 exports.getAllCompanies = async (req, res) => {
     try {
         const saee = await Saee.findOne();
@@ -18,7 +20,8 @@ exports.getAllCompanies = async (req, res) => {
         const smsa = await Smsa.findOne();
         const anwan = await Anwan.findOne();
         const imile = await Imile.findOne();
-        let companies = [saee, glt, smsa, aramex, anwan, imile];
+        const jt = await Jt.findOne();
+        let companies = [saee, glt, smsa, aramex, anwan, imile, jt];
         res.status(200).json({
             data: companies
         })
@@ -36,8 +39,9 @@ exports.getAllOrders = async (req, res) => {
         const aramexorders = await AramexOrder.find().populate("user");
         const smsaorders = await SmsaOrder.find().populate("user");
         const anwanorders = await AnwanOrder.find().populate("user");
-        const imileorders = await ImileOrder.find.populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders];
+        const imileorders = await ImileOrder.find().populate("user");
+        const jtorders = await JtOrder.find().populate("user");
+        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders];
         res.status(200).json({
             data: orders
         })

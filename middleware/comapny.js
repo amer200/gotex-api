@@ -520,7 +520,8 @@ exports.jtCheck = async (req, res, next) => {
         const userId = req.user.user.id;
         const userRolle = req.user.user.rolle;
         const weight = req.body.weight;
-        let shipmentValue = req.body.goodsValue; // new number must
+        const goodsValue = req.body.goodsValue;
+        let shipmentValue = +goodsValue; // new number must
         /*********************************************** */
         const jt = await Jt.findOne();
         const user = await User.findById(userId);
