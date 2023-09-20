@@ -248,6 +248,19 @@ method = get
 response{
 
 }
+/**************
+7) cancel order [ user access ]
+url = https://dashboard.go-tex.net/api/saee/cancel-order
+method = post 
+body {
+    orderId
+}
+response{
+    "data": {
+        "success": true,
+        "message": "This update is done successfully"
+    }
+}
 /*****************************************************glt************************************/
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/glt/edit
@@ -964,6 +977,16 @@ body{
 6)get-all-orders
 url = https://dashboard.go-tex.net/api/imile/get-all-orders
 method = get
+/**************
+7) cancel order [ user access ]
+url = https://dashboard.go-tex.net/api/imile/cancel-order
+method = post 
+body {
+    orderId
+}
+response{
+    
+}
 /**************************jt*************************/
 1)create order
 url= https://dashboard.go-tex.net/api/jt/create-user-order
