@@ -144,7 +144,7 @@ exports.createUserOrder = async (req, res) => {
         .catch(err => {
             console.log(err)
             res.status(500).json({
-                error: err
+                error: err.message
             })
         })
 }
@@ -220,7 +220,52 @@ exports.getCities = (req, res) => {
         .catch(err => {
             console.log(err)
             res.status(500).json({
-                error: err
+                error: err.message
             })
         })
+}
+
+exports.cancelOrder = async (req, res) => {
+    const { orderId } = req.body;
+    const userId = req.user.user.id
+    const order = await SaeeOrder.findById(orderId);
+
+    try {
+        if (!order || order.user != userId) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        let data = JSON.stringify({
+            "waybill": order.data.waybill,
+            "canceled_by": 1
+        });
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://corporate.saeex.com/deliveryrequest/cancelpickup',
+            headers: {
+                'secret': process.env.SAEE_KEY_P,
+                'Content-Type': 'application/json',
+            },
+            data: data
+        };
+
+        const saeeRes = await axios.request(config);
+        if (saeeRes.data.success == true) {
+            return res.status(200).json({
+                data: saeeRes.data
+            })
+        } else {
+            return res.status(400).json({
+                data: saeeRes.data
+            })
+        }
+
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
 }

@@ -11,4 +11,6 @@ routes.get("/get-all-orders", userMiddlewares.isAuth, saeeControllers.getUserOrd
 routes.get("/print-sticker/:id", userMiddlewares.isAuth, saeeControllers.getSticker);
 routes.post("/track-order-by-number", userMiddlewares.isAuth, saeeControllers.trakingOrderByNum);
 routes.get("/get-cities", saeeControllers.getCities);
+routes.post("/cancel-order", userMiddlewares.isAuth, saeeControllers.cancelOrder);
+
 module.exports = routes;
