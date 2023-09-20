@@ -237,7 +237,7 @@ exports.createOrder = async (req, res) => {
                         price: totalShipPrice,
                         marktercode: markterCode,
                         createdate: new Date(),
-                        inovicedaftra: invo 
+                        inovicedaftra: invo
                     })
                     newO.save()
                         .then(async o => {
@@ -346,4 +346,55 @@ exports.getUserOrders = (req, res) => {
         .catch(err => {
             console.log(err.request)
         })
+}
+
+exports.cancelOrder = async (req, res) => {
+    const { orderId } = req.body;
+    const userId = req.user.user.id
+    const imile = await Imile.findOne();
+    const order = await ImileOrders.findById(orderId);
+
+    try {
+        if (!order || order.user != userId) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        const waybillNo = order.data.data.expressNo
+
+        const data = JSON.stringify({
+            "customerId": process.env.imile_customerid,
+            "sign": process.env.imile_sign,
+            "accessToken": imile.token,
+            "signMethod": "SimpleKey",
+            "format": "json",
+            "version": "1.0.0",
+            "timestamp": 1648883951481,
+            "timeZone": "+4",
+            "param": {
+                "waybillNo": waybillNo
+            }
+        })
+
+        const config = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            url: `https://openapi.imile.com/client/order/deleteOrder`,
+            data: data
+        }
+
+        const response = await axios(config)
+        if (response.data.message !== 'success') {
+            return res.status(400).json({ msg: response.data })
+        }
+
+        return res.status(200).json({ data: response.data })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
 }

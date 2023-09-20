@@ -10,4 +10,6 @@ routes.post("/add-client", userMiddlewares.isAuth, userMiddlewares.isVerfied, im
 routes.get("/get-all-clients", userMiddlewares.isAuth, userMiddlewares.isVerfied, imileController.getAllClients);
 routes.post("/create-user-order", userMiddlewares.isAuth, userMiddlewares.isVerfied, imileMiddlewares.imileCheck, imileController.createOrder);
 routes.get("/get-all-orders", userMiddlewares.isAuth, imileController.getUserOrders);
+routes.post("/cancel-order", userMiddlewares.isAuth, imileController.cancelOrder);
+
 module.exports = routes;
