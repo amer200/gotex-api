@@ -985,7 +985,13 @@ body {
     orderId
 }
 response{
-    
+    "data": {
+        "code": "200",
+        "message": "success",
+        "traceId": "3013056fb1cd4fb58fc283c5ad32dfe6.606.16952368031371383",
+        "data": null,
+        "timeZone": "+4"
+    }
 }
 /**************************jt*************************/
 1)create order

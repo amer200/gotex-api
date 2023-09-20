@@ -352,7 +352,7 @@ exports.cancelOrder = async (req, res) => {
     const { orderId } = req.body;
     const userId = req.user.user.id
     const imile = await Imile.findOne();
-    const order = await ImileOrders.findById(orderId);
+    const order = await ImileOrder.findById(orderId)
 
     try {
         if (!order || order.user != userId) {
