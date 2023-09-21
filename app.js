@@ -37,16 +37,7 @@ app.post('/user/marketer-signup', upload.array('cr'));
 app.post('/invatation/invited-user-signup', upload.array('cr'));
 app.post('/user/add-clint-deposit', uploadClintRecipts.single('recipt'));
 /********************************************************************************** */
-// const store = new MongoDBStore({
-//     uri: dbUrl,
-//     collection: 'mySessions'
-// });
-// app.use(session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: true,
-//     store: store
-// }))
+app.set("view engine", "ejs");
 /********************************************************************************* */
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
