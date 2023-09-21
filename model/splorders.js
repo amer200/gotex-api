@@ -13,7 +13,12 @@ const splOrderSchema = mongoose.Schema({
     createdate: String,
     inovicedaftra: Object,
     weight: Number,
-    desc: String
+    desc: String,
+    status: {
+        type: String,
+        enum: ['pending', 'accepted', 'canceled'],
+        default: 'pending'
+    }
 })
 
 module.exports = mongoose.model("splOrder", splOrderSchema);
