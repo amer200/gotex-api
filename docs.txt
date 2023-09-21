@@ -1055,3 +1055,22 @@ body{
     maxcodmarkteer;
     kgprice;
 }
+/**************telr*************/
+1)create payment request
+url = https://dashboard.go-tex.net/api/user/add-user-balance
+method = post
+body{
+    "amount": 12
+}
+response{
+    {
+    "data": {
+        "method": "create",
+        "trace": "4001/2935250/650bf8d0",
+        "order": {
+            "ref": "A42CEC7C370A715283740E5CF580C4E619726517484719373EB422A704315B6B",
+            "url": "https://secure.telr.com/gateway/process.html?o=A42CEC7C370A715283740E5CF580C4E619726517484719373EB422A704315B6B"
+        }
+    }
+}
+}

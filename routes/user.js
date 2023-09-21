@@ -14,4 +14,9 @@ routes.post("/update-password", userControllers.updatePassword);
 routes.post("/add-new-clint", userMiddlewares.isAuth, userMiddlewares.isMarkter, clintControllers.addNewClint);
 routes.post("/add-clint-deposit", userMiddlewares.isAuth, userMiddlewares.isMarkter, clintControllers.adddeposit);
 routes.get("/all-markter-clint", userMiddlewares.isAuth, userMiddlewares.isMarkter, clintControllers.getAllMarkterClint);
+
+routes.post("/add-user-balance", userMiddlewares.isAuth, userControllers.addBalance);
+routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
+routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.getAllPaymentOrders);
+
 module.exports = routes;

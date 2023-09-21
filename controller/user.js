@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const salt = 10;
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
+const paymentOrder = require("../model/payment/orders");
+const axios = require("axios");
 const sendEmail = async (email, text, id, temp) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -282,4 +284,121 @@ exports.updatePassword = async (req, res) => {
             error: err
         })
     }
+}
+exports.addBalance = async (req, res) => {
+    const amount = req.body.amount;
+    const uId = req.user.user.id;
+    const code = genRandomString(10)
+    try {
+        let data = JSON.stringify({
+            "method": "create",
+            "store": process.env.TELR_STORE_ID,
+            "authkey": process.env.TELR_AUTH_KEY,
+            "framed": 0,
+            "order": {
+                "cartid": `g-${Date.now()}`,
+                "test": "1",
+                "amount": amount,
+                "currency": "SAR",
+                "description": "test payment"
+            },
+            "return": {
+                "authorised": `https://dashboard.go-tex.net/api/user/checkpayment/authorised/${uId}/${code}`,
+                "declined": `https://dashboard.go-tex.net/api/user/checkpayment/declined/${uId}/${code}`,
+                "cancelled": `https://dashboard.go-tex.net/api/user/checkpayment/cancelled/${uId}/${code}`
+            }
+        });
+        let config = {
+            method: 'post',
+            url: 'https://secure.telr.com/gateway/order.json',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        const telrRes = await axios(config);
+        const nPaymentOrder = new paymentOrder({
+            user: uId,
+            data: telrRes.data,
+            amount: amount,
+            code: code,
+            status: "pinding"
+        })
+        await nPaymentOrder.save();
+        res.status(200).json({
+            data: telrRes.data
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.checkPaymentOrder = async (req, res) => {
+    const uId = req.params.uId;
+    const code = req.params.code;
+    const status = req.params.status;
+    const order = await paymentOrder.findOne({ code: code });
+    const user = await User.findById(uId);
+    try {
+        if (!order) {
+            return res.render("payment-result", {
+                myText: "failed your balance is =",
+                balance: user.wallet
+            })
+            res.status(400).json({
+                data: "failed"
+            })
+        }
+        if (status != "authorised") {
+            order.status = status;
+            await order.save()
+            return res.status(400).json({
+                data: status
+            })
+        }
+        if (status == "authorised") {
+            user.wallet = user.wallet + order.amount
+        }
+        order.status = status;
+        order.code = genRandomString(10);
+        await user.save()
+        await order.save()
+        var data = {
+            amount: order.amount,
+            userBalance: user.wallet
+        }
+        res.status(200).json({
+            data: data
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.getAllPaymentOrders = async (req, res) => {
+    const uId = req.user.user.id;
+    const orders = await paymentOrder.find({ user: uId });
+    try {
+        res.status(200).json({
+            data: orders
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+const genRandomString = (length) => {
+    var chars = '0123456789';
+    var charLength = chars.length;
+    var result = '';
+    for (var i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * charLength));
+    }
+    return result;
 }
