@@ -1074,3 +1074,60 @@ response{
     }
 }
 }
+/********************
+2) get all payment order
+url = https://dashboard.go-tex.net/api/user/get-all-payment-orders
+method = get
+response 
+{
+    "data": [
+        {
+            "_id": "650bf2fa04605a2c84467946",
+            "user": "6497198e8b09d504c416b669",
+            "data": {
+                "method": "create",
+                "trace": "4001/2923219/650bf2fa",
+                "order": {
+                    "ref": "0C7D3A26C2D68801F3DEA70B1D0F00611C9522FFF7AF4528AD5B038421EB5FF3",
+                    "url": "https://secure.telr.com/gateway/process.html?o=0C7D3A26C2D68801F3DEA70B1D0F00611C9522FFF7AF4528AD5B038421EB5FF3"
+                }
+            },
+            "amount": 12,
+            "code": "9521655290",
+            "status": "authorised",
+            "__v": 0
+        },
+        {
+            "_id": "650bf8d1cdbf31f1a6036b3c",
+            "user": "6497198e8b09d504c416b669",
+            "data": {
+                "method": "create",
+                "trace": "4001/2935250/650bf8d0",
+                "order": {
+                    "ref": "A42CEC7C370A715283740E5CF580C4E619726517484719373EB422A704315B6B",
+                    "url": "https://secure.telr.com/gateway/process.html?o=A42CEC7C370A715283740E5CF580C4E619726517484719373EB422A704315B6B"
+                }
+            },
+            "amount": 12,
+            "code": "1009303479",
+            "status": "cancelled",
+            "__v": 0
+        },
+        {
+            "_id": "650bfdd73bcbbf7cc0367f92",
+            "user": "6497198e8b09d504c416b669",
+            "data": {
+                "method": "create",
+                "trace": "4001/2946056/650bfdd7",
+                "order": {
+                    "ref": "E9AB8390943E9176534C601655C10B6DC3353ED448BF0E52E1CC4DC48E073709",
+                    "url": "https://secure.telr.com/gateway/process.html?o=E9AB8390943E9176534C601655C10B6DC3353ED448BF0E52E1CC4DC48E073709"
+                }
+            },
+            "amount": 12,
+            "code": "3699926548",
+            "status": "authorised",
+            "__v": 0
+        }
+    ]
+}

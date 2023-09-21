@@ -344,7 +344,7 @@ exports.checkPaymentOrder = async (req, res) => {
     try {
         if (!order) {
             return res.render("payment-result", {
-                myText: "failed your balance is =",
+                myText: "failed Your wallet  is =",
                 balance: user.wallet
             })
             res.status(400).json({
@@ -354,6 +354,10 @@ exports.checkPaymentOrder = async (req, res) => {
         if (status != "authorised") {
             order.status = status;
             await order.save()
+            return res.render("payment-result", {
+                myText: `${status}, Your wallet is =`,
+                balance: user.wallet
+            })
             return res.status(400).json({
                 data: status
             })
@@ -369,6 +373,10 @@ exports.checkPaymentOrder = async (req, res) => {
             amount: order.amount,
             userBalance: user.wallet
         }
+        return res.render("payment-result", {
+            myText: `${status}, Your wallet is =`,
+            balance: user.wallet
+        })
         res.status(200).json({
             data: data
         })
