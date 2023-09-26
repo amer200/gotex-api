@@ -1133,7 +1133,7 @@ response
     ]
 }
 //********************************clients new***********************//
-url = https://dashboard.go-tex.net/api/clients/add-new-clien
+url = https://dashboard.go-tex.net/api/clients/add-new-client
 method = post
 body{
     "company": "company test5",
@@ -1148,4 +1148,27 @@ body{
     "notes": "note",
     "category": "vip",
     "birth_date": "14-6-1998"
+}
+/****** get all clients ******/
+url = https://dashboard.go-tex.net/api/clients/get-all-clients
+method = get
+response {
+    "data": [
+                {
+            "_id": "651323e2cbb49c9724c15737",
+            "name": "soha ali",
+            "company": "company 123",
+            "email": "client@test.com",
+            "mobile": "9665442342",
+            "city": "Najran",
+            "address": "Najran",
+            "notes": "notes",
+            "street": "123 st",
+            "wallet": 0,
+            "category": "categ1",
+            "addby": "6511e27aa2b4b5d0877d0be8",
+            "orders": [],
+            "__v": 0
+        }
+    ]
 }
