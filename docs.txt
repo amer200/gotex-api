@@ -204,37 +204,10 @@ response {
 url = https://dashboard.go-tex.net/saee/get-all-orders
 method = get
 response {
-    "data": "data": [
-        {
-            "_id": "650b31cf79cde21cfdaf7ce4",
-            "user": "650b0a4aeb1e6d8249d289d5",
-            "company": "saee",
-            "ordernumber": "0/1695232463238gotex",
-            "data": {
-                "success": true,
-                "waybill": "OS06158993KS",
-                "epayment_url": "",
-                "message": "Pickup Order created successfully",
-                "short_code": "z0oL",
-                "cash_on_delivery": 0,
-                "cash_on_pickup": 0,
-                "pickup_date": null,
-                "sticker": String  //sticker html page
-            },
-            "paytype": "cc",
-            "price": 24,
-            "createdate": "Wed Sep 20 2023 20:54:23 GMT+0300 (Eastern European Summer Time)",
-            "inovicedaftra": {
-                "msg": "Invalid Endpoint",
-                "code": 404
-            },
-            "__v": 0,
-            "status": "canceled"  // status can be one of these options : pending, canceled or accepted
-        }
-    ]
+    "data": []
 }
 /*******************
-4) get order sticker
+4) get order stiker
 url = https://dashboard.go-tex.net/print-sticker/${order id}
 method = get
 response{
@@ -605,6 +578,7 @@ url = https://dashboard.go-tex.net/api/smsa/print-sticker/${orderid}
 method = get
 
 response
+
 {
     "msg": "ok",
     "data": [
@@ -1004,35 +978,6 @@ body{
 6)get-all-orders
 url = https://dashboard.go-tex.net/api/imile/get-all-orders
 method = get
-response{
-    "data": [
-        {
-            "_id": "650b418cdd08ca94c13075c5",
-            "user": "650b0a4aeb1e6d8249d289d5",
-            "company": "imile",
-            "ordernumber": 2,
-            "data": {
-                "code": "200",
-                "message": "success",
-                "traceId": "dbaecad562b14fe8b2425ddb4e26a473.641.16952364906112695",
-                "data": {
-                    "expressNo": "6092123738628",
-                    "imileAwb": String
-                },
-                "timeZone": "+4"
-            },
-            "paytype": "cc",
-            "price": 9724,
-            "createdate": "Wed Sep 20 2023 22:01:32 GMT+0300 (Eastern European Summer Time)",
-            "inovicedaftra": {
-                "msg": "Invalid Endpoint",
-                "code": 404
-            },
-            "__v": 0,
-            "status": "canceled"
-        }
-    ]
-}
 /**************
 7) cancel order [ user access ]
 url = https://dashboard.go-tex.net/api/imile/cancel-order
@@ -1111,53 +1056,6 @@ body{
     maxcodmarkteer;
     kgprice;
 }
-/********************
-4) get all user orders
-url = https://dashboard.go-tex.net/jt/get-all-orders
-method = get
-response {
-    "data": [
-        {
-            "_id": "650ef560eb8216552bb45ee2",
-            "user": "650b0a4aeb1e6d8249d289d5",
-            "company": "jt",
-            "ordernumber": 2,
-            "data": {
-                "code": "1",
-                "msg": "success",
-                "data": {
-                    "txlogisticId": "1695119354337Gotex",
-                    "billCode": "UTE010006342462",
-                    "subCodes": [],
-                    "sortingCode": "--",
-                    "createOrderTime": "2023-09-23 17:25:37"
-                }
-            },
-            "paytype": "cc",
-            "price": 24,
-            "createdate": "Sat Sep 23 2023 17:25:36 GMT+0300 (Eastern European Summer Time)",
-            "status": "canceled",
-            "__v": 0
-        }
-    ]
-}
-/**************
-5) cancel order [ user access ]
-url = https://dashboard.go-tex.net/api/jt/cancel-order
-method = post 
-body {
-    orderId
-}
-response{
-    "data": {
-        "code": "1",
-        "msg": "success",
-        "data": {
-            "txlogisticId": "1695119354337Gotex",
-            "billCode": "UTE010006342462"
-        }
-    }
-}
 /**************telr*************/
 1)create payment request
 url = https://dashboard.go-tex.net/api/user/add-user-balance
@@ -1233,4 +1131,21 @@ response
             "__v": 0
         }
     ]
+}
+//********************************clients new***********************//
+url = https://dashboard.go-tex.net/api/clients/add-new-clien
+method = post
+body{
+    "company": "company test5",
+    "first_name": "amer",
+    "last_name": "mostafa",
+    "city": "Ad Dilam",
+    "state": "test state",
+    "address": "test-address",
+    "street": "test-street",
+    "mobile": "01152306375",
+    "email": "amermostaafa7@gmail.com",
+    "notes": "note",
+    "category": "vip",
+    "birth_date": "14-6-1998"
 }
