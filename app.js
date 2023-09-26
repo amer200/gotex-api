@@ -60,6 +60,7 @@ const invRoutes = require("./routes/invatation");
 const daftraRoutes = require("./routes/daftra");
 const imileRoutes = require("./routes/imile");
 const jtRouters = require("./routes/jt");
+const clientRouters = require("./routes/client");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -73,6 +74,7 @@ app.use("/invatation", invRoutes);
 app.use("/daftra", daftraRoutes);
 app.use("/imile", imileRoutes);
 app.use("/jt", jtRouters);
+app.use("/clients", clientRouters);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {
