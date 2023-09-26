@@ -1,4 +1,4 @@
-const client = require("../../model/clint");
+const Client = require("../../model/clint");
 const User = require("../../model/user");
 const Imile = require("../../model/imile");
 const axios = require("axios");
@@ -50,7 +50,7 @@ exports.addClient = async (req, res) => {
                 err: imileResult
             })
         }
-        const myClient = new client({
+        const myClient = new Client({
             name: name,
             company: company,
             email: email,
@@ -70,7 +70,20 @@ exports.addClient = async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            error: error
+            error: error.message
+        })
+    }
+}
+
+exports.getAllClients = async (req, res) => {
+    try {
+        const clients = await Client.find({})
+
+        return res.status(200).json({ data: clients })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
         })
     }
 }
