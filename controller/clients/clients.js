@@ -21,7 +21,7 @@ exports.addClient = async (req, res) => {
         const street = req.body.street;
         let staff_id = 0;
         const userId = req.user.user.id;
-        if(!first_name){
+        if (!first_name) {
             return res.status(200).json({
                 msg: "ffff"
             })
@@ -78,9 +78,9 @@ exports.addClient = async (req, res) => {
 const addImileClient = async (company, name, city, address, mobile, email, notes) => {
     const imile = await Imile.findOne();
     let data = JSON.stringify({
-        "customerId": "C2103736401",
-        "sign": "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAJfx+fh49y23Dh4e",
-        "accessToken": "d26b9cf3-1aa7-403a-a708-7ac50d467a4b",
+        "customerId": process.env.imile_customerid,
+        "sign": process.env.imile_sign,
+        "accessToken": imile.token,
         "signMethod": "SimpleKey",
         "format": "json",
         "version": "1.0.0",
