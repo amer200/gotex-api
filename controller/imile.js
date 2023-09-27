@@ -97,8 +97,11 @@ exports.addClient = async (req, res) => {
         res.status(200).json({
             data: c
         })
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
     }
 }
 exports.getAllClients = (req, res) => {
@@ -111,7 +114,7 @@ exports.getAllClients = (req, res) => {
         .catch(err => {
             console.log(err)
             res.status(500).json({
-                error: err
+                error: err.message
             })
         })
 }
@@ -294,7 +297,7 @@ exports.createOrder = async (req, res) => {
         .catch(function (error) {
             console.log(error)
             res.status(500).json({
-                error: error
+                error: error.message
             })
         });
 }
@@ -331,8 +334,11 @@ cron.schedule('0 */2 * * *', async () => {
         }
         await imile.save();
         console.log(imile)
-    } catch (err) {
-        console.log(err)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
     }
 });
 exports.getUserOrders = (req, res) => {
@@ -345,6 +351,9 @@ exports.getUserOrders = (req, res) => {
         })
         .catch(err => {
             console.log(err.request)
+            res.status(500).json({
+                error: error.message
+            })
         })
 }
 
@@ -397,6 +406,76 @@ exports.cancelOrder = async (req, res) => {
         console.log(err)
         res.status(500).json({
             msg: err.message
+        })
+    }
+}
+exports.editClient = async (req, res) => {
+    const clientId = req.params.id
+    const { companyName, contacts, city, address, phone, email, backupPhone, attentions } = req.body;
+
+    try {
+        const imile = await Imile.findOne();
+        let data = JSON.stringify({
+            "customerId": process.env.imile_customerid,
+            "sign": process.env.imile_sign,
+            "accessToken": imile.token,
+            "signMethod": "SimpleKey",
+            "format": "json",
+            "version": "1.0.0",
+            "timestamp": "1647727143355",
+            "timeZone": "+4",
+            "param": {
+                "companyName": companyName,
+                "contacts": contacts,
+                "country": "KSA",
+                "city": city,
+                "area": "",
+                "address": address,
+                "phone": phone,
+                "email": "",
+                "backupPhone": "",
+                "attentions": attentions,
+                "defaultOption": "0"
+            }
+        });
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://openapi.imile.com/client/consignor/modify',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        const response = await axios(config);
+        if (response.data.message !== 'success') {
+            return res.status(400).json({ msg: response.data })
+        }
+
+        const updatedClient = await ImileClient.findOneAndUpdate(
+            { _id: clientId },
+            {
+                companyName,
+                contacts,
+                city,
+                address,
+                phone,
+                email,
+                backupPhone,
+                attentions
+            },
+            { new: true })
+
+        if (!updatedClient) {
+            res.status(404).json(`No client for this id ${clientId}`)
+        }
+
+        res.status(200).json({ data: updatedClient })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
         })
     }
 }
