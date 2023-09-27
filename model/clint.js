@@ -21,6 +21,7 @@ const clintSchema = mongoose.Schema({
             id: String,
             markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
         }
-    ]
+    ],
+    daftraClientId: String
 })
 module.exports = mongoose.model("Clint", clintSchema);

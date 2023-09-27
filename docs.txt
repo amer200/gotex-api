@@ -1136,38 +1136,66 @@ response
 url = https://dashboard.go-tex.net/api/clients/add-new-client
 method = post
 body{
-    "company": "company test5",
-    "first_name": "amer",
-    "last_name": "mostafa",
-    "city": "Ad Dilam",
-    "state": "test state",
-    "address": "test-address",
-    "street": "test-street",
-    "mobile": "01152306375",
-    "email": "amermostaafa7@gmail.com",
-    "notes": "note",
-    "category": "vip",
-    "birth_date": "14-6-1998"
+    "name": "soha ali",
+    "company": "company 999",
+    "email": "client@test12.com",
+    "mobile": "9665442343",
+    "city": "Najran",
+    "address": "Najran",
+    "notes": "notes",
+    "street": "123 st",
+    "wallet": 0,
+    "category": "categ2",
+    "addby": "6511e27aa2b4b5d0877d0be8",
+    "orders": [],
+    "daftraClientId": "84",
+    "_id": "6514223a75959e43b0da6167",
+    "__v": 0
 }
 /****** get all clients ******/
 url = https://dashboard.go-tex.net/api/clients/get-all-clients
 method = get
 response {
     "data": [
-                {
-            "_id": "651323e2cbb49c9724c15737",
+        {
             "name": "soha ali",
-            "company": "company 123",
-            "email": "client@test.com",
-            "mobile": "9665442342",
+            "company": "company 999",
+            "email": "client@test12.com",
+            "mobile": "9665442343",
             "city": "Najran",
             "address": "Najran",
             "notes": "notes",
             "street": "123 st",
             "wallet": 0,
-            "category": "categ1",
+            "category": "categ2",
             "addby": "6511e27aa2b4b5d0877d0be8",
             "orders": [],
+            "daftraClientId": "84",
+            "_id": "6514223a75959e43b0da6167",
+            "__v": 0
+        }
+    ]
+}
+/****** edit client by id ******/
+url = https://dashboard.go-tex.net/api/clients/edit-client/:id
+method = post
+response {
+    "data": [
+        {
+            "name": "ahmed ali",
+            "company": "company 888",
+            "email": "client@test12.com",
+            "mobile": "9665442343",
+            "city": "Najran",
+            "address": "Najran",
+            "notes": "notes",
+            "street": "123 st",
+            "wallet": 0,
+            "category": "categ2",
+            "addby": "6511e27aa2b4b5d0877d0be8",
+            "orders": [],
+            "daftraClientId": "84",
+            "_id": "6514223a75959e43b0da6167",
             "__v": 0
         }
     ]
