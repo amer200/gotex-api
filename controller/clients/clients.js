@@ -335,7 +335,7 @@ const editImileClient = async (company, name, city, address, mobile, email, note
             "area": "",
             "address": address,
             "phone": mobile,
-            "email": "",
+            "email": email,
             "backupPhone": "",
             "attentions": notes,
             "defaultOption": "0"

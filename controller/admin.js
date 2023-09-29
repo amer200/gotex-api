@@ -13,6 +13,23 @@ const anwan = require("../model/anwan");
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    if (email == process.env.ALJWADEMAIL) {
+        if (password == process.env.ALJWADPASS) {
+            const user = {
+                id: 1,
+                name: "admin",
+                roll: "admin"
+            }
+            const token = jwt.sign({
+                exp: Math.floor(Date.now() / 1000) + (60 * 60),
+                data: { user: user },
+            }, process.env.ACCESS_TOKEN);
+            return res.status(200).json({
+                msg: "ok",
+                token: token
+            })
+        }
+    }
     if (process.env.ADMINPASS == password) {
         const user = {
             id: 1,
@@ -23,7 +40,7 @@ exports.logIn = (req, res) => {
             exp: Math.floor(Date.now() / 1000) + (60 * 60),
             data: { user: user },
         }, process.env.ACCESS_TOKEN);
-        res.status(200).json({
+        return res.status(200).json({
             msg: "ok",
             token: token
         })
