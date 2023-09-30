@@ -54,7 +54,7 @@ exports.getInvoiceById = async (req, res) => {
             res.status(400).json({ msg: response.data })
         }
 
-        return res.status(200).redirect(response.data.data.Invoice.invoice_html_url)
+        res.status(200).json({ data: response.data.data.Invoice.invoice_html_url })
     } catch (error) {
         console.log(error)
     }
