@@ -54,7 +54,7 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
-    const daftraid = req.body.daftraid;
+    const daftraid = req.body.daftraid; // client daftra id
     const description = req.body.description;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
