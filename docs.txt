@@ -846,7 +846,7 @@ body{
     "category": "test notes",
     "birth_date": "14-6-1998"
 }
-/**************************invoces*************************/
+/**************************invoices*************************/
 1)get All (admin)
 url = https://dashboard.go-tex.net/api/daftra/inovic-get-all
 method = get
@@ -854,7 +854,7 @@ method = get
 2)get marketer inovic
 url = https://dashboard.go-tex.net/api/daftra/get-all-markter-invoices
 method = get
-3)get invoice by id
+3)get invoice by id (marketer)
 url = https://dashboard.go-tex.net/api/daftra/get-invoice/:invoiceId
 method = get
 response{
