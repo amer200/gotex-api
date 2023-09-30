@@ -17,6 +17,9 @@ routes.post("/change-credit-order-status", clintController.ChangeCreditOrderStat
 routes.get("/get-markter-clints", userMiddlewares.isAuth, clintController.getClintsByMartker);
 routes.post("/add-new-client", userMiddlewares.isMarkter, clintController.addNewClient);
 routes.post("/edit-client-info", userMiddlewares.isMarkter, clintController.editClientInfo);
+
 routes.get("/inovic-get-all", adminMiddleware.isAuth, inovicController.getAll);
 routes.get("/get-all-markter-invoices", userMiddlewares.isMarkter, inovicController.getMarkterInovices);
+routes.get("/get-invoice/:id", userMiddlewares.isMarkter, inovicController.getInvoiceById);
+
 module.exports = routes;

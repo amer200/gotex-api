@@ -28,6 +28,38 @@ exports.getMarkterInovices = async (req, res) => {
     }
 
 }
+
+exports.getInvoiceById = async (req, res) => {
+    const invoiceId = req.params.id
+    const marketerId = req.user.user.id;
+
+    try {
+        const marketer = await User.findById(marketerId);
+        const staffId = marketer.daftraid;
+        if (!staffId) {
+            return res.status(404).json({
+                msg: "staff if not found may your account doesn't connect please call your admin"
+            })
+        }
+
+        const config = {
+            method: 'get',
+            url: `https://aljwadalmomez.daftra.com/api2/invoices/${invoiceId}.json`,
+            headers: {
+                'APIKEY': process.env.daftra_Key
+            }
+        }
+        const response = await axios(config)
+        if (response.data.code != '200') {
+            res.status(400).json({ msg: response.data })
+        }
+
+        return res.status(200).redirect(response.data.data.Invoice.invoice_html_url)
+    } catch (error) {
+        console.log(error)
+    }
+
+}
 //********************************************** */
 const getInoviceByPage = async (page) => { //page start from 1
     let config = {
