@@ -854,6 +854,12 @@ method = get
 2)get marketer inovic
 url = https://dashboard.go-tex.net/api/daftra/get-all-markter-invoices
 method = get
+3)get invoice by id
+url = https://dashboard.go-tex.net/api/daftra/get-invoice/:invoiceId
+method = get
+response{
+    "data": "https://aljwadalmomez.daftra.com/invoices/preview/127?hash=79c569647e484eaf952805afef10f324"
+}
 /**********************credit*****************************/
 1)markter-add-credit-for-client 
 url = https://dashboard.go-tex.net/api/daftra/markter-add-credit-for-client
