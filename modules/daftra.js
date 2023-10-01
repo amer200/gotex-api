@@ -1,6 +1,26 @@
 const { default: axios } = require("axios");
 const User = require("../model/user");
-const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount) => {
+
+exports.CreateInvo = async (orderData, clintId, staffId, notes, payment_method, payment_amount) => {
+    try {
+        const clientRes = await getClientById(clintId);
+        if (clientRes.code != 200) {
+            return errorHandler(clientRes.message, clientRes.code)
+        }
+        const client = clientRes.data.Client;
+        const invoiceRes = await invoiceCreate(orderData, client, staffId, notes, payment_method, payment_amount)
+        console.log("****invoiceRes")
+        console.log(invoiceRes)
+        return invoiceRes
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+const invoiceCreate = async (orderData, c, staffId, notes, payment_method, payment_amount) => {
     try {
         const data = JSON.stringify({
             "Invoice": {
@@ -49,6 +69,20 @@ const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount) 
             },
             "InvoiceItem": [
                 {
+                    "invoice_id": orderData.ordernumber,
+                    "item": "string",
+                    "description": notes,
+                    "unit_price": 0,
+                    "quantity": orderData.quantity,
+                    "tax1": 0,
+                    "tax2": 0,
+                    "product_id": 0,
+                    "col_3": null,
+                    "col_4": null,
+                    "col_5": null,
+                    "discount": 0,
+                    "discount_type": "1 => Percentage",
+                    "store_id": 0
                 }
             ],
             "Payment": [
@@ -77,9 +111,14 @@ const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount) 
             data: data
         }
         const response = await axios(config)
+        console.log("****response")
+        console.log(response)
         return response.data
     } catch (error) {
         console.log(error)
+        res.status(500).json({
+            error: err.message
+        })
     }
 }
 const getClientById = async (id) => {
@@ -93,11 +132,22 @@ const getClientById = async (id) => {
             }
         }
         const response = await axios(config);
+        console.log("****")
+        console.log(response.data)
         return response.data
     } catch (error) {
         return error.response.data
     }
 }
+//********************** */
+const errorHandler = (data, status) => {
+    let e = {
+        msg: data,
+        code: status
+    }
+    return e
+}
+
 // exports.createInv = async (clientId, notes, next) => {
 //     try {
 //         const clientId = req.body.clientId;
@@ -123,20 +173,3 @@ const getClientById = async (id) => {
 //         console.log(error)
 //     }
 // }
-exports.CreateInvo = async (clintId, staffId, notes, payment_method, payment_amount) => {
-    const clientRes = await getClientById(clintId);
-    if (clientRes.code != 200) {
-        return errorHandler(clientRes.message, clientRes.code)
-    }
-    const client = clientRes.data.Client;
-    const invoiceRes = await invoiceCreate(client, staffId, notes, payment_method, payment_amount)
-    return invoiceRes
-}
-//********************** */
-const errorHandler = (data, status) => {
-    let e = {
-        msg: data,
-        code: status
-    }
-    return e
-}
