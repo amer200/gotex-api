@@ -1,125 +1,111 @@
 const { default: axios } = require("axios");
 const User = require("../model/user");
 
-exports.CreateInvo = async (orderData, clintId, staffId, notes, payment_method, payment_amount) => {
-    try {
-        const clientRes = await getClientById(clintId);
-        if (clientRes.code != 200) {
-            return errorHandler(clientRes.message, clientRes.code)
-        }
-        const client = clientRes.data.Client;
-        const invoiceRes = await invoiceCreate(orderData, client, staffId, notes, payment_method, payment_amount)
-        console.log("****invoiceRes")
-        console.log(invoiceRes)
-        return invoiceRes
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            error: err.message
-        })
+exports.CreateInvo = async (clintId, staffId, notes, payment_method, payment_amount, quantity = "") => {
+    const clientRes = await getClientById(clintId);
+    if (clientRes.code != 200) {
+        return errorHandler(clientRes.message, clientRes.code)
     }
+    const client = clientRes.data.Client;
+    const invoiceRes = await invoiceCreate(client, staffId, notes, payment_method, payment_amount, quantity)
+    console.log("****invoiceRes")
+    console.log(invoiceRes)
+    return invoiceRes
 }
 
-const invoiceCreate = async (orderData, c, staffId, notes, payment_method, payment_amount) => {
-    try {
-        const data = JSON.stringify({
-            "Invoice": {
-                "staff_id": staffId,
-                "subscription_id": null,
-                "client_id": c.id,
-                "is_offline": true,
-                "currency_code": "SAR",
-                "client_business_name": c.business_name,
-                "client_first_name": c.first_name,
-                "client_last_name": c.last_name,
-                "client_email": c.email,
-                "client_address1": c.address1,
-                "client_address2": c.address2,
-                "client_postal_code": c.postal_code,
-                "client_city": c.city,
-                "client_state": c.state,
-                "client_country_code": c.country_code,
-                "date": new Date(),
-                "draft": "0",
+const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount, quantity) => {
+    const data = JSON.stringify({
+        "Invoice": {
+            "staff_id": staffId,
+            "subscription_id": null,
+            "client_id": c.id,
+            "is_offline": true,
+            "currency_code": "SAR",
+            "client_business_name": c.business_name,
+            "client_first_name": c.first_name,
+            "client_last_name": c.last_name,
+            "client_email": c.email,
+            "client_address1": c.address1,
+            "client_address2": c.address2,
+            "client_postal_code": c.postal_code,
+            "client_city": c.city,
+            "client_state": c.state,
+            "client_country_code": c.country_code,
+            "date": new Date(),
+            "draft": "0",
+            "discount": 0,
+            "discount_amount": 0,
+            "deposit": 0,
+            "deposit_type": 0,
+            "notes": notes,
+            "html_notes": null,
+            "invoice_layout_id": 1,
+            "estimate_id": 0,
+            "shipping_options": "",
+            "shipping_amount": null,
+            "client_active_secondary_address": false,
+            "client_secondary_name": "string",
+            "client_secondary_address1": "string",
+            "client_secondary_address2": "string",
+            "client_secondary_city": "string",
+            "client_secondary_state": "string",
+            "client_secondary_postal_code": "string",
+            "client_secondary_country_code": "string",
+            "follow_up_status": null,
+            "work_order_id": null,
+            "requisition_delivery_status": null,
+            "pos_shift_id": null,
+            "qr_code_url": "https://yoursite.daftra.com/qr/?d64=QVE1TmIyaGhiV1ZrSUVGemFISmhaZ0lJTVRFMU16WTJRMUlERkRJd01qSXRNVEF0TWpoVU1EQTZNREU2TVRWYUJBRXdCUUV3",
+            "invoice_html_url": "https://yoursite.daftra.com/invoices/preview/2621?hash=c06543fe13bd4850b521733687c53259",
+            "invoice_pdf_url": "https://yoursite.daftra.com/invoices/view/2621.pdf?hash=c06543fe13bd4850b521733687c53259"
+        },
+        "InvoiceItem": [
+            {
+                "invoice_id": "",
+                "item": "string",
+                "description": notes,
+                "unit_price": 0,
+                "quantity": quantity,
+                "tax1": 0,
+                "tax2": 0,
+                "product_id": 0,
+                "col_3": null,
+                "col_4": null,
+                "col_5": null,
                 "discount": 0,
-                "discount_amount": 0,
-                "deposit": 0,
-                "deposit_type": 0,
-                "notes": notes,
-                "html_notes": null,
-                "invoice_layout_id": 1,
-                "estimate_id": 0,
-                "shipping_options": "",
-                "shipping_amount": null,
-                "client_active_secondary_address": false,
-                "client_secondary_name": "string",
-                "client_secondary_address1": "string",
-                "client_secondary_address2": "string",
-                "client_secondary_city": "string",
-                "client_secondary_state": "string",
-                "client_secondary_postal_code": "string",
-                "client_secondary_country_code": "string",
-                "follow_up_status": null,
-                "work_order_id": null,
-                "requisition_delivery_status": null,
-                "pos_shift_id": null,
-                "qr_code_url": "https://yoursite.daftra.com/qr/?d64=QVE1TmIyaGhiV1ZrSUVGemFISmhaZ0lJTVRFMU16WTJRMUlERkRJd01qSXRNVEF0TWpoVU1EQTZNREU2TVRWYUJBRXdCUUV3",
-                "invoice_html_url": "https://yoursite.daftra.com/invoices/preview/2621?hash=c06543fe13bd4850b521733687c53259",
-                "invoice_pdf_url": "https://yoursite.daftra.com/invoices/view/2621.pdf?hash=c06543fe13bd4850b521733687c53259"
-            },
-            "InvoiceItem": [
-                {
-                    "invoice_id": orderData.ordernumber,
-                    "item": "string",
-                    "description": notes,
-                    "unit_price": 0,
-                    "quantity": orderData.quantity,
-                    "tax1": 0,
-                    "tax2": 0,
-                    "product_id": 0,
-                    "col_3": null,
-                    "col_4": null,
-                    "col_5": null,
-                    "discount": 0,
-                    "discount_type": "1 => Percentage",
-                    "store_id": 0
-                }
-            ],
-            "Payment": [
-                {
-                    "payment_method": payment_method,
-                    "amount": payment_amount,
-                    "transaction_id": null,
-                    "treasury_id": null,
-                    "staff_id": staffId
-                }
-            ],
-            "InvoiceCustomField": {},
-            "Deposit": {},
-            "InvoiceReminder": {},
-            "Document": {},
-            "DocumentTitle": {}
-        });
-        const config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: `https://aljwadalmomez.daftra.com/api2/invoices`,
-            headers: {
-                'APIKEY': process.env.daftra_Key,
-                'Content-Type': 'application/json'
-            },
-            data: data
-        }
-        const response = await axios(config)
-        console.log("****response")
-        console.log(response)
-        return response.data
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({
-            error: err.message
-        })
+                "discount_type": "1 => Percentage",
+                "store_id": 0
+            }
+        ],
+        "Payment": [
+            {
+                "payment_method": payment_method,
+                "amount": payment_amount,
+                "transaction_id": null,
+                "treasury_id": null,
+                "staff_id": staffId
+            }
+        ],
+        "InvoiceCustomField": {},
+        "Deposit": {},
+        "InvoiceReminder": {},
+        "Document": {},
+        "DocumentTitle": {}
+    });
+    const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `https://aljwadalmomez.daftra.com/api2/invoices`,
+        headers: {
+            'APIKEY': process.env.daftra_Key,
+            'Content-Type': 'application/json'
+        },
+        data: data
     }
+    const response = await axios(config)
+    console.log("****response")
+    console.log(response)
+    return response.data
 }
 const getClientById = async (id) => {
     try {
