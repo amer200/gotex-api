@@ -3,6 +3,7 @@ const qs = require('qs');
 const Glt = require("../model/glt");
 const GltOrder = require("../model/gltorders");
 const User = require("../model/user");
+const Daftra = require("../modules/daftra");
 const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
@@ -61,6 +62,7 @@ exports.createUserOrder = async (req, res) => {
     const c_mobile = req.body.c_mobile;
     const markterCode = req.body.markterCode;
     const clintid = req.body.clintid;
+    const daftraid = req.body.daftraid;
     /**************************** */
     const cod = req.body.cod;
     if (cod) {
@@ -122,13 +124,18 @@ exports.createUserOrder = async (req, res) => {
         .then(response => {
             return response.data.data
         })
-        .then(data => {
+        .then(async (data) => {
             let result = data.orders[0];
             if (result.status == 'fail') {
                 res.status(400).json({
                     msg: result.msg
                 })
             } else {
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, pieces);
+                if (invo.result != 'successful') {
+                    return res.status(400).json({ msg: "daftra error", invo })
+                }
+
                 const newOrder = new GltOrder({
                     user: req.user.user.id,
                     company: "glt",
@@ -138,7 +145,8 @@ exports.createUserOrder = async (req, res) => {
                     price: totalShipPrice,
                     marktercode: markterCode,
                     createdate: new Date(),
-                    invoice: ""
+                    invoice: "",
+                    inovicedaftra: invo
                 })
                 return newOrder.save();
             }

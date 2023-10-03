@@ -105,12 +105,10 @@ exports.createUserOrder = async (req, res) => {
                 }
                 user.save()
                     .then(async u => {
-                        const invo = await Daftra.CreateInvo(data, daftraid, req.user.user.daftraid, description, paytype, totalShipPrice);
-                        console.log("****saee")
-                        console.log(invo)
-                        // if (invo.code != '200') {
-                        //     return res.status(400).json({ msg: "daftra error", invo })
-                        // }
+                        const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
+                        if (invo.result != 'successful') {
+                            return res.status(400).json({ msg: "daftra error", invo })
+                        }
 
                         const order = new SaeeOrder({
                             user: req.user.user.id,

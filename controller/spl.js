@@ -176,7 +176,11 @@ exports.creteNewOrder = async (req, res) => {
                     data: response.data
                 })
             } else {
-                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, " ", paytype, totalShipPrice);
+                const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
+                if (invo.result != 'successful') {
+                    return res.status(400).json({ msg: "daftra error", invo })
+                }
+
                 const o = new SplOrder({
                     user: user._id,
                     company: "Spl",

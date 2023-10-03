@@ -1,5 +1,6 @@
 const axios = require("axios");
 const User = require("../model/user");
+const Daftra = require("../modules/daftra");
 const Jt = require("../model/jt");
 const JtOrder = require("../model/jtorders");
 var crypto = require('crypto');
@@ -43,7 +44,8 @@ exports.createUserOrder = async (req, res) => {
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     /***************** */
-    let { description, weight, re_address, re_city, re_mobile, re_name, re_prov, goodsType, s_address, s_city, s_mobile, s_name, s_prov, goodsValue, items, cod } = req.body;
+    let { description, weight, re_address, re_city, re_mobile, re_name, re_prov, goodsType,
+        s_address, s_city, s_mobile, s_name, s_prov, goodsValue, items, cod, daftraid } = req.body;
     /***************** */
     if (cod) {
         var BookingMode = "COD"
@@ -110,6 +112,8 @@ exports.createUserOrder = async (req, res) => {
     let data = qs.stringify({
         bizContent: bizContent
     });
+    console.log('********')
+    console.log(data)
     let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
     var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
     let config = {
@@ -125,12 +129,17 @@ exports.createUserOrder = async (req, res) => {
     };
     try {
         const response = await axios(config);
-        // console.log(response)
         if (response.data.code != 1) {
             return res.status(400).json({
                 msg: response.data
             })
         }
+
+        const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, goodsValue);
+        if (invo.result != 'successful') {
+            return res.status(400).json({ msg: "daftra error", invo })
+        }
+
         const newOrder = new JtOrder({
             user: req.user.user.id,
             company: "jt",
@@ -140,7 +149,7 @@ exports.createUserOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             createdate: new Date(),
-            // inovicedaftra: invo
+            inovicedaftra: invo
         })
         await newOrder.save();
         if (!cod) {

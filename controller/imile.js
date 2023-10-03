@@ -147,10 +147,12 @@ exports.createOrder = async (req, res) => {
         var codAmount = res.locals.codAmount;
         var PaymentType = "p";
         var paymentMethod = 100;
+        var paytype = 'cod'
     } else {
         var codAmount = 0;
         var PaymentType = "P";
         var paymentMethod = 200;
+        var paytype = 'cc'
     }
     // if (markterCode) {
     //     var nameCode = `${p_name} (${markterCode})`;
@@ -161,145 +163,114 @@ exports.createOrder = async (req, res) => {
     const daftraid = req.body.daftraid;
     const clintid = req.body.clintid;
     const shipmentDate = Date.now();
-    var data = JSON.stringify({
-        "customerId": process.env.imile_customerid,
-        "sign": process.env.imile_sign,
-        "accessToken": imile.token,
-        "signMethod": "SimpleKey",
-        "format": "json",
-        "version": "1.0.0",
-        "timestamp": 1648883951481,
-        "timeZone": "+4",
-        "param": {
-            "orderCode": `gotex#${Date.now()}`,
-            "orderType": "100",
-            "consignor": p_company,
-            "consignee": c_company,
-            "consigneeContact": c_name,
-            "consigneePhone": c_mobile,
-            "consigneeCountry": "KSA",
-            "consigneeProvince": "",
-            "consigneeCity": c_city, // c_city
-            "consigneeArea": "", //c_area
-            "consigneeSuburb": "",
-            "consigneeZipCode": "",
-            "consigneeStreet": c_street,
-            "consigneeExternalNo": "",
-            "consigneeInternalNo": "",
-            "consigneeAddress": c_address,
-            "goodsValue": goodsValue,
-            "collectingMoney": codAmount,
-            "paymentMethod": paymentMethod,
-            "totalCount": 1,
-            "totalWeight": weight,
-            "totalVolume": 0,
-            "skuTotal": skuDetailList.length,
-            "skuName": skuName,
-            "deliveryRequirements": "",
-            "orderDescription": "",
-            "buyerId": "",
-            "platform": "",
-            "isInsurance": 0,
-            "pickDate": `2023-01-29`,
-            "pickType": "0",
-            "batterType": "Normal",
-            "currency": "Local",
-            "isSupportUnpack": 1,
-            "consignorJoinFrom": "FC",
-            "returnAddressInfo": {
-                "contactCompany": "gotex"
-            },
-            "skuDetailList": skuDetailList
-        }
-    });
-    console.log(data)
-    var config = {
-        method: 'post',
-        url: 'https://openapi.imile.com/client/order/createOrder',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    axios(config)
-        .then(async (response) => {
-            console.log(response.data)
-            if (response.data.code != '200') {
-                res.status(400).json({
-                    msg: response.data
-                })
-            } else {
-                if (cod) {
-                    const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
-                    const newO = new ImileOrder({
-                        user: req.user.user.id,
-                        company: "imile",
-                        ordernumber: ordersNum + 2,
-                        data: response.data,
-                        paytype: "cod",
-                        price: totalShipPrice,
-                        marktercode: markterCode,
-                        createdate: new Date(),
-                        inovicedaftra: invo
-                    })
-                    newO.save()
-                        .then(async o => {
-                            if (clintid) {
-                                const clint = await Clint.findById(clintid);
-                                const co = {
-                                    company: "imile",
-                                    id: o._id
-                                }
-                                clint.wallet = clint.wallet - totalShipPrice;
-                                clint.orders.push(co);
-                                await clint.save();
-                            }
-                            res.status(200).json({
-                                data: o
-                            })
-                        })
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                    const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
-                    user.save()
-                        .then(u => {
-                            const newO = new ImileOrder({
-                                user: req.user.user.id,
-                                company: "imile",
-                                ordernumber: ordersNum + 2,
-                                data: response.data,
-                                paytype: "cc",
-                                price: totalShipPrice,
-                                marktercode: markterCode,
-                                createdate: new Date(),
-                                inovicedaftra: invo
-                            })
-                            newO.save()
-                                .then(async o => {
-                                    if (clintid) {
-                                        const clint = await Clint.findById(clintid);
-                                        const co = {
-                                            company: "imile",
-                                            id: o._id
-                                        }
-                                        clint.wallet = clint.wallet - totalShipPrice;
-                                        clint.orders.push(co);
-                                        await clint.save();
-                                    }
-                                    res.status(200).json({
-                                        data: o
-                                    })
-                                })
-                        })
-                }
+
+    try {
+        var data = JSON.stringify({
+            "customerId": process.env.imile_customerid,
+            "sign": process.env.imile_sign,
+            "accessToken": imile.token,
+            "signMethod": "SimpleKey",
+            "format": "json",
+            "version": "1.0.0",
+            "timestamp": 1648883951481,
+            "timeZone": "+4",
+            "param": {
+                "orderCode": `gotex#${Date.now()}`,
+                "orderType": "100",
+                "consignor": p_company,
+                "consignee": c_company,
+                "consigneeContact": c_name,
+                "consigneePhone": c_mobile,
+                "consigneeCountry": "KSA",
+                "consigneeProvince": "",
+                "consigneeCity": c_city, // c_city
+                "consigneeArea": "", //c_area
+                "consigneeSuburb": "",
+                "consigneeZipCode": "",
+                "consigneeStreet": c_street,
+                "consigneeExternalNo": "",
+                "consigneeInternalNo": "",
+                "consigneeAddress": c_address,
+                "goodsValue": goodsValue,
+                "collectingMoney": codAmount,
+                "paymentMethod": paymentMethod,
+                "totalCount": 1,
+                "totalWeight": weight,
+                "totalVolume": 0,
+                "skuTotal": skuDetailList.length,
+                "skuName": skuName,
+                "deliveryRequirements": "",
+                "orderDescription": "",
+                "buyerId": "",
+                "platform": "",
+                "isInsurance": 0,
+                "pickDate": `2023-01-29`,
+                "pickType": "0",
+                "batterType": "Normal",
+                "currency": "Local",
+                "isSupportUnpack": 1,
+                "consignorJoinFrom": "FC",
+                "returnAddressInfo": {
+                    "contactCompany": "gotex"
+                },
+                "skuDetailList": skuDetailList
             }
-        })
-        .catch(function (error) {
-            console.log(error)
-            res.status(500).json({
-                error: error.message
-            })
         });
+        console.log(data)
+        var config = {
+            method: 'post',
+            url: 'https://openapi.imile.com/client/order/createOrder',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        const response = await axios(config)
+        if (response.data.code != '200') {
+            return res.status(400).json({
+                msg: response.data
+            })
+        } else {
+            const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
+            if (invo.result != 'successful') {
+                return res.status(400).json({ msg: "daftra error", invo })
+            }
+
+            const order = await ImileOrder.create({
+                user: req.user.user.id,
+                company: "imile",
+                ordernumber: ordersNum + 2,
+                data: response.data,
+                paytype: "cod",
+                price: totalShipPrice,
+                marktercode: markterCode,
+                createdate: new Date(),
+                inovicedaftra: invo
+            })
+
+            if (clintid) {
+                const clint = await Clint.findById(clintid);
+                const co = {
+                    company: "imile",
+                    id: order._id
+                }
+                clint.wallet = clint.wallet - totalShipPrice;
+                clint.orders.push(co);
+                await clint.save();
+            }
+            if (!cod) {
+                user.wallet = user.wallet - totalShipPrice;
+                await user.save()
+            }
+
+            res.status(200).json({ data: order })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
 }
 /**************************************  */
 cron.schedule('0 */2 * * *', async () => {
