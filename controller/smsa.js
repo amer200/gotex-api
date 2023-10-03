@@ -173,6 +173,7 @@ exports.createUserOrder = async (req, res) => {
                         }
                     })
             } else {
+                // console.log(response.data)
                 res.status(400).json({
                     msg: response.data
                 })
@@ -181,7 +182,7 @@ exports.createUserOrder = async (req, res) => {
         .catch(function (error) {
             console.log(error);
             res.status(500).json({
-                msg: error.message
+                msg: error.response.data
             })
         });
 
