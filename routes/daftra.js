@@ -3,6 +3,7 @@ const routes = express.Router();
 const staffController = require("../controller/daftra/staff");
 const clintController = require("../controller/daftra/clints");
 const inovicController = require("../controller/daftra/invoice");
+const supplierController = require("../controller/daftra/suppliers");
 const adminMiddleware = require("../middleware/admin");
 const userMiddlewares = require('../middleware/user');
 
@@ -18,8 +19,16 @@ routes.get("/get-markter-clints", userMiddlewares.isAuth, clintController.getCli
 routes.post("/add-new-client", userMiddlewares.isMarkter, clintController.addNewClient);
 routes.post("/edit-client-info", userMiddlewares.isMarkter, clintController.editClientInfo);
 
+// invoice
 routes.get("/inovic-get-all", adminMiddleware.isAuth, inovicController.getAll);
 routes.get("/get-all-markter-invoices", userMiddlewares.isMarkter, inovicController.getMarkterInovices);
 routes.get("/get-invoice/:id", userMiddlewares.isMarkter, inovicController.getInvoiceById);
+
+// suppliers
+routes.post("/add-supplier", adminMiddleware.isAuth, supplierController.addSupplier);
+routes.post("/edit-supplier/:id", adminMiddleware.isAuth, supplierController.editSupplier);
+routes.delete("/delete-supplier/:id", adminMiddleware.isAuth, supplierController.deleteSupplier);
+routes.get("/get-all-suppliers", adminMiddleware.isAuth, supplierController.getAllSuppliers);
+routes.get("/get-supplier/:id", adminMiddleware.isAuth, supplierController.getSupplierById);
 
 module.exports = routes;

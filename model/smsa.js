@@ -32,7 +32,8 @@ const smsaSchema = mongoose.Schema({
     maxcodmarkteer: {
         type: Number,
         default: 10
-    }
+    },
+    daftraId: String
 })
 
 module.exports = mongoose.model("Smsa", smsaSchema);

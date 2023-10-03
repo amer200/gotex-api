@@ -33,6 +33,7 @@ const splSchema = mongoose.Schema({
         type: Number,
         default: 10
     },
+    daftraId: String,
     token: {
         type: String
     }

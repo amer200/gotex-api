@@ -35,6 +35,7 @@ const jtSchema = mongoose.Schema({
     },
     token: {
         type: String
-    }
+    },
+    daftraId: String
 })
 module.exports = mongoose.model("Jt", jtSchema);

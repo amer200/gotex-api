@@ -32,7 +32,8 @@ const aramexSchema = mongoose.Schema({
     status: {
         type: Boolean,
         default: false,
-    }
+    },
+    daftraId: String
 })
 
 module.exports = mongoose.model("aramex", aramexSchema);

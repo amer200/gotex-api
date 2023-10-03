@@ -33,6 +33,7 @@ const imileSchema = mongoose.Schema({
         type: Number,
         default: 10
     },
+    daftraId: String,
     token: {
         type: String
     }
