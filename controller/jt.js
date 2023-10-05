@@ -172,8 +172,8 @@ exports.getSticker = async (req, res) => {
     const billCode = order.data.data.billCode;
     try {
         const bizContent = `{
-            "customerCode":${process.env.jt_customer_code},
-            "digest":${process.env.jt_body_digest},
+            "customerCode":"${process.env.jt_customer_code}",
+            "digest":"${process.env.jt_body_digest}",
             "billCode":"${billCode}"
          }`;
         let myText = bizContent + process.env.jt_privte_key;
