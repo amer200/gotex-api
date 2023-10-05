@@ -62,8 +62,8 @@ exports.createUserOrder = async (req, res) => {
         var nameCode = s_name;
     }
     const bizContent = `{
-        "customerCode":"J0086024173",
-        "digest":"VdlpKaoq64AZ0yEsBkvt1A==",
+        "customerCode":"${process.env.jt_customer_code}",
+        "digest":"${process.env.jt_body_digest}",
         "serviceType":"01",
         "orderType":"2",
         "deliveryType":"04",
@@ -85,7 +85,7 @@ exports.createUserOrder = async (req, res) => {
         "length":0,
         "weight":${weight},
         "remark":"${description}",
-        "txlogisticId":"${1695119354337}Gotex",
+        "txlogisticId":"${1695119354339}Gotex",
         "goodsType":"${goodsType}",
         "priceCurrency":"SAR",
         "totalQuantity":${items.length},
@@ -112,15 +112,15 @@ exports.createUserOrder = async (req, res) => {
     let data = qs.stringify({
         bizContent: bizContent
     });
+    // return console.log(bizContent)
     console.log('********')
-    console.log(data)
-    let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
+    let myText = bizContent + process.env.jt_privte_key;
     var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
     let config = {
         method: 'post',
-        url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/addOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+        url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/addOrder',
         headers: {
-            'apiAccount': '292508153084379141',
+            'apiAccount': process.env.jt_api_account,
             'digest': md5Hash,
             'timestamp': '1638428570653',
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -172,20 +172,20 @@ exports.getSticker = async (req, res) => {
     const billCode = order.data.data.billCode;
     try {
         const bizContent = `{
-            "customerCode":"J0086024173",
-            "digest":"VdlpKaoq64AZ0yEsBkvt1A==",
+            "customerCode":"${process.env.jt_customer_code}",
+            "digest":"${process.env.jt_body_digest}",
             "billCode":"${billCode}"
          }`;
-        let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
+        let myText = bizContent + process.env.jt_privte_key;
         var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
         let data = qs.stringify({
             bizContent: bizContent
         });
         let config = {
             method: 'post',
-            url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/printOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+            url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/printOrder',
             headers: {
-                'apiAccount': '292508153084379141',
+                'apiAccount': process.env.jt_api_account,
                 'digest': `${md5Hash}`,
                 'timestamp': '1638428570653',
                 'Content-Type': 'application/x-www-form-urlencoded'
