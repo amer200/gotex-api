@@ -648,9 +648,9 @@ exports.createOrder = async (req, res) => {
         }
 
         const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, PaymentType, totalShipPrice, pieces);
-        if (invo.result != 'successful') {
-            return res.status(400).json({ msg: "daftra error", invo })
-        }
+        // if (invo.result != 'successful') {
+        //     return res.status(400).json({ msg: "daftra error", invo })
+        // }
 
         const newOrder = await AramexOrder.create({
             user: userId,

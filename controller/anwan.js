@@ -97,9 +97,9 @@ exports.createUserOrder = async (req, res) => {
                 })
             } else {
                 const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice, pieces);
-                if (invo.result != 'successful') {
-                    return res.status(400).json({ msg: "daftra error", invo })
-                }
+                // if (invo.result != 'successful') {
+                //     return res.status(400).json({ msg: "daftra error", invo })
+                // }
 
                 const newOrder = new anwanorders({
                     user: req.user.user.id,

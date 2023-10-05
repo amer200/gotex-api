@@ -232,9 +232,9 @@ exports.createOrder = async (req, res) => {
             })
         } else {
             const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
-            if (invo.result != 'successful') {
-                return res.status(400).json({ msg: "daftra error", invo })
-            }
+            // if (invo.result != 'successful') {
+            //     return res.status(400).json({ msg: "daftra error", invo })
+            // }
 
             const order = await ImileOrder.create({
                 user: req.user.user.id,
