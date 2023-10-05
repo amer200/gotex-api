@@ -231,7 +231,11 @@ exports.createOrder = async (req, res) => {
                 msg: response.data
             })
         } else {
-            const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
+            if (daftraid) {
+                var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
+            } else {
+                var invo = ""
+            }
             // if (invo.result != 'successful') {
             //     return res.status(400).json({ msg: "daftra error", invo })
             // }
