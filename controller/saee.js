@@ -56,7 +56,6 @@ exports.createUserOrder = async (req, res) => {
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
     let daftraid = req.body.daftraid; // client daftra id
-    let daftraid = req.body.daftraid; // client daftra id
     const description = req.body.description;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
