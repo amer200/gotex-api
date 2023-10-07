@@ -2,6 +2,7 @@ const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
+const { addUserAsClient } = require("../controller/clients/clients");
 const joiPassword = Joi.extend(joiPasswordExtendCore);
 const userSchema = Joi.object({
     name: Joi.string().min(3).required(),
@@ -111,4 +112,36 @@ exports.isVerfied = (req, res, next) => {
                 msg: err
             })
         })
+}
+
+/** To add user as a daftra client */
+exports.isClient = async (req, res, next) => {
+    const userId = req.user.user.id;
+    let daftraid = req.body.daftraid;
+    console.log(daftraid)
+    try {
+        const user = await User.findById(userId)
+
+        if (!daftraid) {
+            if (user.daftraClientId) {
+                req.body.daftraid = user.daftraClientId
+                next()
+            } else {
+                const result = await addUserAsClient(user)
+                if (result.result !== 'success') {
+                    return res.status(400).json({ msg: result })
+                }
+                req.body.daftraid = user.daftraClientId = result.data.daftraClientId
+                await user.save()
+                next()
+            }
+        } else {
+            next()
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err.message
+        })
+    }
 }

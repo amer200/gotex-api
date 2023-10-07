@@ -26,10 +26,10 @@ exports.addClient = async (req, res) => {
             staff_id = user.daftraid;
         }
 
-        const usedEmail = await Client.findOne({ email })
-        if (usedEmail) {
-            return res.status(400).json({ msg: "This client email is already used." })
-        }
+        // const usedEmail = await Client.findOne({ email })
+        // if (usedEmail) {
+        //     return res.status(400).json({ msg: "This client email is already used." })
+        // }
 
         const daftraResult = await addDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date);
         if (daftraResult.result != "ok") {
@@ -71,7 +71,6 @@ exports.addClient = async (req, res) => {
         })
     }
 }
-
 exports.getAllClients = async (req, res) => {
     try {
         const clients = await Client.find({})
@@ -148,6 +147,68 @@ exports.editClient = async (req, res) => {
         })
     }
 }
+
+/** Add user as a client to daftra */
+exports.addUserAsClient = async (user) => {
+    let { id: userId, name, location: city, address, mobile, email, daftraid } = user
+    const company = Math.floor(Math.random() * 10) // to be unique
+    const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
+    city = 'Najran'
+
+    const first_name = name.split(' ')[0]
+    const last_name = name.split(first_name + ' ')[1] || ""
+    console.log(first_name, last_name)
+    let staff_id = 0;
+
+    if (!first_name || !city || !address || !mobile || !email) {
+        return { result: 'fail', msg: 'These all info are required:  first_name, last_name, city, address, mobile and email' }
+    }
+    if (user.daftraid) {
+        staff_id = user.daftraid;
+    }
+
+    // const usedEmail = await Client.findOne({ email })
+    // if (usedEmail) {
+    //     return {
+    //         result: 'fail',
+    //         msg: "This client email is already used."
+    //     }
+    // }
+
+    const daftraResult = await addDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date);
+    if (daftraResult.result != "ok") {
+        return {
+            result: 'fail',
+            msg: "error with daftra",
+            err: daftraResult
+        }
+    }
+    const imileResult = await addImileClient(company, name, city, address, mobile, email, notes);
+    if (imileResult != 1) {
+        await removeDaftraClient(daftraResult.id)
+        return {
+            result: 'fail',
+            msg: "error with imile",
+            err: imileResult
+        }
+    }
+    const myClient = new Client({
+        name: name,
+        company: company,
+        email: email,
+        mobile: mobile,
+        city: city,
+        address: address,
+        notes: notes,
+        street: street,
+        category: category,
+        addby: userId,
+        orders: [],
+        daftraClientId: daftraResult.id
+    })
+    await myClient.save();
+    return { result: 'success', data: myClient }
+}
 //************************************************************************************** */
 const addImileClient = async (company, name, city, address, mobile, email, notes) => {
     const imile = await Imile.findOne();
@@ -168,7 +229,7 @@ const addImileClient = async (company, name, city, address, mobile, email, notes
             "area": "",
             "address": address,
             "phone": mobile,
-            "email": email,
+            "email": "",
             "backupPhone": "",
             "attentions": notes,
             "defaultOption": "0"
@@ -196,7 +257,7 @@ const addDaftraClient = async (staff_id, company, first_name, last_name, email, 
             "business_name": company,
             "first_name": first_name,
             "last_name": last_name,
-            "email": email,
+            "email": "",
             "address1": address,
             "city": city,
             "state": state,
