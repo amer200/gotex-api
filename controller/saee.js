@@ -106,25 +106,15 @@ exports.createUserOrder = async (req, res) => {
                 }
                 user.save()
                     .then(async u => {
-                        /** Daftra Invoice */
-                        // if (!daftraid) {
-                        //     if (u.daftraClientId) {
-                        //         daftraid = u.daftraClientId
-                        //     } else {
-                        //         const result = await addUserAsClient(u)
-                        //         if (result.result !== 'success') {
-                        //             return res.status(400).json({ msg: result })
-                        //         }
-                        //         daftraid = u.daftraClientId = result.data.daftraClientId
-                        //         await u.save()
-                        //         console.log(result.data, daftraid)
-                        //     }
-                        // }
                         console.log(daftraid)
-                        const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
-                        if (invo.result != 'successful') {
-                            return res.status(400).json({ msg: "daftra error", invo })
+                        if (daftraid) {
+                            var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
+                        } else {
+                            var invo = ""
                         }
+                        // if (invo.result != 'successful') {
+                        //     return res.status(400).json({ msg: "daftra error", invo })
+                        // }
 
                         const order = new SaeeOrder({
                             user: req.user.user.id,
