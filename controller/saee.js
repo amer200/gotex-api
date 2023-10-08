@@ -4,7 +4,6 @@ const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
 const Clint = require("../model/clint");
 const Daftra = require("../modules/daftra");
-const { addUserAsClient } = require("./clients/clients");
 
 
 exports.edit = (req, res) => {
@@ -55,7 +54,7 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
-    let daftraid = req.body.daftraid; // client daftra id
+    const daftraid = req.body.daftraid; // client daftra id
     const description = req.body.description;
     if (cod) {
         var cashondelivery = res.locals.codAmount;
@@ -91,72 +90,113 @@ exports.createUserOrder = async (req, res) => {
         // sendercountry: "SA"
     }
     // console.log(data)
-    axios({
+    let config = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json;charset=utf-8' },
         url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
         data: data
-    })
-        .then(response => {
-            if (response.data.success) {
-                if (!cod) {
-                    user.wallet = user.wallet - totalShipPrice;
-                } else {
-                    user.wallet = user.wallet
-                }
-                user.save()
-                    .then(async u => {
-                        console.log(daftraid)
-                        if (daftraid) {
-                            var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
-                        } else {
-                            var invo = ""
-                        }
-                        // if (invo.result != 'successful') {
-                        //     return res.status(400).json({ msg: "daftra error", invo })
-                        // }
-
-                        const order = new SaeeOrder({
-                            user: req.user.user.id,
-                            company: "saee",
-                            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
-                            data: response.data,
-                            paytype: paytype,
-                            price: totalShipPrice,
-                            marktercode: markterCode,
-                            createdate: new Date(),
-                            inovicedaftra: invo
-                        })
-                        order.save()
-                            .then(async o => {
-                                if (clintid) {
-                                    const clint = await Clint.findById(clintid);
-                                    const co = {
-                                        company: "saee",
-                                        id: o._id
-                                    }
-                                    clint.wallet = clint.wallet - totalShipPrice;
-                                    clint.orders.push(co);
-                                    await clint.save();
-                                }
-                                res.status(200).json({
-                                    msg: "order created",
-                                    data: o
-                                })
-                            })
-                    })
-            } else {
-                res.status(400).json({
-                    msg: response.data
-                })
+    }
+    const saeeRes = await axios(config);
+    if (saeeRes.data.success) {
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save()
+        }
+        let invo = {};
+        if (req.user.user.daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
+            if (invo.result != 'successful') {
+                return res.status(400).json({ msg: "daftra error", invo })
             }
+        }
+        const order = new SaeeOrder({
+            user: req.user.user.id,
+            company: "saee",
+            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+            data: response.data,
+            paytype: paytype,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            createdate: new Date(),
+            inovicedaftra: invo
         })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({
-                error: err.message
-            })
+        await order.save()
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "saee",
+                id: order._id
+            }
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+        }
+        return res.status(200).json({
+            msg: "order created",
+            data: o
         })
+    } else {
+        res.status(400).json({
+            msg: response.data
+        })
+    }
+    //     .then(response => {
+    //     if (response.data.success) {
+    //         if (!cod) {
+    //             user.wallet = user.wallet - totalShipPrice;
+    //         } else {
+    //             user.wallet = user.wallet
+    //         }
+    //         user.save()
+    //             .then(async u => {
+    //                 let invo = {};
+    //                 if (req.user.user.daftraid) {
+    //                     invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
+    //                     if (invo.result != 'successful') {
+    //                         return res.status(400).json({ msg: "daftra error", invo })
+    //                     }
+    //                 }
+    //                 const order = new SaeeOrder({
+    //                     user: req.user.user.id,
+    //                     company: "saee",
+    //                     ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+    //                     data: response.data,
+    //                     paytype: paytype,
+    //                     price: totalShipPrice,
+    //                     marktercode: markterCode,
+    //                     createdate: new Date(),
+    //                     inovicedaftra: invo
+    //                 })
+    //                 order.save()
+    //                     .then(async o => {
+    //                         if (clintid) {
+    //                             const clint = await Clint.findById(clintid);
+    //                             const co = {
+    //                                 company: "saee",
+    //                                 id: o._id
+    //                             }
+    //                             clint.wallet = clint.wallet - totalShipPrice;
+    //                             clint.orders.push(co);
+    //                             await clint.save();
+    //                         }
+    //                         res.status(200).json({
+    //                             msg: "order created",
+    //                             data: o
+    //                         })
+    //                     })
+    //             })
+    //     } else {
+    //         res.status(400).json({
+    //             msg: response.data
+    //         })
+    //     }
+    // })
+    //     .catch(err => {
+    //         console.log(err)
+    //         res.status(500).json({
+    //             error: err.message
+    //         })
+    //     })
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
