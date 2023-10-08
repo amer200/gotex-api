@@ -13,12 +13,9 @@ exports.addClient = async (req, res) => {
         const name = `${first_name} ${last_name}`;
         let staff_id = 0;
 
-        if (!first_name) {
-            return res.status(400).json({ msg: "first_name is required" })
-        }
-        if (!company || !first_name || !last_name || !city || !state || !address || !mobile || !email || !notes || !category || !birth_date || !street) {
+        if (!first_name || !last_name || !city || !state || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: req.body
+                msg: 'These info are required:  first_name, last_name, city, state, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
@@ -91,9 +88,9 @@ exports.editClient = async (req, res) => {
 
     try {
         const name = `${first_name} ${last_name}`;
-        if (!company || !first_name || !last_name || !city || !state || !address || !mobile || !email || !notes || !category || !birth_date || !street) {
+        if (!first_name || !last_name || !city || !state || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: 'These all info are required: company, first_name, last_name, city, state, address, mobile, email, notes, category, birth_date and street'
+                msg: 'These info are required:  first_name, last_name, city, state, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
@@ -151,6 +148,7 @@ exports.editClient = async (req, res) => {
 /** Add user as a client to daftra */
 exports.addUserAsClient = async (user) => {
     let { id: userId, name, location: city, address, mobile, email, daftraid } = user
+    // !Note : company sometimes make an error using this random number
     const company = Math.floor(Math.random() * 10) // to be unique
     const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
     city = 'Najran'
@@ -160,8 +158,8 @@ exports.addUserAsClient = async (user) => {
     console.log(first_name, last_name)
     let staff_id = 0;
 
-    if (!first_name || !city || !address || !mobile || !email) {
-        return { result: 'fail', msg: 'These all info are required:  first_name, last_name, city, address, mobile and email' }
+    if (!first_name || !city || !address || !mobile) {
+        return { result: 'fail', msg: 'These info are required:  first_name, last_name, city, address and mobile' }
     }
     if (user.daftraid) {
         staff_id = user.daftraid;
