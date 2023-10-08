@@ -208,7 +208,7 @@ exports.addUserAsClient = async (user) => {
     return { result: 'success', data: myClient }
 }
 //************************************************************************************** */
-const addImileClient = async (company, name, city, address, mobile, email, notes) => {
+const addImileClient = async (company, name, city, address, mobile, email = "", notes) => {
     const imile = await Imile.findOne();
     let data = JSON.stringify({
         "customerId": process.env.imile_customerid,
@@ -227,7 +227,7 @@ const addImileClient = async (company, name, city, address, mobile, email, notes
             "area": "",
             "address": address,
             "phone": mobile,
-            "email": "",
+            "email": email,
             "backupPhone": "",
             "attentions": notes,
             "defaultOption": "0"
@@ -247,7 +247,7 @@ const addImileClient = async (company, name, city, address, mobile, email, notes
     }
     return 1
 }
-const addDaftraClient = async (staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date) => {
+const addDaftraClient = async (staff_id, company, first_name, last_name, email = "", address, city, state, mobile, notes, category, birth_date) => {
     let data = {
         Client: {
             "is_offline": true,
@@ -255,7 +255,7 @@ const addDaftraClient = async (staff_id, company, first_name, last_name, email, 
             "business_name": company,
             "first_name": first_name,
             "last_name": last_name,
-            "email": "",
+            "email": email,
             "address1": address,
             "city": city,
             "state": state,
@@ -303,7 +303,7 @@ const removeDaftraClient = async (id) => {
     await axios(config);
 }
 
-const editDaftraClient = async (staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
+const editDaftraClient = async (staff_id, company, first_name, last_name, email = "", address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
     let data = JSON.stringify({
         "Client": {
             "is_offline": true,
@@ -375,7 +375,7 @@ const getAllDaftraClientsPage = async (page) => {
     return result
 }
 
-const editImileClient = async (company, name, city, address, mobile, email, notes) => {
+const editImileClient = async (company, name, city, address, mobile, email = "", notes) => {
     const imile = await Imile.findOne();
     let data = JSON.stringify({
         "customerId": process.env.imile_customerid,
