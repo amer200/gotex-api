@@ -142,7 +142,6 @@ exports.createUserOrder = async (req, res) => {
 
         if (!response.data.success) {
             order.status = 'failed'
-            order.response = response.data
             await order.save()
 
             res.status(400).json({

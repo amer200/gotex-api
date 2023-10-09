@@ -14,8 +14,7 @@ const saeeOrderSchema = mongoose.Schema({
         type: String,
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
-    },
-    response: Object
+    }
 })
 
 module.exports = mongoose.model("SaeeOrder", saeeOrderSchema);
