@@ -115,7 +115,6 @@ exports.createUserOrder = async (req, res) => {
             marktercode: markterCode,
             createdate: new Date()
         })
-        await order.save()
 
         let invo = ""
         if (daftraid) {
