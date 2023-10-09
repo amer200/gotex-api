@@ -12,9 +12,10 @@ const saeeOrderSchema = mongoose.Schema({
     inovicedaftra: Object,
     status: {
         type: String,
-        enum: ['pending', 'accepted', 'canceled'],
+        enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
-    }
+    },
+    response: Object
 })
 
 module.exports = mongoose.model("SaeeOrder", saeeOrderSchema);
