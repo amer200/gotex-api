@@ -18,7 +18,7 @@ exports.isAuth = (req, res, next) => {
             req.user = user.data
             next();
         } else {
-            res.status(304).json({
+            res.status(405).json({
                 msg: "not allowed"
             })
         }

@@ -104,10 +104,10 @@ exports.editClient = async (req, res) => {
             return res.status(400).json({ msg: `No client for this id ${clientId}` })
         }
 
-        const usedEmail = await Client.findOne({ email })
-        if (usedEmail && (usedEmail.email !== client.email)) {
-            return res.status(400).json({ msg: "This client email is already used." })
-        }
+        // const usedEmail = await Client.findOne({ email })
+        // if (usedEmail && (usedEmail.email !== client.email)) {
+        //     return res.status(400).json({ msg: "This client email is already used." })
+        // }
 
         const daftraResult = await editDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date, client.daftraClientId);
         if (daftraResult.result != "ok") {
@@ -283,6 +283,8 @@ const addDaftraClient = async (staff_id, company, first_name, last_name, email =
     };
     const response = await axios(config);
 
+    console.log('******')
+    console.log(response.data)
     if (response.data.result == "successful") {
         return {
             result: "ok",
