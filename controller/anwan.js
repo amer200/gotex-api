@@ -42,118 +42,113 @@ exports.createUserOrder = async (req, res) => {
     const markterCode = req.body.markterCode;
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
-    let { s_phone, s_name, s_email, c_email, description, s_city, c_phone, s_address, c_name, c_city, pieces, c_address, cod, weight, clintid, daftraid } = req.body
-    if (cod) {
-        var BookingMode = "COD"
-        var codValue = res.locals.codAmount;;
-        var paytype = "cod";
-    } else {
-        var BookingMode = "CC"
-        var codValue = 0;
-        var paytype = "cc";
-    }
-    if (markterCode) {
-        var nameCode = `${s_name} (${markterCode})`;
-    } else {
-        var nameCode = s_name;
-    }
-    var data = {
-        "format": "json",
-        "secret_key": process.env.ANWAN_SECRET_KEY,
-        "customerId": process.env.ANWAN_CUSTOMER_ID,
-        "param": {
-            "sender_phone": s_phone,
-            "sender_name": nameCode,
-            "sender_email": s_email,
-            "receiver_email": c_email,
-            "description": description,
-            "origin": s_city,
-            "receiver_phone": c_phone,
-            "sender_address": s_address,
-            "receiver_name": c_name,
-            "destination": c_city,
-            "BookingMode": BookingMode,
-            "pieces": pieces,
-            "weight": weight,
-            "receiver_address": c_address,
-            "reference_id": `gotex-${ordersNum + "/" + Date.now()}`,
-            "codValue": codValue,
-            "productType": "Parcel"
+    let { c_name, c_email, c_phone, c_city, c_address,
+        s_name, s_email, s_phone, s_city, s_address,
+        pieces, cod, weight, description, clintid, daftraid } = req.body
+
+    try {
+        if (cod) {
+            var BookingMode = "COD"
+            var codValue = res.locals.codAmount;;
+            var paytype = "cod";
+        } else {
+            var BookingMode = "CC"
+            var codValue = 0;
+            var paytype = "cc";
         }
-    };
-    var config = {
-        method: 'post',
-        url: 'https://api.fastcoo-tech.com/API_v2/CreateOrder',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    axios(config)
-        .then(async response => {
-            if (response.data.status !== 200) {
-                return res.status(400).json({
-                    error: response.data
-                })
-            } else {
-                if (daftraid) {
-                    var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice, pieces);
-                } else {
-                    var invo = ""
-                }
-                // if (invo.result != 'successful') {
-                //     return res.status(400).json({ msg: "daftra error", invo })
-                // }
-
-                const newOrder = new anwanorders({
-                    user: req.user.user.id,
-                    company: "anwan",
-                    ordernumber: ordersNum + 2,
-                    paytype: paytype,
-                    data: response.data,
-                    price: totalShipPrice,
-                    marktercode: markterCode,
-                    createdate: new Date(),
-                    inovicedaftra: invo
-                })
-                newOrder.save()
-                    .then(async (o) => {
-                        if (clintid) {
-                            const clint = await Clint.findById(clintid);
-                            const co = {
-                                company: "anwan",
-                                id: o._id
-                            }
-                            clint.wallet = clint.wallet - totalShipPrice;
-                            clint.orders.push(co);
-                            await clint.save();
-                        }
-                        if (!cod) {
-                            user.wallet = user.wallet - totalShipPrice;
-
-                            user.save()
-                                .then(u => {
-                                    res.status(200).json({
-                                        data: o
-                                    })
-                                })
-                        } else {
-                            res.status(200).json({
-                                data: o
-                            })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+        if (markterCode) {
+            var nameCode = `${s_name} (${markterCode})`;
+        } else {
+            var nameCode = s_name;
+        }
+        var data = {
+            "format": "json",
+            "secret_key": process.env.ANWAN_SECRET_KEY,
+            "customerId": process.env.ANWAN_CUSTOMER_ID,
+            "param": {
+                "sender_phone": s_phone,
+                "sender_name": nameCode,
+                "sender_email": s_email,
+                "receiver_email": c_email,
+                "description": description,
+                "origin": s_city,
+                "receiver_phone": c_phone,
+                "sender_address": s_address,
+                "receiver_name": c_name,
+                "destination": c_city,
+                "BookingMode": BookingMode,
+                "pieces": pieces,
+                "weight": weight,
+                "receiver_address": c_address,
+                "reference_id": `gotex-${ordersNum + "/" + Date.now()}`,
+                "codValue": codValue,
+                "productType": "Parcel"
             }
+        };
+        var config = {
+            method: 'post',
+            url: 'https://api.fastcoo-tech.com/API_v2/CreateOrder',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        const response = await axios(config)
+
+        const order = await anwanorders.create({
+            user: req.user.user.id,
+            company: "anwan",
+            ordernumber: ordersNum + 2,
+            paytype: paytype,
+            data: response.data,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            createdate: new Date()
         })
-        .catch(function (error) {
-            res.status(500).json({
-                msg: error
+
+        if (response.data.status !== 200) {
+            order.status = 'failed'
+            await order.save()
+
+            return res.status(400).json({
+                error: response.data
             })
-            console.log(error);
-        });
+        }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice, pieces);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
+            }
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save()
+
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "anwan",
+                id: order._id
+            }
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+        }
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save()
+        }
+
+        res.status(200).json({ data: order })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            msg: error.message
+        })
+    }
 }
 exports.getCities = (req, res) => {
     var data = JSON.stringify({

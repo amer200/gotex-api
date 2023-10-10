@@ -100,11 +100,6 @@ exports.createUserOrder = async (req, res) => {
         const response = await axios(config)
         console.log('*******')
         console.log(response.data)
-        if (!cod) {
-            user.wallet = user.wallet - totalShipPrice;
-        }
-        await user.save()
-
         const order = new SaeeOrder({
             user: req.user.user.id,
             company: "saee",
@@ -115,6 +110,15 @@ exports.createUserOrder = async (req, res) => {
             marktercode: markterCode,
             createdate: new Date()
         })
+
+        if (!response.data.success) {
+            order.status = 'failed'
+            await order.save()
+
+            return res.status(400).json({
+                msg: response.data
+            })
+        }
 
         let invo = ""
         if (daftraid) {
@@ -138,14 +142,9 @@ exports.createUserOrder = async (req, res) => {
             clint.orders.push(co);
             await clint.save();
         }
-
-        if (!response.data.success) {
-            order.status = 'failed'
-            await order.save()
-
-            res.status(400).json({
-                msg: response.data
-            })
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save()
         }
 
         res.status(200).json({

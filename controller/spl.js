@@ -36,7 +36,7 @@ exports.edit = (req, res) => {
         .catch(err => {
             console.log(err)
             res.status(500).json({
-                msg: err.message
+                msg: err.message.message
             })
         })
 }
@@ -159,98 +159,100 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     })
-    var config = {
-        method: 'post',
-        url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `bearer ${spl.token}`
-        },
-        data: data
-    };
-    axios(config)
-        .then(async response => {
-            console.log(response.data)
-            if (response.data.Status != 1) {
-                res.status(400).json({
-                    data: response.data
-                })
-            } else {
-                if (daftraid) {
-                    var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
-                } else {
-                    var invo = ""
-                }
-                // if (invo.result != 'successful') {
-                //     return res.status(400).json({ msg: "daftra error", invo })
-                // }
 
-                const o = new SplOrder({
-                    user: user._id,
-                    company: "Spl",
-                    ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
-                    data: response.data,
-                    reciver: {
-                        name: reciverName,
-                        mobile: reciverMobile,
-                        city: deliveryDistrictID,
-                        AddressLine1: deliveryAddress1,
-                        AddressLine2: deliveryAddress2
-                    },
-                    sender: {
-                        name: SenderName,
-                        mobile: SenderMobileNumber,
-                        city: pickUpDistrictID,
-                        AddressLine1: pickUpAddress1,
-                        AddressLine2: pickUpAddress2
-                    },
-                    paytype: paytype,
-                    price: totalShipPrice,
-                    marktercode: markterCode,
-                    createdate: new Date(),
-                    inovicedaftra: invo,
-                    weight: Weight,
-                    desc: ContentDescription
-                })
-                o.save()
-                    .then(async o => {
-                        // if (clintid) {
-                        //     const clint = await Clint.findById(clintid);
-                        //     const co = {
-                        //         company: "spl",
-                        //         id: o._id
-                        //     }
-                        //     clint.wallet = clint.wallet - totalShipPrice;
-                        //     clint.orders.push(co);
-                        //     await clint.save();
-                        // }
-                        res.status(200).json({
-                            // reciver: {
-                            //     name: reciverName,
-                            //     mobile: reciverMobile,
-                            //     city: pickUpDistrictID,
-                            //     AddressLine1: pickUpAddress1,
-                            //     AddressLine2: pickUpAddress2
-                            // },
-                            // sender: {
-                            //     name: SenderName,
-                            //     mobile: SenderMobileNumber,
-                            //     city: deliveryDistrictID,
-                            //     AddressLine1: deliveryAddress1,
-                            //     AddressLine2: deliveryAddress2
-                            // },
-                            data: o
-                        })
-                    })
-            }
+    try {
+        var config = {
+            method: 'post',
+            url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': `bearer ${spl.token}`
+            },
+            data: data
+        };
+        const response = await axios(config)
+        console.log(response.data)
+        const order = await SplOrder.create({
+            user: user._id,
+            company: "Spl",
+            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+            data: response.data,
+            reciver: {
+                name: reciverName,
+                mobile: reciverMobile,
+                city: deliveryDistrictID,
+                AddressLine1: deliveryAddress1,
+                AddressLine2: deliveryAddress2
+            },
+            sender: {
+                name: SenderName,
+                mobile: SenderMobileNumber,
+                city: pickUpDistrictID,
+                AddressLine1: pickUpAddress1,
+                AddressLine2: pickUpAddress2
+            },
+            paytype: paytype,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            createdate: new Date(),
+            weight: Weight,
+            desc: ContentDescription
         })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({
-                error: err
+
+        if (response.data.Status != 1) {
+            order.status = 'failed'
+            await order.save()
+
+            res.status(400).json({
+                data: response.data
             })
-        })
+        } else {
+            let invo = ""
+            if (daftraid) {
+                invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
+                if (invo.result != 'successful') {
+                    invo = { result: "failed", daftra_response: invo }
+                }
+            } else {
+                invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+            }
+            order.inovicedaftra = invo
+            await order.save();
 
+            // if (clintid) {
+            //     const clint = await Clint.findById(clintid);
+            //     const co = {
+            //         company: "spl",
+            //         id: order._id
+            //     }
+            //     clint.wallet = clint.wallet - totalShipPrice;
+            //     clint.orders.push(co);
+            //     await clint.save();
+            // }
+            res.status(200).json({
+                // reciver: {
+                //     name: reciverName,
+                //     mobile: reciverMobile,
+                //     city: pickUpDistrictID,
+                //     AddressLine1: pickUpAddress1,
+                //     AddressLine2: pickUpAddress2
+                // },
+                // sender: {
+                //     name: SenderName,
+                //     mobile: SenderMobileNumber,
+                //     city: deliveryDistrictID,
+                //     AddressLine1: deliveryAddress1,
+                //     AddressLine2: deliveryAddress2
+                // },
+                data: order
+            })
+        }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err.message
+        })
+    }
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;

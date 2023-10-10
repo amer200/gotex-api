@@ -65,124 +65,122 @@ exports.createUserOrder = async (req, res) => {
     const daftraid = req.body.daftraid;
     /**************************** */
     const cod = req.body.cod;
-    if (cod) {
-        var paymentType = "COD";
-        var codAmount = res.locals.codAmount;
-        var paytype = "cod";
-    } else {
-        var paymentType = "CC";
-        var codAmount = null;
-        var paytype = "cc";
-    }
-    if (markterCode) {
-        var nameCode = `${sender} (${markterCode})`;
-    } else {
-        var nameCode = sender;
-    }
-    let data = {
-        orders: [
-            {
-                referenceNumber: ordersNum + Date.now() + "gotex",
-                pieces: pieces,
-                description: desc,
-                codAmount: codAmount,
-                paymentType: paymentType,
-                clintComment: comment,
-                value: value,
-                senderInformation: {
-                    address: s_address,
-                    city: {
-                        name: s_city
-                    },
-                    contactNumber: s_mobile
-                },
-                customer: {
-                    name: c_name,
-                    customerAddresses: {
-                        address: c_address,
-                        areaName: c_areaName,
-                        city: {
-                            name: c_city
-                        },
-                    },
-                    mobile1: c_mobile
-                },
-                sender: nameCode,
-                weight: weight
-            },
-        ]
-    }
-    axios({
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': process.env.GLT_TOKEN,
-        },
-        url: 'https://devapi.gltmena.com/api/create/order',
-        data: data
-    })
-        .then(response => {
-            return response.data.data
-        })
-        .then(async (data) => {
-            let result = data.orders[0];
-            if (result.status == 'fail') {
-                res.status(400).json({
-                    msg: result.msg
-                })
-            } else {
-                if (daftraid) {
-                    var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, pieces);
-                } else {
-                    var invo = ""
-                }
-                // if (invo.result != 'successful') {
-                //     return res.status(400).json({ msg: "daftra error", invo })
-                // }
 
-                const newOrder = new GltOrder({
-                    user: req.user.user.id,
-                    company: "glt",
-                    ordernumber: ordersNum + 1,
-                    paytype: paytype,
-                    data: result,
-                    price: totalShipPrice,
-                    marktercode: markterCode,
-                    createdate: new Date(),
-                    invoice: "",
-                    inovicedaftra: invo
-                })
-                return newOrder.save();
-            }
+    try {
+        if (cod) {
+            var paymentType = "COD";
+            var codAmount = res.locals.codAmount;
+            var paytype = "cod";
+        } else {
+            var paymentType = "CC";
+            var codAmount = null;
+            var paytype = "cc";
+        }
+        if (markterCode) {
+            var nameCode = `${sender} (${markterCode})`;
+        } else {
+            var nameCode = sender;
+        }
+
+        let data = {
+            orders: [
+                {
+                    referenceNumber: ordersNum + Date.now() + "gotex",
+                    pieces: pieces,
+                    description: desc,
+                    codAmount: codAmount,
+                    paymentType: paymentType,
+                    clintComment: comment,
+                    value: value,
+                    senderInformation: {
+                        address: s_address,
+                        city: {
+                            name: s_city
+                        },
+                        contactNumber: s_mobile
+                    },
+                    customer: {
+                        name: c_name,
+                        customerAddresses: {
+                            address: c_address,
+                            areaName: c_areaName,
+                            city: {
+                                name: c_city
+                            },
+                        },
+                        mobile1: c_mobile
+                    },
+                    sender: nameCode,
+                    weight: weight
+                },
+            ]
+        }
+        const config = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': process.env.GLT_TOKEN,
+            },
+            url: 'https://devapi.gltmena.com/api/create/order',
+            data: data
+        }
+        const response = await axios(config)
+
+        const order = await GltOrder.create({
+            user: req.user.user.id,
+            company: "glt",
+            ordernumber: ordersNum + 1,
+            paytype: paytype,
+            data: result,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            createdate: new Date(),
+            invoice: ""
         })
-        .then(async o => {
-            if (clintid) {
-                const clint = await Clint.findById(clintid);
-                const co = {
-                    company: "glt",
-                    id: o._id
-                }
-                clint.wallet = clint.wallet - totalShipPrice;
-                clint.orders.push(co);
-                await clint.save();
+
+        let result = response.data.data.orders[0]; // !Note: check this again
+        console.log("****")
+        console.log(result)
+        if (result.status == 'fail') {
+            order.status = 'failed'
+            await order.save()
+
+            res.status(400).json({
+                msg: result.msg
+            })
+        }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, pieces);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
             }
-            if (!cod) {
-                user.wallet = user.wallet - totalShipPrice;
-                user.save()
-                    .then(u => {
-                        res.status(200).json({
-                            data: o
-                        })
-                    })
-            } else {
-                res.status(200).json({
-                    data: o
-                })
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save();
+
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "glt",
+                id: o._id
             }
-        })
-        .catch(err => {
-            console.log(err)
-        })
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+        }
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save()
+        }
+
+        res.status(200).json({ data: order })
+    } catch (err) {
+        console.log(err)
+    }
 }
 exports.getAllCities = (req, res) => {
     let data = {

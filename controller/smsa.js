@@ -125,48 +125,56 @@ exports.createUserOrder = async (req, res) => {
             data: data
         };
         const smsaRes = await axios(config);
-        if (smsaRes.status == 200) {
-            if (daftraid) {
-                var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, pieces);
-            } else {
-                var invo = ""
-            }
-            // if (invo.result != 'successful') {
-            //     return res.status(400).json({ msg: "daftra error", invo })
-            // }
 
-            const o = new SmsaOrder({
-                user: req.user.user.id,
-                company: "smsa",
-                ordernumber: ordersNum + 1,
-                data: smsaRes.data,
-                paytype: paytype,
-                marktercode: markterCode,
-                createdate: new Date(),
-                inovicedaftra: invo
-            })
-            let i = 1;
-            smsaRes.data.waybills.forEach(a => {
-                base64.base64Decode(a.awbFile, `public/smsaAwb/${ordersNum + 1}-p${i}.pdf`);
-                i++
-            })
-            await o.save();
-            if (!cod) {
-                user.wallet = user.wallet - totalShipPrice;
-                await user.save();
-                return res.status(200).json({
-                    data: o
-                })
-            } else {
-                res.status(200).json({
-                    data: o
-                })
-            }
-        } else {
+        const order = new SmsaOrder({
+            user: req.user.user.id,
+            company: "smsa",
+            ordernumber: ordersNum + 1,
+            data: smsaRes.data,
+            paytype: paytype,
+            marktercode: markterCode,
+            createdate: new Date()
+        })
+
+        if (smsaRes.status !== 200) {
+            order.status = 'failed'
+            await order.save()
+
             res.status(400).json({
                 msg: response.data
             })
         }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, pieces);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
+            }
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save();
+
+        let i = 1;
+        smsaRes.data.waybills.forEach(a => {
+            base64.base64Decode(a.awbFile, `public/smsaAwb/${ordersNum + 1}-p${i}.pdf`);
+            i++
+        })
+
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save();
+            return res.status(200).json({
+                data: order
+            })
+        } else {
+            res.status(200).json({
+                data: order
+            })
+        }
+
     } catch (error) {
         console.log(error);
         res.status(500).json({

@@ -129,22 +129,8 @@ exports.createUserOrder = async (req, res) => {
     };
     try {
         const response = await axios(config);
-        if (response.data.code != 1) {
-            return res.status(400).json({
-                msg: response.data
-            })
-        }
 
-        if (daftraid) {
-            var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, goodsValue);
-        } else {
-            var invo = ""
-        }
-        // if (invo.result != 'successful') {
-        //     return res.status(400).json({ msg: "daftra error", invo })
-        // }
-
-        const newOrder = new JtOrder({
+        const order = new JtOrder({
             user: req.user.user.id,
             company: "jt",
             ordernumber: ordersNum + 2,
@@ -152,21 +138,41 @@ exports.createUserOrder = async (req, res) => {
             data: response.data,
             price: totalShipPrice,
             marktercode: markterCode,
-            createdate: new Date(),
-            inovicedaftra: invo
+            createdate: new Date()
         })
-        await newOrder.save();
+
+        if (response.data.code != 1) {
+            order.status = 'failed'
+            await order.save()
+
+            return res.status(400).json({
+                msg: response.data
+            })
+        }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, goodsValue);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
+            }
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save();
+
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save()
         }
         return res.status(200).json({
-            data: newOrder
+            data: order
         })
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            error: error
+            error: error.message
         })
     }
 }
@@ -207,7 +213,7 @@ exports.getSticker = async (req, res) => {
     } catch (error) {
         console.log(error)
         res.status(500).json({
-            error: error
+            error: error.message
         })
     }
 }

@@ -226,49 +226,55 @@ exports.createOrder = async (req, res) => {
             data: data
         };
         const response = await axios(config)
+
+        const order = await ImileOrder.create({
+            user: req.user.user.id,
+            company: "imile",
+            ordernumber: ordersNum + 2,
+            data: response.data,
+            paytype: "cod",
+            price: totalShipPrice,
+            marktercode: markterCode,
+            createdate: new Date()
+        })
+
         if (response.data.code != '200') {
+            order.status = 'failed'
+            await order.save()
+
             return res.status(400).json({
                 msg: response.data
             })
-        } else {
-            if (daftraid) {
-                var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
-            } else {
-                var invo = ""
-            }
-            // if (invo.result != 'successful') {
-            //     return res.status(400).json({ msg: "daftra error", invo })
-            // }
-
-            const order = await ImileOrder.create({
-                user: req.user.user.id,
-                company: "imile",
-                ordernumber: ordersNum + 2,
-                data: response.data,
-                paytype: "cod",
-                price: totalShipPrice,
-                marktercode: markterCode,
-                createdate: new Date(),
-                inovicedaftra: invo
-            })
-
-            if (clintid) {
-                const clint = await Clint.findById(clintid);
-                const co = {
-                    company: "imile",
-                    id: order._id
-                }
-                clint.wallet = clint.wallet - totalShipPrice;
-                clint.orders.push(co);
-                await clint.save();
-            }
-            if (!cod) {
-                user.wallet = user.wallet - totalShipPrice;
-                await user.save()
-            }
-
-            res.status(200).json({ data: order })
         }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
+            }
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save();
+
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "imile",
+                id: order._id
+            }
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+        }
+        if (!cod) {
+            user.wallet = user.wallet - totalShipPrice;
+            await user.save()
+        }
+
+        res.status(200).json({ data: order })
     } catch (err) {
         console.log(err)
         res.status(500).json({

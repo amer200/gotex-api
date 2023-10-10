@@ -643,46 +643,52 @@ exports.createOrder = async (req, res) => {
         };
 
         const response = await axios(config)
-        if (response.data.HasErrors) {
-            return res.status(400).json({ msg: response.data })
-        }
 
-        if (daftraid) {
-            var invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, PaymentType, totalShipPrice, pieces);
-        } else {
-            var invo = ""
-        }
-        // if (invo.result != 'successful') {
-        //     return res.status(400).json({ msg: "daftra error", invo })
-        // }
-
-        const newOrder = await AramexOrder.create({
+        const order = await AramexOrder.create({
             user: userId,
             company: "aramex",
             ordernumber: ordersNum + 2,
             data: response.data,
             paytype,
             price: totalShipPrice,
-            createdate: new Date(),
-            inovicedaftra: invo
+            createdate: new Date()
         })
+
+        if (response.data.HasErrors) {
+            order.status = 'failed'
+            await order.save()
+
+            return res.status(400).json({ msg: response.data })
+        }
+
+        let invo = ""
+        if (daftraid) {
+            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, PaymentType, totalShipPrice, pieces);
+            if (invo.result != 'successful') {
+                invo = { result: "failed", daftra_response: invo }
+            }
+        } else {
+            invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
+        }
+        order.inovicedaftra = invo
+        await order.save();
 
         if (clintid) {
             const clint = await Clint.findById(clintid);
             const co = {
                 company: "aramex",
-                id: newOrder._id
+                id: order._id
             }
             clint.wallet = clint.wallet - totalShipPrice;
             clint.orders.push(co);
             await clint.save();
         }
-
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save()
         }
-        res.status(200).json({ msg: "order created successfully", data: newOrder })
+
+        res.status(200).json({ msg: "order created successfully", data: order })
     } catch (err) {
         console.log(err)
         res.status(500).json({
