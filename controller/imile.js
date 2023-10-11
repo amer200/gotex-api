@@ -324,7 +324,7 @@ cron.schedule('0 */2 * * *', async () => {
 });
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
-    imileorders.find({ user: userId })
+    imileorders.find({ user: userId, status: { $ne: "failed" } })
         .then(o => {
             res.status(200).json({
                 data: o

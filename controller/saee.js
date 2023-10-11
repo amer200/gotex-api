@@ -160,7 +160,7 @@ exports.createUserOrder = async (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
-    SaeeOrder.find({ user: userId })
+    SaeeOrder.find({ user: userId, status: { $ne: "failed" } })
         .then(o => {
             res.status(200).json({
                 data: o

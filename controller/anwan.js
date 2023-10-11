@@ -214,7 +214,7 @@ exports.getSticker = (req, res) => {
 }
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
-    AnwanOrder.find({ user: userId })
+    AnwanOrder.find({ user: userId, status: { $ne: "failed" } })
         .then(o => {
             res.status(200).json({
                 data: o

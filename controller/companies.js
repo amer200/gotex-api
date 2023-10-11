@@ -1,27 +1,31 @@
-const Saee = require("../model/saee");
-const SaeeOrder = require("../model/saeeorders");
-const Glt = require("../model/glt");
-const GltOrder = require("../model/gltorders");
-const Aramex = require("../model/aramex");
-const AramexOrder = require("../model/aramexorders");
-const Smsa = require("../model/smsa");
-const SmsaOrder = require("../model/smsaorders");
 const Anwan = require("../model/anwan");
-const AnwanOrder = require("../model/anwanorders");
+const Aramex = require("../model/aramex");
 const Imile = require("../model/imile");
-const ImileOrder = require("../model/imileorders");
+const Glt = require("../model/glt");
 const Jt = require("../model/jt");
+const Saee = require("../model/saee");
+const Smsa = require("../model/smsa");
+const Spl = require("../model/spl");
+const AnwanOrder = require("../model/anwanorders");
+const AramexOrder = require("../model/aramexorders");
+const ImileOrder = require("../model/imileorders");
 const JtOrder = require("../model/jtorders");
+const GltOrder = require("../model/gltorders");
+const SaeeOrder = require("../model/saeeorders");
+const SmsaOrder = require("../model/smsaorders");
+const SplOrder = require("../model/splorders");
+
 exports.getAllCompanies = async (req, res) => {
     try {
-        const saee = await Saee.findOne();
-        const glt = await Glt.findOne();
-        const aramex = await Aramex.findOne();
-        const smsa = await Smsa.findOne();
         const anwan = await Anwan.findOne();
+        const aramex = await Aramex.findOne();
+        const glt = await Glt.findOne();
         const imile = await Imile.findOne();
         const jt = await Jt.findOne();
-        let companies = [saee, glt, smsa, aramex, anwan, imile, jt];
+        const saee = await Saee.findOne();
+        const smsa = await Smsa.findOne();
+        const spl = await Spl.findOne();
+        let companies = [saee, glt, smsa, aramex, anwan, imile, jt, spl];
         res.status(200).json({
             data: companies
         })
@@ -34,14 +38,15 @@ exports.getAllCompanies = async (req, res) => {
 }
 exports.getAllOrders = async (req, res) => {
     try {
-        const saeeorders = await SaeeOrder.find().populate("user");
-        const gltorders = await GltOrder.find().populate("user");
-        const aramexorders = await AramexOrder.find().populate("user");
-        const smsaorders = await SmsaOrder.find().populate("user");
-        const anwanorders = await AnwanOrder.find().populate("user");
-        const imileorders = await ImileOrder.find().populate("user");
-        const jtorders = await JtOrder.find().populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders];
+        const gltorders = await GltOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const aramexorders = await AramexOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const anwanorders = await AnwanOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const imileorders = await ImileOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const jtorders = await JtOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const saeeorders = await SaeeOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const smsaorders = await SmsaOrder.find({ status: { $ne: "failed" } }).populate("user");
+        const splorders = await SplOrder.find({ status: { $ne: "failed" } }).populate("user");
+        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders, ...splorders];
         res.status(200).json({
             data: orders
         })

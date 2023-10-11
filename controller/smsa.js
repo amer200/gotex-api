@@ -184,7 +184,7 @@ exports.createUserOrder = async (req, res) => {
 }
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
-    SmsaOrder.find({ user: userId })
+    SmsaOrder.find({ user: userId, status: { $ne: "failed" } })
         .then(o => {
             res.status(200).json({
                 data: o
