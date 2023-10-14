@@ -6,6 +6,7 @@ const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const paymentOrder = require("../model/payment/orders");
 const axios = require("axios");
+const Client = require("../model/clint");
 const sendEmail = async (email, text, id, temp) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -398,6 +399,30 @@ exports.getAllPaymentOrders = async (req, res) => {
         console.log(err)
         res.status(500).json({
             error: err
+        })
+    }
+}
+exports.addCreditsToClient = async (req, res) => {
+    const clientId = req.body.clientid;
+    const credit_limit = req.body.cartid_limit;
+    const marketerId = req.user.user.id;
+    const client = await Client.findById(clientId);
+    try {
+        const data = {
+            status: "pending",
+            limet: +credit_limit,
+            addby: marketerId
+        };
+        client.credit = data;
+        await client.save();
+        res.status(200).json({
+            msg: "ok",
+            data: data
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error: error
         })
     }
 }

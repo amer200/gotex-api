@@ -10,6 +10,7 @@ const smsa = require("../model/smsa");
 const aramex = require("../model/aramex");
 const glt = require("../model/glt");
 const anwan = require("../model/anwan");
+const Client = require("../model/clint");
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -148,4 +149,22 @@ exports.getAllOrders = async (req, res) => {
         })
     }
 
+}
+exports.changeClientCreditStatus = async (req, res) => {
+    const clientId = req.body.clientid;
+    const status = req.body.status;
+    const client = await Client.findById(clientId);
+    try {
+        client.credit.status = status;
+        await client.save();
+        res.status(200).json({
+            msg: "ok",
+            data: client.credit
+        })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            err: error
+        })
+    }
 }
