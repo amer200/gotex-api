@@ -66,6 +66,9 @@ exports.isAuth = (req, res, next) => {
             } else if (user.data.user.rolle == 'marketer') {
                 req.user = user.data
                 next();
+            } else if (user.data.user.rolle == 'admin') {
+                req.user = user.data
+                next();
             } else {
                 res.status(405).json({
                     msg: "not allowed"
