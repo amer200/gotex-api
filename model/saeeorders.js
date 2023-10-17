@@ -10,6 +10,7 @@ const saeeOrderSchema = mongoose.Schema({
     marktercode: String,
     createdate: String,
     inovicedaftra: Object,
+    supplier_inovicedaftra: Object,
     status: {
         type: String,
         enum: ['failed', 'failed', 'pending', 'accepted', 'canceled'],

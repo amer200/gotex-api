@@ -25,10 +25,14 @@ routes.get("/get-all-markter-invoices", userMiddlewares.isMarkter, inovicControl
 routes.get("/get-invoice/:id", userMiddlewares.isMarkter, inovicController.getInvoiceById);
 
 // suppliers
-routes.post("/add-supplier", adminMiddleware.isAuth, supplierController.addSupplier);
 routes.post("/edit-supplier/:id", adminMiddleware.isAuth, supplierController.editSupplier);
+routes.post("/add-supplier", adminMiddleware.isAuth, supplierController.addSupplier);
 routes.delete("/delete-supplier/:id", adminMiddleware.isAuth, supplierController.deleteSupplier);
 routes.get("/get-all-suppliers", adminMiddleware.isAuth, supplierController.getAllSuppliers);
 routes.get("/get-supplier/:id", adminMiddleware.isAuth, supplierController.getSupplierById);
+// supplier invoices
+routes.get("/get-all-suppliers-invoices", adminMiddleware.isAuth, supplierController.getAllInvoices);
+routes.get("/get-supplier-invoice/:id", adminMiddleware.isAuth, supplierController.getSupplierInvoiceById);
+
 
 module.exports = routes;

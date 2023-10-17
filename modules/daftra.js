@@ -1,19 +1,19 @@
 const { default: axios } = require("axios");
 const User = require("../model/user");
 
-exports.CreateInvo = async (clintId, staffId, notes, payment_method, payment_amount, quantity = "") => {
+//#region client invoice
+exports.createClientInvoice = async (clintId, staffId, notes, payment_method, payment_amount, quantity) => {
     const clientRes = await getClientById(clintId);
     if (clientRes.code != 200) {
         return errorHandler(clientRes.message, clientRes.code)
     }
     const client = clientRes.data.Client;
-    const invoiceRes = await invoiceCreate(client, staffId, notes, payment_method, payment_amount, quantity)
-    console.log("****invoiceRes")
-    console.log(invoiceRes)
+    const invoiceRes = await addClientInvoice(client, staffId, notes, payment_method, payment_amount, quantity)
+    // console.log("****invoiceRes")
+    // console.log(invoiceRes)
     return invoiceRes
 }
-
-const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount, quantity) => {
+const addClientInvoice = async (c, staffId, notes, payment_method, payment_amount, quantity) => {
     const data = JSON.stringify({
         "Invoice": {
             "staff_id": staffId,
@@ -103,10 +103,11 @@ const invoiceCreate = async (c, staffId, notes, payment_method, payment_amount, 
         data: data
     }
     const response = await axios(config)
-    console.log("****response")
-    console.log(response)
+    // console.log("****response")
+    // console.log(response)
     return response.data
 }
+
 const getClientById = async (id) => {
     try {
         const config = {
@@ -118,13 +119,106 @@ const getClientById = async (id) => {
             }
         }
         const response = await axios(config);
-        console.log("****")
-        console.log(response.data)
+        // console.log("****")
+        // console.log(response.data)
         return response.data
     } catch (error) {
         return error.response.data
     }
 }
+//#endregion client invoice
+
+
+//#region supplier (shipment company) invoice
+exports.createSupplierInvoice = async (supplier_daftraid, notes, payment_amount, quantity) => {
+    const response = await getSupplierById(supplier_daftraid);
+    if (response.code != 200) {
+        return errorHandler(response.message, response.code)
+    }
+
+    const supplier = response.data.Supplier;
+    const invoiceRes = await addSupplierInvoice(supplier, notes, payment_amount, quantity)
+
+    return invoiceRes
+}
+const addSupplierInvoice = async (supplier, notes, payment_amount, quantity) => {
+    let date = new Date().toISOString().split('T')[0]
+
+    const data = JSON.stringify({
+        "PurchaseOrder": {
+            "staff_id": 1,
+            "supplier_id": supplier.id,
+            "is_offline": true,
+            "currency_code": "SAR",
+            "supplier_business_name": supplier.business_name,
+            "supplier_first_name": "",
+            "supplier_last_name": "",
+            "supplier_email": "",
+            "supplier_address1": supplier.address1,
+            "supplier_address2": "",
+            "supplier_postal_code": "",
+            "supplier_city": supplier.city,
+            "supplier_state": supplier.state,
+            "supplier_country_code": "SA",
+            "date": date,
+            "draft": true,
+            "Supplier_active_secondary_address": true,
+            "Supplier_secondary_country_code": "",
+            "Supplier_secondary_name": "",
+            "Supplier_secondary_address1": "",
+            "Supplier_secondary_address2": "",
+            "Supplier_secondary_city": "",
+            "Supplier_secondary_state": "",
+            "Supplier_secondary_postal_code": "",
+            "is_received": true,
+            "received_date": ""
+        },
+        "PurchaseOrderItem": [
+            {
+                "product_id": "",
+                "item": "item",
+                "org_name": "name",
+                "description": notes,
+                "unit_price": payment_amount,
+                "quantity": quantity,
+                "tax1": 0,
+                "tax2": 0
+            }
+        ]
+    });
+    const config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: `https://aljwadalmomez.daftra.com/api2/purchase_invoices`,
+        headers: {
+            'APIKEY': process.env.daftra_Key,
+            'Content-Type': 'application/json'
+        },
+        data: data
+    }
+    const response = await axios(config)
+    return response.data
+}
+
+const getSupplierById = async (supplierId) => {
+    try {
+        const config = {
+            method: 'get',
+            url: `https://aljwadalmomez.daftra.com/api2/suppliers/${supplierId}`,
+            headers: {
+                'APIKEY': process.env.daftra_Key,
+                'Content-Type': 'application/json'
+            }
+        }
+        const response = await axios(config)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return error.response.data
+    }
+}
+//#endregion region supplier (shipment company) invoice
+
 //********************** */
 const errorHandler = (data, status) => {
     let e = {
@@ -153,7 +247,7 @@ const errorHandler = (data, status) => {
 //             })
 //         }
 //         const client = response.data.Client;
-//         const inovic = await invoiceCreate(client, user.daftraid, notes, payment_method, payment_amount);
+//         const inovic = await createClientInvoice(client, user.daftraid, notes, payment_method, payment_amount);
 //         console.log(inovic)
 //     } catch (error) {
 //         console.log(error)

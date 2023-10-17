@@ -3,7 +3,7 @@ const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice, createSupplierInvoice } = require("../modules/daftra");
 
 
 exports.edit = (req, res) => {
@@ -40,6 +40,7 @@ exports.edit = (req, res) => {
 exports.createUserOrder = async (req, res) => {
     const user = await User.findById(req.user.user.id);
     let ordersNum = await SaeeOrder.count();
+    const saee = await Saee.findOne();
     const p_name = req.body.p_name;
     const p_city = req.body.p_city;
     const p_mobile = req.body.p_mobile;
@@ -120,9 +121,13 @@ exports.createUserOrder = async (req, res) => {
             })
         }
 
+        const supplier_daftraid = saee.daftraId
+        const supplierInvoice = await createSupplierInvoice(supplier_daftraid, description, totalShipPrice, quantity);
+        order.supplier_inovicedaftra = supplierInvoice
+
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

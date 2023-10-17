@@ -772,7 +772,7 @@ method = get
 response {
     "data": []
 }
-/************************daftra************************************************/
+//******************************** daftra *******************************************************//
 **************staff******************
 1) get all (only admin)
 url = https://dashboard.go-tex.net/api/daftra/staff-get-all
@@ -880,6 +880,19 @@ body{
     "orderid": "64edd9c7121e3a8a6e31c237",
     "status": "1"    // "1" for accept any value other will remove order
 }
+
+/************ Supplier Invoices ************/
+1) get all suppliers invoices
+url = /api/daftra/get-all-suppliers-invoices
+method = GET
+
+2) get supplier invoice by daftraid
+url = /api/daftra/get-supplier-invoice/:id
+method = GET
+
+
+//******************************** daftra end *******************************************************//
+
 //********************************imile**********************************//
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/imile/edit
