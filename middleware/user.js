@@ -60,10 +60,14 @@ exports.isAuth = (req, res, next) => {
                     msg: err
                 })
             }
+            console.log(user)
             if (user.data.user.rolle == 'user') {
                 req.user = user.data
                 next();
             } else if (user.data.user.rolle == 'marketer') {
+                req.user = user.data
+                next();
+            } else if (user.data.user.roll == 'admin') {
                 req.user = user.data
                 next();
             } else {

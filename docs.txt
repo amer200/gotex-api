@@ -861,24 +861,19 @@ response{
     "data": "https://aljwadalmomez.daftra.com/invoices/preview/127?hash=79c569647e484eaf952805afef10f324"
 }
 /**********************credit*****************************/
-1)markter-add-credit-for-client 
-url = https://dashboard.go-tex.net/api/daftra/markter-add-credit-for-client
+1) add-credit-to-client (markter)
+url = https://dashboard.go-tex.net/user/add-credit-to-client
 method = post
 body{
-    "credit_limit": 250,
-    "client_id": 29
+    "cartid_limit": 26,
+    "clientid": "652a7778388b7b5be8f7dc07"
 }
-/*********************
-2) get-all-client-credit-order (admin)
-url = https://dashboard.go-tex.net/api/daftra/get-all-client-credit-order
-method = get
-/********************
-3) change-credit-order-status
-url = https://dashboard.go-tex.net/api/daftra/change-credit-order-status
+2) change-credit-status
+url = https://dashboard.go-tex.net/admin/change-credit-status
 method = post
 body{
-    "orderid": "64edd9c7121e3a8a6e31c237",
-    "status": "1"    // "1" for accept any value other will remove order
+    clientid: "652a7778388b7b5be8f7dc07"
+    status: "accepted","declined"
 }
 
 /************ Supplier Invoices ************/

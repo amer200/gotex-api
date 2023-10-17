@@ -3,6 +3,7 @@ const routes = express.Router();
 const userControllers = require("../controller/user");
 const clintControllers = require("../controller/clints");
 const userMiddlewares = require('../middleware/user');
+const chek = require("../middleware/new-client");
 routes.post('/signup', userMiddlewares.isValide, userControllers.signUp);
 routes.get("/activate-user/:code/:id", userControllers.activateUser);
 routes.post('/marketer-signup', userMiddlewares.isValide, userControllers.MarkterSignUp);
@@ -19,4 +20,6 @@ routes.post("/add-user-balance", userMiddlewares.isAuth, userControllers.addBala
 routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
 routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.getAllPaymentOrders);
 
-module.exports = routes;
+routes.post("/add-credit-to-client", userMiddlewares.isAuth, userMiddlewares.isMarkter, userControllers.addCreditsToClient);
+
+module.exports = routes

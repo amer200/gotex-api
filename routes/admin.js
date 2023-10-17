@@ -7,5 +7,5 @@ routes.get('/get-all-users', adminMiddleware.isAuth, adminControllers.getAllUser
 routes.post('/add-deposit-to-user', adminMiddleware.isAuth, adminControllers.addWalletToUser);
 routes.post("/proof-user-cr", adminMiddleware.isAuth, adminControllers.proofCrForUser);
 routes.post("/un-proof-user-cr", adminMiddleware.isAuth, adminControllers.unProofCrForUser);
-
+routes.post("/change-credit-status", adminMiddleware.isAuth, adminControllers.changeClientCreditStatus);
 module.exports = routes;
