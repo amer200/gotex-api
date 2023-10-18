@@ -2,52 +2,13 @@ const User = require("../model/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const salt = 10;
-const nodemailer = require("nodemailer");
-const ejs = require("ejs");
 const paymentOrder = require("../model/payment/orders");
 const axios = require("axios");
 const Client = require("../model/clint");
-const sendEmail = async (email, text, id, temp) => {
-    try {
-        const transporter = nodemailer.createTransport({
-            host: "smtp.hostinger.com",
-            port: 465,
-            secure: true,
-            auth: {
-                user: process.env.EMAIL,
-                pass: process.env.EMAILPASSWORD,
-            },
-        });
-        ejs.renderFile(__dirname + temp, { code: text, id: id }, async function (err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                transporter.sendMail({
-                    from: process.env.EMAIL,
-                    to: email,
-                    subject: "verfiy your gotex account",
-                    html: data,
-                }, (error, result) => {
-                    if (error) return console.error(error);
-                    return console.log(result);
-                });
-                console.log("email sent sucessfully");
-            }
-        })
-    } catch (error) {
-        console.log("email not sent");
-        console.log(error);
-    }
-};
-function genRandonString(length) {
-    var chars = '0123456789';
-    var charLength = chars.length;
-    var result = '';
-    for (var i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * charLength));
-    }
-    return result;
-}
+const sendEmail = require("../modules/sendEmail");
+const genRandomString = require("../modules/genRandomString");
+const mailSubject = "Verify your gotex account"
+
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
     var cr = []
@@ -72,13 +33,13 @@ exports.signUp = (req, res) => {
                     address: address,
                     location: location,
                     verified: false,
-                    emailcode: genRandonString(4),
+                    emailcode: genRandomString(4),
                     rolle: "user",
                     cr: cr
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
+                        sendEmail(u.email, u.emailcode, u._id, "/../views/emailTemp.ejs", mailSubject);
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -111,12 +72,12 @@ exports.MarkterSignUp = (req, res) => {
                     address: address,
                     location: location,
                     verified: false,
-                    emailcode: genRandonString(4),
+                    emailcode: genRandomString(4),
                     rolle: "marketer",
                 })
                 user.save()
                     .then(u => {
-                        sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
+                        sendEmail(u.email, u.emailcode, u._id, "/../views/emailTemp.ejs", mailSubject);
                         res.status(200).json({
                             msg: "ok",
                             user: u
@@ -207,11 +168,11 @@ exports.reSendActivateCode = (req, res) => {
     const userId = req.user.user.id;
     User.findById(userId)
         .then(u => {
-            u.emailcode = genRandonString(4);
+            u.emailcode = genRandomString(4);
             return u.save()
         })
         .then(u => {
-            sendEmail(u.email, u.emailcode, u._id, "/emailTemp.ejs");
+            sendEmail(u.email, u.emailcode, u._id, "/../views/emailTemp.ejs", mailSubject);
             res.status(200).json({
                 msg: "email send"
             })
@@ -248,10 +209,10 @@ exports.createNewPassword = async (req, res) => {
                 msg: "user email not found"
             })
         }
-        user.emailcode = genRandonString(4);
+        user.emailcode = genRandomString(4);
         console.log(user.emailcode);
         await user.save();
-        sendEmail(user.email, user.emailcode, user._id, "/password_mail.ejs");
+        sendEmail(user.email, user.emailcode, user._id, "/../views/password_mail.ejs", mailSubject);
         return res.status(200).json({
             msg: "the email has been sent"
         })
@@ -425,13 +386,4 @@ exports.addCreditsToClient = async (req, res) => {
             error: error
         })
     }
-}
-const genRandomString = (length) => {
-    var chars = '0123456789';
-    var charLength = chars.length;
-    var result = '';
-    for (var i = 0; i < length; i++) {
-        result += chars.charAt(Math.floor(Math.random() * charLength));
-    }
-    return result;
 }
