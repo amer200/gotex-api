@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 var cors = require('cors');
 var morgan = require('morgan')
 app.use(morgan('combined'))
-const { upload, uploadClintReceipts } = require('./middleware/fileUpload')
+const { upload, uploadClintReceipts } = require('./modules/fileUpload')
 /********************************************************************************* */
 /** File Upload */
 app.post('/user/signup', upload.array('cr'));
