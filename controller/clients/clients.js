@@ -6,16 +6,16 @@ const axios = require("axios");
 
 exports.addClient = async (req, res) => {
     const userId = req.user.user.id;
-    const { company, first_name, last_name, city, state, address, mobile, email,
+    const { company, first_name, city, state, address, mobile, email,
         notes, category, birth_date, street } = req.body
 
     try {
-        const name = `${first_name} ${last_name}`;
+        const name = first_name
         let staff_id = 0;
 
-        if (!first_name || !last_name || !city || !state || !address || !mobile || !street) {
+        if (!first_name || !city || !state || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: 'These info are required:  first_name, last_name, city, state, address, mobile and street'
+                msg: 'These info are required:  first_name, city, state, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
@@ -28,7 +28,7 @@ exports.addClient = async (req, res) => {
         //     return res.status(400).json({ msg: "This client email is already used." })
         // }
 
-        const daftraResult = await addDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date);
+        const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
         if (daftraResult.result != "ok") {
             return res.status(400).json({
                 msg: "error with daftra",
@@ -83,14 +83,14 @@ exports.getAllClients = async (req, res) => {
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const userId = req.user.user.id;
-    const { company, first_name, last_name, city, state, address, mobile, email,
+    const { company, first_name, city, state, address, mobile, email,
         notes, category, birth_date, street } = req.body
 
     try {
-        const name = `${first_name} ${last_name}`;
-        if (!first_name || !last_name || !city || !state || !address || !mobile || !street) {
+        const name = first_name
+        if (!first_name || !city || !state || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: 'These info are required:  first_name, last_name, city, state, address, mobile and street'
+                msg: 'These info are required:  first_name, city, state, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
@@ -109,7 +109,7 @@ exports.editClient = async (req, res) => {
         //     return res.status(400).json({ msg: "This client email is already used." })
         // }
 
-        const daftraResult = await editDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date, client.daftraClientId);
+        const daftraResult = await editDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date, client.daftraClientId);
         if (daftraResult.result != "ok") {
             return res.status(400).json({
                 msg: "error with daftra",
@@ -153,13 +153,11 @@ exports.addUserAsClient = async (user) => {
     const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
     city = 'Najran'
 
-    const first_name = name.split(' ')[0]
-    const last_name = name.split(first_name + ' ')[1] || ""
-    console.log(first_name, last_name)
+    const first_name = name
     let staff_id = 0;
 
-    if (!first_name || !city || !address || !mobile) {
-        return { result: 'fail', msg: 'These info are required:  first_name, last_name, city, address and mobile' }
+    if (!companyName || !city || !address || !mobile) {
+        return { result: 'fail', msg: 'These info are required:  first_name, city, address and mobile' }
     }
     if (user.daftraid) {
         staff_id = user.daftraid;
@@ -173,7 +171,7 @@ exports.addUserAsClient = async (user) => {
     //     }
     // }
 
-    const daftraResult = await addDaftraClient(staff_id, company, first_name, last_name, email, address, city, state, mobile, notes, category, birth_date);
+    const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
     if (daftraResult.result != "ok") {
         return {
             result: 'fail',
@@ -247,14 +245,14 @@ const addImileClient = async (company, name, city, address, mobile, email = "", 
     }
     return 1
 }
-const addDaftraClient = async (staff_id, company, first_name, last_name, email = "", address, city, state, mobile, notes, category, birth_date) => {
+const addDaftraClient = async (staff_id, company, first_name, email = "", address, city, state, mobile, notes, category, birth_date) => {
     let data = {
         Client: {
             "is_offline": true,
             "staff_id": staff_id,
             "business_name": company,
             "first_name": first_name,
-            "last_name": last_name,
+            "last_name": "",
             "email": email,
             "address1": address,
             "city": city,
@@ -305,14 +303,14 @@ const removeDaftraClient = async (id) => {
     await axios(config);
 }
 
-const editDaftraClient = async (staff_id, company, first_name, last_name, email = "", address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
+const editDaftraClient = async (staff_id, company, first_name, email = "", address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
     let data = JSON.stringify({
         "Client": {
             "is_offline": true,
             "staff_id": staff_id,
             "business_name": company,
             "first_name": first_name,
-            "last_name": last_name,
+            "last_name": " ",
             "email": email,
             "address1": address,
             "city": city,
