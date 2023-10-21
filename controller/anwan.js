@@ -4,7 +4,7 @@ const Anwan = require("../model/anwan");
 const AnwanOrder = require("../model/anwanorders");
 const anwanorders = require("../model/anwanorders");
 const Clint = require("../model/clint");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -117,7 +117,7 @@ exports.createUserOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice, pieces);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, BookingMode, totalShipPrice, pieces);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

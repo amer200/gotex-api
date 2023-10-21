@@ -3,7 +3,7 @@ const qs = require('qs');
 const Glt = require("../model/glt");
 const GltOrder = require("../model/gltorders");
 const User = require("../model/user");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 const base64 = require('base64topdf');
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
@@ -152,7 +152,7 @@ exports.createUserOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, pieces);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, pieces);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

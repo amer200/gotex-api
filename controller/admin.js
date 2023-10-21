@@ -1,16 +1,8 @@
 const User = require("../model/user");
 const jwt = require("jsonwebtoken");
-const SmsaOrders = require("../model/smsaorders");
-const AnwanOrders = require("../model/anwanorders");
-const AramexOrders = require("../model/aramexorders");
-const GltOrder = require("../model/gltorders");
-const SaeeOrders = require("../model/saeeorders");
 const user = require("../model/user");
-const smsa = require("../model/smsa");
-const aramex = require("../model/aramex");
-const glt = require("../model/glt");
-const anwan = require("../model/anwan");
 const Client = require("../model/clint");
+
 exports.logIn = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -130,25 +122,6 @@ exports.unProofCrForUser = (req, res) => {
                 error: "err"
             })
         })
-}
-exports.getAllOrders = async (req, res) => {
-    try {
-        const saeeorders = await SaeeOrder.find().populate("user");
-        const gltorders = await GltOrder.find().populate("user");
-        const aramexorders = await AramexOrder.find().populate("user");
-        const smsaorders = await SmsaOrder.find().populate("user");
-        const anwanorders = await AnwanOrder.find().populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders];
-        res.status(200).json({
-            data: orders
-        })
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            msg: err
-        })
-    }
-
 }
 exports.changeClientCreditStatus = async (req, res) => {
     const clientId = req.body.clientid;

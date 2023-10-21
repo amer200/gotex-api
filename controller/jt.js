@@ -1,6 +1,6 @@
 const axios = require("axios");
 const User = require("../model/user");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 const Jt = require("../model/jt");
 const JtOrder = require("../model/jtorders");
 var crypto = require('crypto');
@@ -152,7 +152,7 @@ exports.createUserOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, goodsValue);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, goodsValue);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

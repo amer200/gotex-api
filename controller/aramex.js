@@ -4,7 +4,7 @@ const AramexOrder = require("../model/aramexorders");
 const User = require("../model/user");
 const axios = require("axios");
 const Clint = require("../model/clint");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 // exports.createOrder = async (req, res) => {
 //     try {
 //         clientInfo = new aramex.ClientInfo({
@@ -338,7 +338,7 @@ exports.edit = (req, res) => {
 //                 })
 //             } else {
 //                 if (cod) {
-//                     const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice, pieces);
+//                     const invo = await createClientInvoice(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice, pieces);
 //                     if (invo.result != 'successful') {
 //                         return res.status(400).json({ msg: "daftra error", invo })
 //                     }
@@ -372,7 +372,7 @@ exports.edit = (req, res) => {
 //                         })
 //                 } else {
 //                     user.wallet = user.wallet - totalShipPrice;
-//                     const invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
+//                     const invo = await createClientInvoice(daftraid, req.user.user.daftraid, desc, PaymentType, totalShipPrice);
 //                     user.save()
 //                         .then(u => {
 //                             const newO = new AramexOrder({
@@ -661,7 +661,7 @@ exports.createOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, PaymentType, totalShipPrice, pieces);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, PaymentType, totalShipPrice, pieces);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

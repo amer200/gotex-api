@@ -4,7 +4,7 @@ const ImileOrder = require("../model/imileorders");
 const ImileClient = require("../model/imileclients");
 const axios = require("axios");
 const cron = require('node-cron');
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 const imileorders = require("../model/imileorders");
 
 exports.edit = (req, res) => {
@@ -249,7 +249,7 @@ exports.createOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, desc, paytype, totalShipPrice, goodsValue);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

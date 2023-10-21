@@ -4,7 +4,7 @@ const axios = require('axios');
 const base64 = require('base64topdf');
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -147,7 +147,7 @@ exports.createUserOrder = async (req, res) => {
 
         let invo = ""
         if (daftraid) {
-            invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, pieces);
+            invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, pieces);
             if (invo.result != 'successful') {
                 invo = { result: "failed", daftra_response: invo }
             }

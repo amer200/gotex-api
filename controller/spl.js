@@ -6,7 +6,7 @@ const User = require("../model/user");
 const Clint = require("../model/clint");
 const splorders = require("../model/splorders");
 const CronJob = require('cron').CronJob;
-const Daftra = require("../modules/daftra");
+const { createClientInvoice } = require("../modules/daftra");
 
 //********************************************* */
 exports.edit = (req, res) => {
@@ -209,7 +209,7 @@ exports.creteNewOrder = async (req, res) => {
         } else {
             let invo = ""
             if (daftraid) {
-                invo = await Daftra.CreateInvo(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
+                invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
                 if (invo.result != 'successful') {
                     invo = { result: "failed", daftra_response: invo }
                 }
