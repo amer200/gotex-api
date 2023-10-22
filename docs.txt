@@ -1214,3 +1214,26 @@ response {
         }
     ]
 }
+//***********************new markters ****************/
+1) signup
+url = https://dashboard.go-tex.net/api/markter/signup
+method = post
+body{
+    "name": "amer mostafa",
+    "mobile": "01152306375",
+    "email": "amermostaafa@gmail.com",
+    "password": "753698@Am",
+    "code": "123"
+}
+//***************
+2) login
+https://dashboard.go-tex.net/api/markter/login
+method = post
+body{
+    "email": "amermostaafa@gmail.com",
+    "password": "753698@Am"
+}
+//*****************
+3) get all *(admin)
+url = https://dashboard.go-tex.net/api/markter/get-all-markter
+method = get

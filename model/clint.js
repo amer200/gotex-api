@@ -27,6 +27,7 @@ const clintSchema = mongoose.Schema({
         status: String,
         limet: Number,
         addby: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-    }
+    },
+    markter: { type: mongoose.Schema.Types.ObjectId, ref: 'Markter' }
 })
 module.exports = mongoose.model("Clint", clintSchema);
