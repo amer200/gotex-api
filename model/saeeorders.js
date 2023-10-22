@@ -13,7 +13,7 @@ const saeeOrderSchema = mongoose.Schema({
     supplier_inovicedaftra: Object,
     status: {
         type: String,
-        enum: ['failed', 'failed', 'pending', 'accepted', 'canceled'],
+        enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     }
 })
