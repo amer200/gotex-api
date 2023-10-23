@@ -1,5 +1,5 @@
 const Client = require("../../model/clint");
-const Markter = require("../markter");
+const Markter = require("../model/markter");
 const User = require("../../model/user");
 const Imile = require("../../model/imile");
 const axios = require("axios");
