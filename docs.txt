@@ -1237,3 +1237,15 @@ body{
 3) get all *(admin)
 url = https://dashboard.go-tex.net/api/markter/get-all-markter
 method = get
+//*************
+4) get-all-clients (for admin)
+url = https://dashboard.go-tex.net/api/admin/get-all-clients
+method = get
+//*************
+5) add-client-code (for admin)
+url = https://dashboard.go-tex.net/api/admin/add-client-code
+method = post
+body{
+    clientId: "",
+    marketerCode: ""
+}

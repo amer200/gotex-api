@@ -1,4 +1,5 @@
 const Client = require("../../model/clint");
+const Markter = require("../markter");
 const User = require("../../model/user");
 const Imile = require("../../model/imile");
 const axios = require("axios");
@@ -204,6 +205,31 @@ exports.addUserAsClient = async (user) => {
     })
     await myClient.save();
     return { result: 'success', data: myClient }
+}
+
+exports.AddClientToMarkter = async (req, res) => {
+    const clientId = req.body.clientId;
+    const marketerCode = req.body.marketerCode;
+    const client = await Client.findById(clientId);
+    const marketer = await Markter.findOne({ "code": marketerCode });
+    try {
+        if (!marketer) {
+            return res.status(400).json({
+                msg: "markter code not found"
+            })
+        }
+        client.marktercode = marketerCode;
+        await client.save();
+        return res.status(200).json({
+            msg: "ok",
+            data: client
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error: error
+        })
+    }
 }
 //************************************************************************************** */
 const addImileClient = async (company, name, city, address, mobile, email = "", notes) => {
