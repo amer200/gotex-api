@@ -75,7 +75,7 @@ exports.allOrders = async (req, res) => {
     try {
         const anwanOrders = await AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.awb_no": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -85,7 +85,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.Shipments.ID": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -95,7 +95,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.data.expressNo": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -105,7 +105,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const jtOrders = await JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.data.billCode": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -115,7 +115,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.waybill": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -125,7 +125,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.sawb": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -135,7 +135,7 @@ exports.allOrders = async (req, res) => {
         }).populate("user");
         const splOrders = await SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode },
             "data.Items.Barcode": { $regex: billCode },
             price: {
                 $gte: minPrice,
@@ -196,7 +196,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -208,7 +208,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -220,7 +220,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -232,7 +232,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -244,7 +244,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -256,7 +256,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -268,7 +268,7 @@ exports.filterByClientData = async (req, res) => {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
                     { email: { $regex: keyword, $options: 'i' } },
-                    { mobile: { $regex: keyword, $options: 'i' } }
+                    // { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
