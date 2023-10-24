@@ -9,4 +9,5 @@ routes.get('/get-all-orders', companiesControllers.getAllOrders);
 routes.get('/orders/all', companiesControllers.allOrders);
 routes.get('/orders/filter-by-client-data', companiesControllers.filterByClientData);
 routes.get('/orders/filter-by-date', companiesControllers.filterByDate);
+routes.get('/orders/filter-by-marketercode', companiesControllers.filterByMarketerCode);
 module.exports = routes;
