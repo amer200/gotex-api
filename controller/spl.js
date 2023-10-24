@@ -82,7 +82,7 @@ exports.creteNewOrder = async (req, res) => {
     const reciverName = req.body.reciverName;
     const reciverMobile = req.body.reciverMobile;
     const SenderName = req.body.SenderName;
-    const markterCode = req.body.markterCode;
+    const markterCode = req.body.markterCode || '';
     const SenderMobileNumber = req.body.SenderMobileNumber;
     const ContentPrice = req.body.ContentPrice;
     const ContentDescription = req.body.ContentDescription;

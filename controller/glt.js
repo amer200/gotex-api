@@ -16,6 +16,7 @@ exports.edit = (req, res) => {
     const mincodmarkteer = req.body.mincodmarkteer;
     const maxcodmarkteer = req.body.maxcodmarkteer;
     const kgprice = req.body.kgprice;
+    const markterCode = req.body.markterCode || '';
     Glt.findOne()
         .then(g => {
             g.status = status;
@@ -60,7 +61,6 @@ exports.createUserOrder = async (req, res) => {
     const c_areaName = req.body.c_areaName;
     const c_city = req.body.c_city;
     const c_mobile = req.body.c_mobile;
-    const markterCode = req.body.markterCode;
     const clintid = req.body.clintid;
     const daftraid = req.body.daftraid;
     /**************************** */
@@ -76,8 +76,8 @@ exports.createUserOrder = async (req, res) => {
             var codAmount = null;
             var paytype = "cc";
         }
-        if (markterCode) {
-            var nameCode = `${sender} (${markterCode})`;
+        if (marktercode) {
+            var nameCode = `${sender} (${marktercode})`;
         } else {
             var nameCode = sender;
         }

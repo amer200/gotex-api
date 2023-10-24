@@ -417,7 +417,8 @@ exports.createOrder = async (req, res) => {
     const userId = req.user.user.id
     const { c_name, c_company, c_email, c_phone, c_line1, c_city, c_CellPhone, c_StateOrProvinceCode,
         p_name, p_company, p_email, p_phone, p_line1, p_city, p_CellPhone, p_StateOrProvinceCode,
-        weight, pieces, description, cod, markterCode, clintid, daftraid } = req.body
+        weight, pieces, description, cod, clintid, daftraid } = req.body
+    const markterCode = req.body.markterCode || '';
 
     try {
         const user = await User.findById(userId);
@@ -649,6 +650,7 @@ exports.createOrder = async (req, res) => {
             data: response.data,
             paytype,
             price: totalShipPrice,
+            marktercode: markterCode,
             createdate: new Date()
         })
 

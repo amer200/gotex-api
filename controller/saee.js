@@ -52,7 +52,7 @@ exports.createUserOrder = async (req, res) => {
     const c_streetaddress = req.body.c_streetaddress;
     const c_mobile = req.body.c_mobile;
     const cod = req.body.cod;
-    const markterCode = req.body.markterCode;
+    const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
     const clintid = req.body.clintid;
     let daftraid = req.body.daftraid; // client daftra id

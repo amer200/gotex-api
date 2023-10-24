@@ -136,7 +136,7 @@ exports.createOrder = async (req, res) => {
     const c_address = req.body.c_address;
     // const c_zipcode = req.bode.c_zipcode;
     //**************************************** */
-    const markterCode = req.body.markterCode;
+    const markterCode = req.body.markterCode || '';
     const desc = req.body.description;
     const cod = req.body.cod;
     const goodsValue = req.body.goodsValue;

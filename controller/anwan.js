@@ -39,7 +39,7 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await AnwanOrder.count();
-    const markterCode = req.body.markterCode;
+    const markterCode = req.body.markterCode || '';
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     let { c_name, c_email, c_phone, c_city, c_address,
@@ -56,18 +56,18 @@ exports.createUserOrder = async (req, res) => {
             var codValue = 0;
             var paytype = "cc";
         }
-        if (markterCode) {
-            var nameCode = `${s_name} (${markterCode})`;
-        } else {
-            var nameCode = s_name;
-        }
+        // if (markterCode) {
+        //     var nameCode = `${s_name} (${markterCode})`;
+        // } else {
+        //     var nameCode = s_name;
+        // }
         var data = {
             "format": "json",
             "secret_key": process.env.ANWAN_SECRET_KEY,
             "customerId": process.env.ANWAN_CUSTOMER_ID,
             "param": {
                 "sender_phone": s_phone,
-                "sender_name": nameCode,
+                "sender_name": s_name,
                 "sender_email": s_email,
                 "receiver_email": c_email,
                 "description": description,

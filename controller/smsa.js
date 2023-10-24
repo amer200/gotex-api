@@ -60,7 +60,7 @@ exports.createUserOrder = async (req, res) => {
         const description = req.body.description;
         const value = req.body.Value;
         const cod = req.body.cod;
-        const markterCode = req.body.markterCode;
+        const markterCode = req.body.markterCode || '';
         const clintid = req.body.clintid;
         const daftraid = req.body.daftraid;
         if (cod) {
@@ -131,6 +131,7 @@ exports.createUserOrder = async (req, res) => {
             company: "smsa",
             ordernumber: ordersNum + 1,
             data: smsaRes.data,
+            price: totalShipPrice,
             paytype: paytype,
             marktercode: markterCode,
             createdate: new Date()

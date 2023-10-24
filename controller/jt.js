@@ -40,7 +40,7 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await JtOrder.count();
-    const markterCode = req.body.markterCode;
+    const markterCode = req.body.markterCode || '';
     const user = await User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     /***************** */
