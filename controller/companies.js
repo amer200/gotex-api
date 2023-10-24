@@ -75,37 +75,37 @@ exports.allOrders = async (req, res) => {
     try {
         const anwanOrders = await AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-            "data.awb_no": { $regex: billCode },
+            "data.awb_no": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.Shipments.ID": { $regex: billCode },
+            "data.Shipments.ID": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.data.expressNo": { $regex: billCode },
+            "data.data.expressNo": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const jtOrders = await JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.data.billCode": { $regex: billCode },
+            "data.data.billCode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.waybill": { $regex: billCode },
+            "data.waybill": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.sawb": { $regex: billCode },
+            "data.sawb": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const splOrders = await SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            "data.Items.Barcode": { $regex: billCode },
+            "data.Items.Barcode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
 
@@ -317,31 +317,31 @@ exports.filterByMarketerCode = async (req, res) => {
 
     try {
         const anwanOrders = await AnwanOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const imileOrders = await ImileOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const jtOrders = await JtOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
         const splOrders = await SplOrder.find({
-            marktercode: { $regex: marktercode },
+            marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate("user");
 
