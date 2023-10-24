@@ -61,79 +61,51 @@ exports.getAllOrders = async (req, res) => {
     }
 
 }
+
 /**
- * @Desc :  Filter with company || paytype || billCode
- *        + Filter on range of price
+ * @Desc :  Filter with company, paytype or billCode
  *        + Pagination
  */
 // TODO: Add Glt orders
 exports.allOrders = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, company, paytype = '', billCode = '', minPrice = 0, maxPrice = 100000 } = req.query
+    const { page = 1, limit = 30, company, paytype = '', billCode = '' } = req.query
     //?Note: marktercode = '' doesn't work if I don't send it, it gives only orders with marktercode key
 
     try {
         const anwanOrders = await AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
             "data.awb_no": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.expressNo": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const jtOrders = await JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.billCode": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.waybill": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.sawb": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
         const splOrders = await SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode },
-            price: {
-                $gte: minPrice,
-                $lte: maxPrice
-            },
             status: { $ne: "failed" }
         }).populate("user");
 
@@ -185,6 +157,7 @@ exports.filterByClientData = async (req, res) => {
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
+            /**@Desc it returns users.name or user.email = keyword, else it returns user=null (then filter orders to neglect user=null)*/
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
@@ -271,6 +244,119 @@ exports.filterByClientData = async (req, res) => {
         })
     }
 }
+
+exports.filterByPrice = async (req, res) => {
+    /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    const { page = 1, limit = 30, minPrice = 0, maxPrice = 100000 } = req.query
+
+    try {
+        const anwanOrders = await AnwanOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const aramexOrders = await AramexOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const imileOrders = await ImileOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const jtOrders = await JtOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const saeeOrders = await SaeeOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const smsaOrders = await SmsaOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const splOrders = await SplOrder.find({
+            price: {
+                $gte: minPrice,
+                $lte: maxPrice
+            },
+            status: { $ne: "failed" }
+        }).populate("user");
+
+        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+        const ordersPagination = paginate(orders, page, limit)
+
+        res.status(200).json({ ...ordersPagination })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+exports.filterByMarketerCode = async (req, res) => {
+    /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    const { page = 1, limit = 30, marktercode = '' } = req.query
+
+    try {
+        const anwanOrders = await AnwanOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const aramexOrders = await AramexOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const imileOrders = await ImileOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const jtOrders = await JtOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const saeeOrders = await SaeeOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const smsaOrders = await SmsaOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+        const splOrders = await SplOrder.find({
+            marktercode: { $regex: marktercode },
+            status: { $ne: "failed" }
+        }).populate("user");
+
+        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+        const ordersPagination = paginate(orders, page, limit)
+
+        res.status(200).json({ ...ordersPagination })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+// TODO: Test it front
 exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     const { page = 1, limit = 30, startDate = '', endDate = new Date() } = req.query
@@ -323,51 +409,6 @@ exports.filterByDate = async (req, res) => {
                 $gte: startDate,
                 $lte: endDate
             },
-            status: { $ne: "failed" }
-        }).populate("user");
-
-        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
-        const ordersPagination = paginate(orders, page, limit)
-
-        res.status(200).json({ ...ordersPagination })
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({
-            error: err.message
-        })
-    }
-}
-exports.filterByMarketerCode = async (req, res) => {
-    /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, marktercode = '' } = req.query
-
-    try {
-        const anwanOrders = await AnwanOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const aramexOrders = await AramexOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const imileOrders = await ImileOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const jtOrders = await JtOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const saeeOrders = await SaeeOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const smsaOrders = await SmsaOrder.find({
-            marktercode: { $regex: marktercode },
-            status: { $ne: "failed" }
-        }).populate("user");
-        const splOrders = await SplOrder.find({
-            marktercode: { $regex: marktercode },
             status: { $ne: "failed" }
         }).populate("user");
 
