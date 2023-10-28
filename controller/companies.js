@@ -157,11 +157,12 @@ exports.filterByClientData = async (req, res) => {
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
-            /**@Desc it returns users.name or user.email = keyword, else it returns user=null (then filter orders to neglect user=null)*/
+            /**@Desc if users.name or user.email != keyword, it returns user=null */
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -172,7 +173,8 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -183,7 +185,8 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -194,7 +197,8 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -205,7 +209,8 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -216,7 +221,8 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
@@ -227,13 +233,14 @@ exports.filterByClientData = async (req, res) => {
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
-                    { email: { $regex: keyword, $options: 'i' } }
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
                 ]
             }
         });
 
         let orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
-        orders = orders.filter(order => order.user)
+        orders = orders.filter(order => order.user) // filter orders to remove user=null
         const ordersPagination = paginate(orders, page, limit)
 
         res.status(200).json({ ...ordersPagination })
@@ -356,7 +363,6 @@ exports.filterByMarketerCode = async (req, res) => {
         })
     }
 }
-// TODO: Test it front
 exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     const { page = 1, limit = 30, startDate = '', endDate = new Date() } = req.query
@@ -364,49 +370,49 @@ exports.filterByDate = async (req, res) => {
     try {
         const anwanOrders = await AnwanOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const jtOrders = await JtOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const splOrders = await SplOrder.find({
             createdate: {
-                $gte: startDate,
+                // $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
