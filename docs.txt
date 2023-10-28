@@ -158,6 +158,87 @@ method = get
 2) get all orders (for admin)
 url = https://dashboard.go-tex.net/api/companies/get-all-orders
 method = get
+
+3) get all orders with search (admin)
+url = https://dashboard.go-tex.net/api/companies/orders/all?page=1&limit=30&company={}&paytype={}&billCode={}
+method = GET
+
+by default (using only -> https://dashboard.go-tex.net/api/companies/orders/all) : get all orders with pagination -> page=1, limit=30
+
+response {
+    "result": 30,
+    "pagination": {
+        "currentPage": 1,
+        "limit": 30,
+        "numberOfPages": 5
+    },
+    "data": [
+        {
+            "_id": "653d0965edca860610df3580",
+            "user": {
+                "_id": "6511e27aa2b4b5d0877d0be8",
+                "name": "soha",
+                "password": "$2b$10$MzDRLaXsApCTmBwErLmnj.oghR6WAoakd1IvfnQuEtoZs5v5CPgoG",
+                "email": "sohaali710@gmail.com",
+                "mobile": "966505694459",
+                "address": "123 st.",
+                "location": "egypt",
+                "emailcode": "9874",
+                "verified": true,
+                "rolle": "marketer",
+                "wallet": 73130,
+                "cr": [],
+                "iscrproofed": false,
+                "__v": 0,
+                "daftraid": "1",
+                "daftraClientId": "127"
+            },
+            "company": "jt",
+            "ordernumber": 10,
+            "data": {
+                "code": "1",
+                "msg": "success",
+                "data": {
+                    "txlogisticId": "1695119354339Gotex",
+                    "billCode": "JTE000200085796",
+                    "subCodes": [],
+                    "sortingCode": "BUR-NB004-",
+                    "createOrderTime": "2023-10-28 16:15:17",
+                    "lastCenterName": "Burayidah DC"
+                }
+            },
+            "paytype": "cc",
+            "price": 22,
+            "marktercode": "",
+            "createdate": "Sat Oct 28 2023 15:15:17 GMT+0200 (Eastern European Standard Time)",
+            "status": "pending",
+            "inovicedaftra": {
+                "result": "successful",
+                "code": 202,
+                "id": "1233",
+                "invoice_number": "101208"
+            },
+            "__v": 0
+        }
+    ]
+}
+
+4) filter by client data (name, email or mobile)
+url = https://dashboard.go-tex.net/api/companies/orders/filter-by-client-data?keyword={}
+method = GET
+
+5) filter by marketer code
+url = https://dashboard.go-tex.net/api/companies/orders/filter-by-marketercode?marktercode={}
+method = GET
+
+6) filter by date 
+url = https://dashboard.go-tex.net/api/companies/orders/filter-by-date?startDate={}&endDate={}
+method = GET
+
+7) filter by range of price 
+url = https://dashboard.go-tex.net/api/companies/orders/filter-by-price?minPrice={}&maxPrice={}
+method = GET
+
 /*********************************saee***************************/
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/saee/edit
