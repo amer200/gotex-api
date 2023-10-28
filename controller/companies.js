@@ -365,54 +365,54 @@ exports.filterByMarketerCode = async (req, res) => {
 }
 exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, startDate = '', endDate = new Date() } = req.query
+    const { page = 1, limit = 30, startDate = new Date(2020, 1, 1), endDate = new Date() } = req.query
 
     try {
         const anwanOrders = await AnwanOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const jtOrders = await JtOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate("user");
         const splOrders = await SplOrder.find({
             createdate: {
-                // $gte: startDate,
+                $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
