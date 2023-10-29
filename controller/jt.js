@@ -45,7 +45,7 @@ exports.createUserOrder = async (req, res) => {
     const totalShipPrice = res.locals.totalShipPrice;
     /***************** */
     let { description, weight, re_address, re_city, re_mobile, re_name, re_prov, goodsType,
-        s_address, s_city, s_mobile, s_name, s_prov, goodsValue, items, cod, daftraid } = req.body;
+        s_address, s_city, s_mobile, s_name, s_prov, goodsValue, items, cod, daftraid, clintid } = req.body;
     /***************** */
     if (cod) {
         var BookingMode = "COD"
@@ -112,8 +112,6 @@ exports.createUserOrder = async (req, res) => {
     let data = qs.stringify({
         bizContent: bizContent
     });
-    // return console.log(bizContent)
-    console.log('********')
     let myText = bizContent + process.env.jt_privte_key;
     var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
     let config = {
@@ -129,7 +127,8 @@ exports.createUserOrder = async (req, res) => {
     };
     try {
         const response = await axios(config);
-
+        console.log('********')
+        console.log(response.data.code)
         const order = new JtOrder({
             user: req.user.user.id,
             company: "jt",
@@ -160,15 +159,26 @@ exports.createUserOrder = async (req, res) => {
             invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
         }
         order.inovicedaftra = invo
-        await order.save();
 
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "jt",
+                id: order._id
+            }
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+
+            order.marktercode = clint.marktercode ? clint.marktercode : null;
+        }
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save()
         }
-        return res.status(200).json({
-            data: order
-        })
+
+        await order.save();
+        return res.status(200).json({ data: order })
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -232,8 +242,8 @@ exports.cancelOrder = async (req, res) => {
         const billCode = order.data.data.billCode
 
         const bizContent = `{
-            "customerCode":"J0086024173",
-            "digest":"VdlpKaoq64AZ0yEsBkvt1A==",
+            "customerCode":"${process.env.jt_customer_code}",
+            "digest":"${process.env.jt_body_digest}",
             "orderType":"2",
             "txlogisticId":"${txlogisticId}",
             "reason":"We no longer needs this order.",
@@ -241,14 +251,14 @@ exports.cancelOrder = async (req, res) => {
          }`;
 
         let data = qs.stringify({ bizContent });
-        let myText = bizContent + "a0a1047cce70493c9d5d29704f05d0d9";
+        let myText = bizContent + process.env.jt_privte_key;
         var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
 
         let config = {
             method: 'post',
-            url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/cancelOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+            url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/cancelOrder',
             headers: {
-                'apiAccount': '292508153084379141',
+                'apiAccount': process.env.jt_api_account,
                 'digest': md5Hash,
                 'timestamp': '1638428570653',
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -257,8 +267,10 @@ exports.cancelOrder = async (req, res) => {
         };
 
         const response = await axios(config);
+        console.log('****')
+        console.log(response)
         if (response.data.code != 1) {
-            return res.status(400).json({ data: response.data })
+            return res.status(400).json({ msg: response.data })
         }
 
         order.status = 'canceled'

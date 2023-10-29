@@ -156,7 +156,6 @@ exports.createUserOrder = async (req, res) => {
             invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
         }
         order.inovicedaftra = invo
-        await order.save();
 
         let i = 1;
         smsaRes.data.waybills.forEach(a => {
@@ -164,18 +163,27 @@ exports.createUserOrder = async (req, res) => {
             i++
         })
 
+        if (clintid) {
+            const clint = await Clint.findById(clintid);
+            const co = {
+                company: "smsa",
+                id: order._id
+            }
+            clint.wallet = clint.wallet - totalShipPrice;
+            clint.orders.push(co);
+            await clint.save();
+
+            order.marktercode = clint.marktercode ? clint.marktercode : null;
+        }
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save();
-            return res.status(200).json({
-                data: order
-            })
-        } else {
-            res.status(200).json({
-                data: order
-            })
         }
 
+        await order.save();
+        return res.status(200).json({
+            data: order
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({

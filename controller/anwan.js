@@ -125,7 +125,6 @@ exports.createUserOrder = async (req, res) => {
             invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
         }
         order.inovicedaftra = invo
-        await order.save()
 
         if (clintid) {
             const clint = await Clint.findById(clintid);
@@ -136,12 +135,15 @@ exports.createUserOrder = async (req, res) => {
             clint.wallet = clint.wallet - totalShipPrice;
             clint.orders.push(co);
             await clint.save();
+
+            order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
             user.wallet = user.wallet - totalShipPrice;
             await user.save()
         }
 
+        await order.save()
         res.status(200).json({ data: order })
     } catch (error) {
         console.log(error);
