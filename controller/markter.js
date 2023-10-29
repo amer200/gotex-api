@@ -118,3 +118,71 @@ exports.getAramexOrders = async (req, res) => {
         pages: pages
     })
 }
+exports.getImileOrder = async (req, res) => {
+    const code = req.user.user.code;
+    const page = req.query.page;
+    const pages = Math.floor(await ImileOrder.find({ "marktercode": code }).count() / 10);
+    let skip;
+    if (page == 1) {
+        skip = 0;
+    } else {
+        skip = page * 10
+    }
+    const imileOrder = await ImileOrder.find({ "marktercode": code }).skip(skip).limit(10);
+    return res.status(200).json({
+        data: imileOrder,
+        page: page,
+        pages: pages
+    })
+}
+exports.getJtOrder = async (req, res) => {
+    const code = req.user.user.code;
+    const page = req.query.page;
+    const pages = Math.floor(await JtOrder.find({ "marktercode": code }).count() / 10);
+    let skip;
+    if (page == 1) {
+        skip = 0;
+    } else {
+        skip = page * 10
+    }
+    const jtOrder = await JtOrder.find({ "marktercode": code }).skip(skip).limit(10);
+    return res.status(200).json({
+        data: jtOrder,
+        page: page,
+        pages: pages
+    })
+}
+exports.getSaeeOrder = async (req, res) => {
+    const code = req.user.user.code;
+    const page = req.query.page;
+    const pages = Math.floor(await SaeeOrder.find({ "marktercode": code }).count() / 10);
+    let skip;
+    if (page == 1) {
+        skip = 0;
+    } else {
+        skip = page * 10
+    }
+    const saeeOrder = await SaeeOrder.find({ "marktercode": code }).skip(skip).limit(10);
+    return res.status(200).json({
+        data: saeeOrder,
+        page: page,
+        pages: pages
+    })
+}
+exports.getSmsaOrder = async (req, res) => {
+    const code = req.user.user.code;
+    const page = req.query.page;
+    const pages = Math.floor(await SmsaOrder.find({ "marktercode": code }).count() / 10);
+    let skip;
+    if (page == 1) {
+        skip = 0;
+    } else {
+        skip = page * 10
+    }
+    const smsaOrder = await SmsaOrder.find({ "marktercode": code }).skip(skip).limit(10);
+    return res.status(200).json({
+        data: smsaOrder,
+        page: page,
+        pages: pages
+    })
+}

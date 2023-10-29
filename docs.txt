@@ -1334,3 +1334,19 @@ body{
 6) get aramex orders
 url = https://dashboard.go-tex.net/api/markter/armex-orders?page=1
 method = get
+//*********************
+7) get jt orders
+url = https://dashboard.go-tex.net/api/markter/js-orders?page=1
+method = get
+//*********************
+8) get imile orders
+url = https://dashboard.go-tex.net/api/markter/imile-orders?page=1
+method = get
+//*********************
+9) get saee orders
+url = https://dashboard.go-tex.net/api/markter/saee-orders?page=1
+method = get
+//************
+10) get smsa orders
+url = https://dashboard.go-tex.net/api/markter/smsa-orders?page=1
+method = get

@@ -7,4 +7,10 @@ routes.post("/signup", marketerMiddlewares.isValide, marketerControllers.Markter
 routes.post("/login", marketerControllers.logIn);
 routes.get("/get-all-markter", adminMiddlewares.isAuth, marketerControllers.getAllMarkters);
 routes.get("/armex-orders", marketerMiddlewares.isAuth, marketerControllers.getAramexOrders);
+routes.get("/imile-orders", marketerMiddlewares.isAuth, marketerControllers.getImileOrder);
+routes.get("/jt-orders", marketerMiddlewares.isAuth, marketerControllers.getJtOrder);
+routes.get("/saee-orders", marketerMiddlewares.isAuth, marketerControllers.getSaeeOrder);
+routes.get("/smsa-orders", marketerMiddlewares.isAuth, marketerControllers.getSmsaOrder);
+
+
 module.exports = routes
