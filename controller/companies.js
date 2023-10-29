@@ -69,8 +69,9 @@ exports.getAllOrders = async (req, res) => {
 // TODO: Add Glt orders
 exports.allOrders = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, company, paytype = '', billCode = '' } = req.query
-    //?Note: marktercode = '' doesn't work if I don't send it, it gives only orders with marktercode key
+    let page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const { company, paytype = '', billCode = '' } = req.query
 
     try {
         const anwanOrders = await AnwanOrder.find({
@@ -150,7 +151,9 @@ exports.allOrders = async (req, res) => {
 }
 exports.filterByClientData = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, keyword = '' } = req.query
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const keyword = req.query.keyword || ''
 
     try {
         const anwanOrders = await AnwanOrder.find({
@@ -254,7 +257,10 @@ exports.filterByClientData = async (req, res) => {
 
 exports.filterByPrice = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, minPrice = 0, maxPrice = 100000 } = req.query
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const minPrice = +req.query.minPrice || 0
+    const maxPrice = +req.query.maxPrice || 100000
 
     try {
         const anwanOrders = await AnwanOrder.find({
@@ -320,7 +326,9 @@ exports.filterByPrice = async (req, res) => {
 }
 exports.filterByMarketerCode = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, marktercode = '' } = req.query
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const marktercode = req.query.marktercode || ''
 
     try {
         const anwanOrders = await AnwanOrder.find({
