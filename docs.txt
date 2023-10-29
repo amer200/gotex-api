@@ -1330,3 +1330,7 @@ body{
     clientId: "",
     marketerCode: ""
 }
+//*********************
+6) get aramex orders
+url = https://dashboard.go-tex.net/api/markter/armex-orders?page=1
+method = get

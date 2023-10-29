@@ -43,3 +43,22 @@ exports.isValide = (req, res, next) => {
         })
     }
 }
+exports.isAuth = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
+        if (err) {
+            return res.status(400).json({
+                msg: err
+            })
+        }
+        if (user.data.user.rolle == 'm') {
+            req.user = user.data
+            next();
+        } else {
+            res.status(405).json({
+                msg: "not allowed"
+            })
+        }
+    })
+}

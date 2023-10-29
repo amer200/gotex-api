@@ -2,6 +2,14 @@ const Markter = require("../model/marketer");
 const bcrypt = require('bcrypt');
 const salt = 10;
 const jwt = require("jsonwebtoken");
+const AnwanOrder = require("../model/anwanorders");
+const AramexOrder = require("../model/aramexorders");
+const ImileOrder = require("../model/imileorders");
+const JtOrder = require("../model/jtorders");
+const GltOrder = require("../model/gltorders");
+const SaeeOrder = require("../model/saeeorders");
+const SmsaOrder = require("../model/smsaorders");
+const SplOrder = require("../model/splorders");
 
 exports.MarkterSignUp = async (req, res) => {
     try {
@@ -92,4 +100,21 @@ exports.getAllMarkters = (req, res) => {
                 error: err
             })
         })
+}
+exports.getAramexOrders = async (req, res) => {
+    const code = req.user.user.code;
+    const page = req.query.page;
+    const pages = Math.floor(await AramexOrder.find({ "marktercode": code }).count() / 10);
+    let skip;
+    if (page == 1) {
+        skip = 0;
+    } else {
+        skip = page * 10
+    }
+    const aramexorders = await AramexOrder.find({ "marktercode": code }).skip(skip).limit(10);
+    return res.status(200).json({
+        data: aramexorders,
+        page: page,
+        pages: pages
+    })
 }
