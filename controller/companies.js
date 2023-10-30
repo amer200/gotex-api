@@ -15,6 +15,8 @@ const SaeeOrder = require("../model/saeeorders");
 const SmsaOrder = require("../model/smsaorders");
 const SplOrder = require("../model/splorders");
 const User = require("../model/user");
+const startOfDay = require("date-fns/startOfDay")
+const endOfDay = require("date-fns/endOfDay")
 
 exports.getAllCompanies = async (req, res) => {
     try {
@@ -373,11 +375,13 @@ exports.filterByMarketerCode = async (req, res) => {
 }
 exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, startDate = new Date(2020, 1, 1), endDate = new Date() } = req.query
+    const { page = 1, limit = 30, startDate, endDate } = req.query
 
     try {
         const anwanOrders = await AnwanOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -385,6 +389,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const aramexOrders = await AramexOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -392,6 +398,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const imileOrders = await ImileOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -399,6 +407,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const jtOrders = await JtOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -406,6 +416,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const saeeOrders = await SaeeOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -413,6 +425,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const smsaOrders = await SmsaOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
@@ -420,6 +434,8 @@ exports.filterByDate = async (req, res) => {
         }).populate("user");
         const splOrders = await SplOrder.find({
             createdate: {
+                // $gte: startOfDay(startDate),
+                // $lte: endOfDay(endDate)
                 $gte: startDate,
                 $lte: endDate
             },
