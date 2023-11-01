@@ -40,15 +40,19 @@ exports.getAllCompanies = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
     try {
-        const gltorders = await GltOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const aramexorders = await AramexOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const anwanorders = await AnwanOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const imileorders = await ImileOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const jtorders = await JtOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const saeeorders = await SaeeOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const smsaorders = await SmsaOrder.find({ status: { $ne: "failed" } }).populate("user");
-        const splorders = await SplOrder.find({ status: { $ne: "failed" } }).populate("user");
-        let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders, ...splorders];
+        console.time('block')
+        const anwanOrders = AnwanOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const aramexOrders = AramexOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        // const gltOrders = GltOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const imileOrders = ImileOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const jtOrders = JtOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const saeeOrders = SaeeOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const smsaOrders = SmsaOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const splOrders = SplOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+        orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
+        // let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders, ...splorders];
+        console.timeEnd('block')
         res.status(200).json({
             result: orders.length,
             data: orders
@@ -74,72 +78,75 @@ exports.allOrders = async (req, res) => {
     const { company, paytype = '', billCode = '' } = req.query
 
     try {
-        const anwanOrders = await AnwanOrder.find({
+        console.time('blocking await')
+        const anwanOrders = AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
             "data.awb_no": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const aramexOrders = await AramexOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const aramexOrders = AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const imileOrders = await ImileOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const imileOrders = ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const jtOrders = await JtOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const jtOrders = JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const saeeOrders = await SaeeOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const saeeOrders = SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const smsaOrders = await SmsaOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const smsaOrders = SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
-        const splOrders = await SplOrder.find({
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        const splOrders = SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
         let orders = []
         /** Filter by company */
         switch (company) {
             case 'anwan':
-                orders = anwanOrders
+                orders = await anwanOrders
                 break;
             case 'aramex':
-                orders = aramexOrders
+                orders = await aramexOrders
                 break;
             case 'imile':
-                orders = imileOrders
+                orders = await imileOrders
                 break;
             case 'jt':
-                orders = jtOrders
+                orders = await jtOrders
                 break;
             case 'saee':
-                orders = saeeOrders
+                orders = await saeeOrders
                 break;
             case 'smsa':
-                orders = smsaOrders
+                orders = await smsaOrders
                 break;
             case 'spl':
-                orders = splOrders
+                orders = await splOrders
                 break;
             default:
-                orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+                // Use promise.all to ensure that these promises are executed in parallel.
+                const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+                orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
                 break;
         }
         const ordersPagination = paginate(orders, page, limit)
-
+        console.timeEnd('blocking await')
         res.status(200).json({ ...ordersPagination })
     } catch (err) {
         console.log(err);
@@ -156,7 +163,8 @@ exports.filterByClientData = async (req, res) => {
     const keyword = req.query.keyword || ''
 
     try {
-        const anwanOrders = await AnwanOrder.find({
+        console.time('block')
+        const anwanOrders = AnwanOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -169,7 +177,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const aramexOrders = await AramexOrder.find({
+        const aramexOrders = AramexOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -181,7 +189,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const imileOrders = await ImileOrder.find({
+        const imileOrders = ImileOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -193,7 +201,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const jtOrders = await JtOrder.find({
+        const jtOrders = JtOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -205,7 +213,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const saeeOrders = await SaeeOrder.find({
+        const saeeOrders = SaeeOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -217,7 +225,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const smsaOrders = await SmsaOrder.find({
+        const smsaOrders = SmsaOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -229,7 +237,7 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
-        const splOrders = await SplOrder.find({
+        const splOrders = SplOrder.find({
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -241,11 +249,13 @@ exports.filterByClientData = async (req, res) => {
                 ]
             }
         });
+        // Use promise.all to ensure that these promises are executed in parallel.
+        const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+        let orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
 
-        let orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
         orders = orders.filter(order => order.user) // filter orders to remove user=null
         const ordersPagination = paginate(orders, page, limit)
-
+        console.timeEnd('block')
         res.status(200).json({ ...ordersPagination })
     } catch (err) {
         console.log(err);
@@ -269,49 +279,49 @@ exports.filterByPrice = async (req, res) => {
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const aramexOrders = await AramexOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const imileOrders = await ImileOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const jtOrders = await JtOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const saeeOrders = await SaeeOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const smsaOrders = await SmsaOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const splOrders = await SplOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
         const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
         const ordersPagination = paginate(orders, page, limit)
@@ -334,31 +344,31 @@ exports.filterByMarketerCode = async (req, res) => {
         const anwanOrders = await AnwanOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const aramexOrders = await AramexOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const imileOrders = await ImileOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const jtOrders = await JtOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const saeeOrders = await SaeeOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const smsaOrders = await SmsaOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const splOrders = await SplOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
         const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
         const ordersPagination = paginate(orders, page, limit)
@@ -373,8 +383,12 @@ exports.filterByMarketerCode = async (req, res) => {
 }
 exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-    const { page = 1, limit = 30, startDate, endDate } = req.query
-
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    let { startDate = new Date('2023-10-20'), endDate = new Date() } = req.query
+    // startDate = startDate.toString()
+    console.log(startDate)
+    console.log(endDate)
     try {
         const anwanOrders = await AnwanOrder.find({
             createdate: {
@@ -382,49 +396,49 @@ exports.filterByDate = async (req, res) => {
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const aramexOrders = await AramexOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const imileOrders = await ImileOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const jtOrders = await JtOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const saeeOrders = await SaeeOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const smsaOrders = await SmsaOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const splOrders = await SplOrder.find({
             createdate: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
-        }).populate("user");
+        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
         const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
         const ordersPagination = paginate(orders, page, limit)
