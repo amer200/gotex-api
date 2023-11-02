@@ -18,15 +18,16 @@ const User = require("../model/user");
 
 exports.getAllCompanies = async (req, res) => {
     try {
-        const anwan = await Anwan.findOne();
-        const aramex = await Aramex.findOne();
-        const glt = await Glt.findOne();
-        const imile = await Imile.findOne();
-        const jt = await Jt.findOne();
-        const saee = await Saee.findOne();
-        const smsa = await Smsa.findOne();
-        const spl = await Spl.findOne();
-        let companies = [saee, glt, smsa, aramex, anwan, imile, jt, spl];
+        const anwanPromise = Anwan.findOne();
+        const aramexPromise = Aramex.findOne();
+        const gltPromise = Glt.findOne();
+        const imilePromise = Imile.findOne();
+        const jtPromise = Jt.findOne();
+        const saeePromise = Saee.findOne();
+        const smsaPromise = Smsa.findOne();
+        const splPromise = Spl.findOne();
+        let companies = await Promise.all([anwanPromise, aramexPromise, gltPromise, imilePromise, jtPromise, saeePromise, smsaPromise, splPromise]);
+
         res.status(200).json({
             data: companies
         })
