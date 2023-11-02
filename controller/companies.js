@@ -40,7 +40,6 @@ exports.getAllCompanies = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
     try {
-        console.time('block')
         const anwanOrders = AnwanOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const aramexOrders = AramexOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         // const gltOrders = GltOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
@@ -51,8 +50,7 @@ exports.getAllOrders = async (req, res) => {
         const splOrders = SplOrder.find({ status: { $ne: "failed" } }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
         orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
-        // let orders = [...saeeorders, ...gltorders, ...aramexorders, ...smsaorders, ...anwanorders, ...imileorders, ...jtorders, ...splorders];
-        console.timeEnd('block')
+
         res.status(200).json({
             result: orders.length,
             data: orders
@@ -83,37 +81,37 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
             "data.awb_no": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const aramexOrders = AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const imileOrders = ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const jtOrders = JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const saeeOrders = SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const smsaOrders = SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
         const splOrders = SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
             status: { $ne: "failed" }
-        }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
+        }).populate("user")
 
         let orders = []
         /** Filter by company */
