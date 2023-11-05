@@ -19,6 +19,8 @@ const splOrderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     }
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model("splOrder", splOrderSchema);
