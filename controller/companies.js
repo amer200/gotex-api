@@ -272,49 +272,49 @@ exports.filterByPrice = async (req, res) => {
     const maxPrice = +req.query.maxPrice || 100000
 
     try {
-        const anwanOrders = await AnwanOrder.find({
+        const anwanOrders = AnwanOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const aramexOrders = await AramexOrder.find({
+        const aramexOrders = AramexOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const imileOrders = await ImileOrder.find({
+        const imileOrders = ImileOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const jtOrders = await JtOrder.find({
+        const jtOrders = JtOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const saeeOrders = await SaeeOrder.find({
+        const saeeOrders = SaeeOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const smsaOrders = await SmsaOrder.find({
+        const smsaOrders = SmsaOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const splOrders = await SplOrder.find({
+        const splOrders = SplOrder.find({
             price: {
                 $gte: minPrice,
                 $lte: maxPrice
@@ -322,7 +322,8 @@ exports.filterByPrice = async (req, res) => {
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
-        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+        const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+        let orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
         const ordersPagination = paginate(orders, page, limit)
 
         res.status(200).json({ ...ordersPagination })
@@ -340,36 +341,37 @@ exports.filterByMarketerCode = async (req, res) => {
     const marktercode = req.query.marktercode || ''
 
     try {
-        const anwanOrders = await AnwanOrder.find({
+        const anwanOrders = AnwanOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const aramexOrders = await AramexOrder.find({
+        const aramexOrders = AramexOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const imileOrders = await ImileOrder.find({
+        const imileOrders = ImileOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const jtOrders = await JtOrder.find({
+        const jtOrders = JtOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const saeeOrders = await SaeeOrder.find({
+        const saeeOrders = SaeeOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const smsaOrders = await SmsaOrder.find({
+        const smsaOrders = SmsaOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const splOrders = await SplOrder.find({
+        const splOrders = SplOrder.find({
             marktercode: { $regex: marktercode, $options: 'i' },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
-        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+        const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+        let orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
         const ordersPagination = paginate(orders, page, limit)
 
         res.status(200).json({ ...ordersPagination })
@@ -384,62 +386,61 @@ exports.filterByDate = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     const page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    let { startDate = new Date('2023-10-20'), endDate = new Date() } = req.query
-    // startDate = startDate.toString()
-    console.log(startDate)
-    console.log(endDate)
+    let { startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
+
     try {
-        const anwanOrders = await AnwanOrder.find({
-            createdate: {
+        const anwanOrders = AnwanOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const aramexOrders = await AramexOrder.find({
-            createdate: {
+        const aramexOrders = AramexOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const imileOrders = await ImileOrder.find({
-            createdate: {
+        const imileOrders = ImileOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const jtOrders = await JtOrder.find({
-            createdate: {
+        const jtOrders = JtOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const saeeOrders = await SaeeOrder.find({
-            createdate: {
+        const saeeOrders = SaeeOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const smsaOrders = await SmsaOrder.find({
-            createdate: {
+        const smsaOrders = SmsaOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
-        const splOrders = await SplOrder.find({
-            createdate: {
+        const splOrders = SplOrder.find({
+            createdAt: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
 
-        const orders = [...anwanOrders, ...saeeOrders, ...aramexOrders, ...smsaOrders, ...imileOrders, ...jtOrders, ...splOrders];
+        const [anwanOrdersRes, aramexOrdersRes, imileOrdersRes, jtOrdersRes, saeeOrdersRes, smsaOrdersRes, splOrdersRes] = await Promise.all([anwanOrders, aramexOrders, imileOrders, jtOrders, saeeOrders, smsaOrders, splOrders]);
+        let orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
         const ordersPagination = paginate(orders, page, limit)
 
         res.status(200).json({ ...ordersPagination })
