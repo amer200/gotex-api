@@ -1244,8 +1244,16 @@ body{
     "addby": "6511e27aa2b4b5d0877d0be8",
     "orders": [],
     "daftraClientId": "84",
-    "_id": "6514223a75959e43b0da6167",
-    "__v": 0
+    "branches": [
+            {
+                "city": "Najran",
+                "address": "123 st"
+            },
+            {
+                "city": "Mecca",
+                "address": "123 st"
+            }
+        ]
 }
 /****** get all clients ******/
 url = https://dashboard.go-tex.net/api/clients/get-all-clients
@@ -1274,26 +1282,26 @@ response {
 /****** edit client by id ******/
 url = https://dashboard.go-tex.net/api/clients/edit-client/:id
 method = post
-response {
-    "data": [
-        {
-            "name": "ahmed ali",
-            "company": "company 888",
-            "email": "client@test12.com",
-            "mobile": "9665442343",
-            "city": "Najran",
-            "address": "Najran",
-            "notes": "notes",
-            "street": "123 st",
-            "wallet": 0,
-            "category": "categ2",
-            "addby": "6511e27aa2b4b5d0877d0be8",
-            "orders": [],
-            "daftraClientId": "84",
-            "_id": "6514223a75959e43b0da6167",
-            "__v": 0
-        }
-    ]
+body{
+    "name": "soha ali",
+    "company": "company 999",
+    "email": "client@test12.com",
+    "mobile": "9665442343",
+    "city": "Najran",
+    "address": "Najran",
+    "notes": "notes",
+    "street": "123 st",
+    "wallet": 0,
+    "category": "categ2",
+    "addby": "6511e27aa2b4b5d0877d0be8",
+    "orders": [],
+    "daftraClientId": "84",
+    "branches": [
+            {
+                "city": "Najran",
+                "address": "123 st"
+            }
+        ]
 }
 //***********************new markters ****************/
 1) signup

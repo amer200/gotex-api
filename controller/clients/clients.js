@@ -8,7 +8,7 @@ const axios = require("axios");
 exports.addClient = async (req, res) => {
     const userId = req.user.user.id;
     const { company, first_name, city, state, address, mobile, email,
-        notes, category, birth_date, street } = req.body
+        notes, category, birth_date, street, branches } = req.body
 
     try {
         const name = first_name
@@ -45,18 +45,19 @@ exports.addClient = async (req, res) => {
             })
         }
         const myClient = new Client({
-            name: name,
-            company: company,
-            email: email,
-            mobile: mobile,
-            city: city,
-            address: address,
-            notes: notes,
-            street: street,
-            category: category,
+            name,
+            company,
+            email,
+            mobile,
+            city,
+            address,
+            notes,
+            street,
+            category,
             addby: userId,
             orders: [],
-            daftraClientId: daftraResult.id
+            daftraClientId: daftraResult.id,
+            branches
         })
         await myClient.save();
         return res.status(200).json({
@@ -85,7 +86,7 @@ exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const userId = req.user.user.id;
     const { company, first_name, city, state, address, mobile, email,
-        notes, category, birth_date, street } = req.body
+        notes, category, birth_date, street, branches } = req.body
 
     try {
         const name = first_name
@@ -133,7 +134,8 @@ exports.editClient = async (req, res) => {
                 address,
                 mobile,
                 email,
-                notes
+                notes,
+                branches
             },
             { new: true })
 
