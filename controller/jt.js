@@ -3,6 +3,7 @@ const User = require("../model/user");
 const { createClientInvoice } = require("../modules/daftra");
 const Jt = require("../model/jt");
 const JtOrder = require("../model/jtorders");
+const Clint = require("../model/clint");
 var crypto = require('crypto');
 const qs = require('qs');
 const fs = require("fs");
