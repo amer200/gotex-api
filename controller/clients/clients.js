@@ -128,13 +128,15 @@ exports.editClient = async (req, res) => {
         const updatedClient = await Client.findOneAndUpdate(
             { _id: clientId },
             {
-                company,
                 name,
+                company,
                 city,
                 address,
+                street,
                 mobile,
                 email,
                 notes,
+                category,
                 branches
             },
             { new: true })
