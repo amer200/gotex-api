@@ -14,9 +14,9 @@ exports.addClient = async (req, res) => {
         const name = first_name
         let staff_id = 0;
 
-        if (!first_name || !city || !state || !address || !mobile || !street) {
+        if (!first_name || !city || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: 'These info are required:  first_name, city, state, address, mobile and street'
+                msg: 'These info are required:  first_name, city, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
@@ -90,9 +90,9 @@ exports.editClient = async (req, res) => {
 
     try {
         const name = first_name
-        if (!first_name || !city || !state || !address || !mobile || !street) {
+        if (!first_name || !city || !address || !mobile || !street) {
             return res.status(400).json({
-                msg: 'These info are required:  first_name, city, state, address, mobile and street'
+                msg: 'These info are required:  first_name, city, address, mobile and street'
             })
         }
         const user = await User.findById(userId);
