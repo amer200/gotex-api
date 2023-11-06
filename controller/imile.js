@@ -7,6 +7,7 @@ const axios = require("axios");
 const cron = require('node-cron');
 const { createClientInvoice } = require("../modules/daftra");
 const imileorders = require("../model/imileorders");
+const { editImileClient } = require("./clients/imileClients");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -400,46 +401,12 @@ exports.cancelOrder = async (req, res) => {
 }
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
-    const { companyName, contacts, city, address, phone, email, backupPhone, attentions } = req.body;
+    const { companyName, contacts, city, address, phone, email, attentions } = req.body;
 
     try {
-        const imile = await Imile.findOne();
-        let data = JSON.stringify({
-            "customerId": process.env.imile_customerid,
-            "sign": process.env.imile_sign,
-            "accessToken": imile.token,
-            "signMethod": "SimpleKey",
-            "format": "json",
-            "version": "1.0.0",
-            "timestamp": "1647727143355",
-            "timeZone": "+4",
-            "param": {
-                "companyName": companyName,
-                "contacts": contacts,
-                "country": "KSA",
-                "city": city,
-                "area": "",
-                "address": address,
-                "phone": phone,
-                "email": "",
-                "backupPhone": "",
-                "attentions": attentions,
-                "defaultOption": "0"
-            }
-        });
-
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://openapi.imile.com/client/consignor/modify',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: data
-        };
-        const response = await axios(config);
-        if (response.data.message !== 'success') {
-            return res.status(400).json({ msg: response.data })
+        const imileResult = await editImileClient(companyName, contacts, city, address, phone, email, attentions);
+        if (imileResult != 1) {
+            return res.status(400).json({ msg: imileResult })
         }
 
         const updatedClient = await ImileClient.findOneAndUpdate(
@@ -451,7 +418,6 @@ exports.editClient = async (req, res) => {
                 address,
                 phone,
                 email,
-                backupPhone,
                 attentions
             },
             { new: true })
