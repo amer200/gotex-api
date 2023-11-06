@@ -2,6 +2,7 @@ const User = require("../model/user");
 const Imile = require("../model/imile");
 const ImileOrder = require("../model/imileorders");
 const ImileClient = require("../model/imileclients");
+const Clint = require("../model/clint");
 const axios = require("axios");
 const cron = require('node-cron');
 const { createClientInvoice } = require("../modules/daftra");
@@ -125,6 +126,9 @@ exports.createOrder = async (req, res) => {
     const totalShipPrice = res.locals.totalShipPrice;
     //*************************** */
     const p_company = req.body.p_company;
+    // front send p_city,p_address in case of choosing another client branch
+    const p_city = req.body.p_city || '';
+    const p_address = req.body.p_address || '';
     //***************************************** */
     const token = Imile.token;
     const c_company = req.body.c_company;
@@ -260,6 +264,8 @@ exports.createOrder = async (req, res) => {
 
         if (clintid) {
             const clint = await Clint.findById(clintid);
+            console.log("*****")
+            console.log(clint)
             const co = {
                 company: "imile",
                 id: order._id

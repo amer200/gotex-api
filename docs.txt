@@ -1241,7 +1241,19 @@ body{
     "notes": "notes", // optional
     "category": "categ2", // optional
     "birth_date": "1-1-2001", // optional
-    "street": "123 st"
+    "street": "123 st",
+    "branches": [
+                {
+                    "city": "Najran",
+                    "address": "123 st",
+                    "_id": "6547b215ad229e95e763f9ca"
+                },
+                {
+                    "city": "Mecca",
+                    "address": "123 st",
+                    "_id": "6547b215ad229e95e763f9cb"
+                }
+    ]
 }
 /****** get all clients ******/
 url = https://dashboard.go-tex.net/api/clients/get-all-clients
@@ -1282,7 +1294,14 @@ body{
     "notes": "notes", // optional
     "category": "categ2", // optional
     "birth_date": "1-1-2001", // optional
-    "street": "123 st"
+    "street": "123 st",
+    "branches": [
+                {
+                    "city": "Najran",
+                    "address": "123 st",
+                    "_id": "6548bb9dd51a1c4cc25af068"
+                }
+            ]
 }
 //***********************new markters ****************/
 1) signup

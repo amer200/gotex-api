@@ -3,6 +3,7 @@ const Markter = require("../../model/marketer");
 const User = require("../../model/user");
 const Imile = require("../../model/imile");
 const axios = require("axios");
+const { addImileClient, editImileClient } = require("./imileClients")
 
 
 exports.addClient = async (req, res) => {
@@ -236,45 +237,6 @@ exports.AddClientToMarkter = async (req, res) => {
     }
 }
 //************************************************************************************** */
-const addImileClient = async (company, name, city, address, mobile, email = "", notes) => {
-    const imile = await Imile.findOne();
-    let data = JSON.stringify({
-        "customerId": process.env.imile_customerid,
-        "sign": process.env.imile_sign,
-        "accessToken": imile.token,
-        "signMethod": "SimpleKey",
-        "format": "json",
-        "version": "1.0.0",
-        "timestamp": "1647727143355",
-        "timeZone": "+4",
-        "param": {
-            "companyName": company,
-            "contacts": name,
-            "country": "KSA",
-            "city": city,
-            "area": "",
-            "address": address,
-            "phone": mobile,
-            "email": email,
-            "backupPhone": "",
-            "attentions": notes,
-            "defaultOption": "0"
-        }
-    });
-    let config = {
-        method: 'post',
-        url: 'https://openapi.imile.com/client/consignor/add',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    const addRes = await axios(config);
-    if (addRes.data.message !== 'success') {
-        return addRes.data
-    }
-    return 1
-}
 const addDaftraClient = async (staff_id, company, first_name, email = "", address, city, state, mobile, notes, category, birth_date) => {
     let data = {
         Client: {
@@ -403,67 +365,4 @@ const getAllDaftraClientsPage = async (page) => {
         myPage: myPage
     }
     return result
-}
-
-const editImileClient = async (company, name, city, address, mobile, email = "", notes) => {
-    const imile = await Imile.findOne();
-    let data = JSON.stringify({
-        "customerId": process.env.imile_customerid,
-        "sign": process.env.imile_sign,
-        "accessToken": imile.token,
-        "signMethod": "SimpleKey",
-        "format": "json",
-        "version": "1.0.0",
-        "timestamp": "1647727143355",
-        "timeZone": "+4",
-        "param": {
-            "companyName": company,
-            "contacts": name,
-            "country": "KSA",
-            "city": city,
-            "area": "",
-            "address": address,
-            "phone": mobile,
-            "email": email,
-            "backupPhone": "",
-            "attentions": notes,
-            "defaultOption": "0"
-        }
-    });
-
-    let config = {
-        method: 'post',
-        maxBodyLength: Infinity,
-        url: 'https://openapi.imile.com/client/consignor/modify',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    const response = await axios(config);
-    if (response.data.message !== 'success') {
-        // return res.status(400).json({ msg: response.data })
-        return response.data
-    }
-
-    return 1
-
-    // const updatedClient = await ImileClient.findOneAndUpdate(
-    //     { _id: clientId },
-    //     {
-    //         company,
-    //         name,
-    //         city,
-    //         address,
-    //         phone,
-    //         email,
-    //         notes
-    //     },
-    //     { new: true })
-
-    // if (!updatedClient) {
-    //     res.status(404).json(`No client for this id ${clientId}`)
-    // }
-
-    // res.status(200).json({ data: updatedClient })
 }
