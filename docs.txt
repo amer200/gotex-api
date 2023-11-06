@@ -1283,25 +1283,18 @@ response {
 url = https://dashboard.go-tex.net/api/clients/edit-client/:id
 method = post
 body{
-    "name": "soha ali",
-    "company": "company 999",
-    "email": "client@test12.com",
-    "mobile": "9665442343",
+{
+    "company": "company 123",
+    "first_name": "ahmed",
     "city": "Najran",
+    "state": "abc",
     "address": "Najran",
-    "notes": "notes",
-    "street": "123 st",
-    "wallet": 0,
-    "category": "categ2",
-    "addby": "6511e27aa2b4b5d0877d0be8",
-    "orders": [],
-    "daftraClientId": "84",
-    "branches": [
-            {
-                "city": "Najran",
-                "address": "123 st"
-            }
-        ]
+    "mobile": "9665442343",
+    "email": "client@test12.com", // optional
+    "notes": "notes", // optional
+    "category": "categ2", // optional
+    "birth_date": "1-1-2001", // optional
+    "street": "123 st"
 }
 //***********************new markters ****************/
 1) signup
