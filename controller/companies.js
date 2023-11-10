@@ -76,19 +76,18 @@ exports.allOrders = async (req, res) => {
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
     const keyword = req.query.keyword || ''
-    const { company, paytype = '', billCode = '' } = req.query
-    // , marktercode = '', startDate = new Date('2000-01-01'), endDate = new Date()
+    const { company, paytype = '', billCode = '', marktercode = '', startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
 
     try {
         console.time('blocking await')
         const anwanOrders = AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.awb_no": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -103,12 +102,12 @@ exports.allOrders = async (req, res) => {
         });
         const aramexOrders = AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -122,12 +121,12 @@ exports.allOrders = async (req, res) => {
         });
         const imileOrders = ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -141,12 +140,12 @@ exports.allOrders = async (req, res) => {
         });
         const jtOrders = JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -160,12 +159,12 @@ exports.allOrders = async (req, res) => {
         });
         const saeeOrders = SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -179,12 +178,12 @@ exports.allOrders = async (req, res) => {
         });
         const smsaOrders = SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -198,12 +197,12 @@ exports.allOrders = async (req, res) => {
         });
         const splOrders = SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
