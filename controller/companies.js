@@ -66,7 +66,8 @@ exports.getAllOrders = async (req, res) => {
 }
 
 /**
- * @Desc :  Filter with company, paytype or billCode
+ * @Desc :  Filter with company, paytype, billCode, marktercode
+ *        + Filter by date
  *        + Pagination
  */
 // TODO: Add Glt orders
@@ -74,48 +75,148 @@ exports.allOrders = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const { company, paytype = '', billCode = '' } = req.query
+    const keyword = req.query.keyword || ''
+    const { company, paytype = '', billCode = '', marktercode = '', startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
 
     try {
         console.time('blocking await')
         const anwanOrders = AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.awb_no": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            /**@Desc if users.name or user.email != keyword, it returns user=null */
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const aramexOrders = AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const imileOrders = ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const jtOrders = JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const saeeOrders = SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const smsaOrders = SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
         const splOrders = SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
-        }).populate("user")
+        }).populate({
+            path: 'user',
+            match: {
+                $or: [
+                    { name: { $regex: keyword, $options: 'i' } },
+                    { email: { $regex: keyword, $options: 'i' } },
+                    { mobile: { $regex: keyword, $options: 'i' } }
+                ]
+            }
+        });
 
-        let orders = []
         /** Filter by company */
+        let orders = []
         switch (company) {
             case 'anwan':
                 orders = await anwanOrders
@@ -144,6 +245,20 @@ exports.allOrders = async (req, res) => {
                 orders = [...anwanOrdersRes, ...saeeOrdersRes, ...aramexOrdersRes, ...smsaOrdersRes, ...imileOrdersRes, ...jtOrdersRes, ...splOrdersRes];
                 break;
         }
+
+        if (keyword) {
+            orders = orders.filter(order => order.user) // filter orders to remove user=null
+        }
+
+        orders.forEach(async (order) => {
+            order.created_at = new Date(order.createdate)
+
+            if (!order.marktercode) {
+                order.marktercode = ''
+            }
+            await order.save()
+        })
+
         const ordersPagination = paginate(orders, page, limit)
         console.timeEnd('blocking await')
         res.status(200).json({ ...ordersPagination })
@@ -167,7 +282,6 @@ exports.filterByClientData = async (req, res) => {
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
-            /**@Desc if users.name or user.email != keyword, it returns user=null */
             match: {
                 $or: [
                     { name: { $regex: keyword, $options: 'i' } },
@@ -338,7 +452,7 @@ exports.filterByMarketerCode = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     const page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const marktercode = req.query.marktercode || ''
+    const marktercode = req.query.marktercode || ""
 
     try {
         const anwanOrders = AnwanOrder.find({
@@ -390,49 +504,49 @@ exports.filterByDate = async (req, res) => {
 
     try {
         const anwanOrders = AnwanOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const aramexOrders = AramexOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const imileOrders = ImileOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const jtOrders = JtOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const saeeOrders = SaeeOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const smsaOrders = SmsaOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
             status: { $ne: "failed" }
         }).populate({ path: "user", select: "-password -emailcode -verified -__v" });
         const splOrders = SplOrder.find({
-            createdAt: {
+            created_at: {
                 $gte: startDate,
                 $lte: endDate
             },
