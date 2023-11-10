@@ -8,7 +8,8 @@ const saeeOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     marktercode: String,
-    createdate: String,
+    createdate: Date,
+    created_at: Date,
     inovicedaftra: Object,
     supplier_inovicedaftra: Object,
     status: {
@@ -16,8 +17,6 @@ const saeeOrderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     }
-}, {
-    timestamps: true
 })
 
 module.exports = mongoose.model("SaeeOrder", saeeOrderSchema);

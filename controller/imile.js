@@ -240,7 +240,8 @@ exports.createOrder = async (req, res) => {
             paytype: "cod",
             price: totalShipPrice,
             marktercode: markterCode,
-            createdate: new Date()
+            createdate: new Date(),
+            created_at: new Date()
         })
 
         if (response.data.code != '200') {

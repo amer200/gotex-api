@@ -135,6 +135,7 @@ exports.createUserOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             createdate: new Date(),
+            created_at: new Date(),
             invoice: ""
         })
 

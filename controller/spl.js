@@ -195,6 +195,7 @@ exports.creteNewOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             createdate: new Date(),
+            created_at: new Date(),
             weight: Weight,
             desc: ContentDescription
         })

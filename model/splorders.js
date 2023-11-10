@@ -10,7 +10,8 @@ const splOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     marktercode: String,
-    createdate: String,
+    createdate: Date,
+    created_at: Date,
     inovicedaftra: Object,
     weight: Number,
     desc: String,
@@ -19,8 +20,6 @@ const splOrderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     }
-}, {
-    timestamps: true
 })
 
 module.exports = mongoose.model("splOrder", splOrderSchema);

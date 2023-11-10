@@ -8,15 +8,14 @@ const anwanOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     marktercode: String,
-    createdate: String,
+    createdate: Date,
+    created_at: Date,
     inovicedaftra: Object,
     status: {
         type: String,
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     }
-}, {
-    timestamps: true
 })
 
 module.exports = mongoose.model("AnwanOrder", anwanOrderSchema);
