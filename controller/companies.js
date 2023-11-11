@@ -246,9 +246,9 @@ exports.allOrders = async (req, res) => {
                 break;
         }
 
-        if (keyword) {
-            orders = orders.filter(order => order.user) // filter orders to remove user=null
-        }
+        // if (keyword) {
+        //     orders = orders.filter(order => order.user) // filter orders to remove user=null
+        // }
 
         orders.forEach(async (order) => {
             order.created_at = new Date(order.createdate)
