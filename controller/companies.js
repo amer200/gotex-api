@@ -66,7 +66,7 @@ exports.getAllOrders = async (req, res) => {
 }
 
 /**
- * @Desc :  Filter with company, paytype, billCode, marktercode
+ * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
  *        + Filter by date
  *        + Pagination
  */
@@ -75,8 +75,7 @@ exports.allOrders = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const keyword = req.query.keyword || ''
-    const { company, paytype = '', billCode = '', marktercode = '', startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
+    const { company, paytype = '', billCode = '', marktercode = '', keyword = '', startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
 
     try {
         console.time('blocking await')
