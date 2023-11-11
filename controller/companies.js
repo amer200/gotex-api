@@ -84,10 +84,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.awb_no": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -104,10 +104,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -123,10 +123,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -142,10 +142,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -161,10 +161,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -180,10 +180,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -199,10 +199,10 @@ exports.allOrders = async (req, res) => {
             paytype: { $regex: paytype, $options: 'i' },
             marktercode: { $regex: marktercode, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
-            created_at: {
-                $gte: startDate,
-                $lte: endDate
-            },
+            // created_at: {
+            //     $gte: startDate,
+            //     $lte: endDate
+            // },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -246,9 +246,9 @@ exports.allOrders = async (req, res) => {
                 break;
         }
 
-        // if (keyword) {
-        //     orders = orders.filter(order => order.user) // filter orders to remove user=null
-        // }
+        if (keyword) {
+            orders = orders.filter(order => order.user) // filter orders to remove user=null
+        }
 
         orders.forEach(async (order) => {
             order.created_at = new Date(order.createdate)
