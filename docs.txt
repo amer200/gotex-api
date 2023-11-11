@@ -160,7 +160,7 @@ url = https://dashboard.go-tex.net/api/companies/get-all-orders
 method = get
 
 3) get all orders with search (admin)
-url = https://dashboard.go-tex.net/api/companies/orders/all?page=1&limit=30&company={}&paytype={}&billCode={}
+url = https://dashboard.go-tex.net/api/companies/orders/all?page=1&limit=30&company={}&paytype={}&billCode={}&marktercode={}&keyword{}&startDate={}&endDate={}
 method = GET
 
 by default (using only -> https://dashboard.go-tex.net/api/companies/orders/all) : get all orders with pagination -> page=1, limit=30
@@ -1016,8 +1016,7 @@ response
         "backupPhone": "",
         "attentions": "this is consignor address",
         "defaultOption": "0",
-        "_id": "64fa0c68811a6f6e7f463d07",
-        "__v": 0
+        "clintid": "64fa0c68811a6f6e7f463d07",
     }
 }
 //*****************
