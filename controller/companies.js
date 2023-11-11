@@ -252,6 +252,9 @@ exports.allOrders = async (req, res) => {
 
         orders.forEach(async (order) => {
             order.created_at = new Date(order.createdate)
+            if (!order.createdate || !order.created_at) {
+                order.created_at = new Date("2023-07-01")
+            }
 
             if (!order.marktercode) {
                 order.marktercode = ''
