@@ -240,7 +240,6 @@ exports.createOrder = async (req, res) => {
             paytype: "cod",
             price: totalShipPrice,
             marktercode: markterCode,
-            createdate: new Date(),
             created_at: new Date()
         })
 
