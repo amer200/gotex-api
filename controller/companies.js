@@ -82,12 +82,12 @@ exports.allOrders = async (req, res) => {
         console.time('blocking await')
         const anwanOrders = AnwanOrder.find({
             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.awb_no": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -102,12 +102,12 @@ exports.allOrders = async (req, res) => {
         });
         const aramexOrders = AramexOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Shipments.ID": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -121,12 +121,12 @@ exports.allOrders = async (req, res) => {
         });
         const imileOrders = ImileOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.expressNo": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -140,12 +140,12 @@ exports.allOrders = async (req, res) => {
         });
         const jtOrders = JtOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.data.billCode": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -159,12 +159,12 @@ exports.allOrders = async (req, res) => {
         });
         const saeeOrders = SaeeOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.waybill": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -178,12 +178,12 @@ exports.allOrders = async (req, res) => {
         });
         const smsaOrders = SmsaOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.sawb": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -197,12 +197,12 @@ exports.allOrders = async (req, res) => {
         });
         const splOrders = SplOrder.find({
             paytype: { $regex: paytype, $options: 'i' },
-            // marktercode: { $regex: marktercode, $options: 'i' },
+            marktercode: { $regex: marktercode, $options: 'i' },
             "data.Items.Barcode": { $regex: billCode, $options: 'i' },
-            // created_at: {
-            //     $gte: startDate,
-            //     $lte: endDate
-            // },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
             status: { $ne: "failed" }
         }).populate({
             path: 'user',
@@ -250,18 +250,6 @@ exports.allOrders = async (req, res) => {
             orders = orders.filter(order => order.user) // filter orders to remove user=null
         }
 
-        orders.forEach(async (order) => {
-            order.created_at = new Date(order.createdate)
-            if (!order.createdate || !order.created_at) {
-                order.created_at = new Date("2023-07-01")
-            }
-
-            if (!order.marktercode) {
-                order.marktercode = ''
-            }
-            await order.save()
-        })
-
         const ordersPagination = paginate(orders, page, limit)
         console.timeEnd('blocking await')
         res.status(200).json({ ...ordersPagination })
@@ -271,7 +259,6 @@ exports.allOrders = async (req, res) => {
             error: err.message
         })
     }
-
 }
 exports.filterByClientData = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
@@ -575,7 +562,7 @@ const paginate = (orders, page, limit) => {
 
     const numberOfOrders = orders.length
     const numberOfPages = (numberOfOrders % limit == 0) ? numberOfOrders / limit : Math.floor(numberOfOrders / limit) + 1;
-    const ordersPerPage = orders.sort((a, b) => new Date(b.createdate) - new Date(a.createdate)) // sort desc
+    const ordersPerPage = orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at)) // sort desc
         .slice(skip, skip + limit)
 
     return {
