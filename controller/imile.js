@@ -121,9 +121,10 @@ exports.getAllClients = (req, res) => {
         })
 }
 exports.createOrder = async (req, res) => {
-    let ordersNum = await ImileOrder.count();
+    console.time('block')
     const imile = await Imile.findOne();
-    const user = await User.findById(req.user.user.id);
+    let ordersNumPromise = ImileOrder.count();
+    const userPromise = User.findById(req.user.user.id);
     const totalShipPrice = res.locals.totalShipPrice;
     //*************************** */
     const p_company = req.body.p_company;
@@ -221,7 +222,7 @@ exports.createOrder = async (req, res) => {
                 "skuDetailList": skuDetailList
             }
         });
-        console.log(data)
+
         var config = {
             method: 'post',
             url: 'https://openapi.imile.com/client/order/createOrder',
@@ -230,7 +231,8 @@ exports.createOrder = async (req, res) => {
             },
             data: data
         };
-        const response = await axios(config)
+        const responsePromise = axios(config)
+        const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
 
         const order = await ImileOrder.create({
             user: req.user.user.id,
@@ -265,8 +267,6 @@ exports.createOrder = async (req, res) => {
 
         if (clintid) {
             const clint = await Clint.findById(clintid);
-            console.log("*****")
-            console.log(clint)
             const co = {
                 company: "imile",
                 id: order._id
@@ -283,6 +283,7 @@ exports.createOrder = async (req, res) => {
         }
 
         await order.save();
+        console.timeEnd('block')
         res.status(200).json({ data: order })
     } catch (err) {
         console.log(err)
@@ -333,7 +334,7 @@ cron.schedule('0 */2 * * *', async () => {
 });
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
-    imileorders.find({ user: userId, status: { $ne: "failed" } })
+    imileorders.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o

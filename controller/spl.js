@@ -259,7 +259,7 @@ exports.creteNewOrder = async (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
-    splorders.find({ user: userId, status: { $ne: "failed" } })
+    splorders.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o

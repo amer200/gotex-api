@@ -211,7 +211,7 @@ exports.getAllCities = (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
-    GltOrder.find({ user: userId, status: { $ne: "failed" } })
+    GltOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o

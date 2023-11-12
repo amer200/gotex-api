@@ -288,7 +288,7 @@ exports.cancelOrder = async (req, res) => {
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
 
-    JtOrder.find({ user: userId, status: { $ne: "failed" } })
+    JtOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(order => {
             res.status(200).json({
                 data: order

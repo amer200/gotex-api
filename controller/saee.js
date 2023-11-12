@@ -38,8 +38,9 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    const user = await User.findById(req.user.user.id);
+    console.time('block')
     let ordersNum = await SaeeOrder.count();
+    const user = await User.findById(req.user.user.id);
     const saee = await Saee.findOne();
     const p_name = req.body.p_name;
     const p_city = req.body.p_city;
@@ -155,6 +156,7 @@ exports.createUserOrder = async (req, res) => {
         }
 
         await order.save();
+        console.timeEnd('block')
         res.status(200).json({
             msg: "order created successfully",
             data: order
@@ -168,7 +170,7 @@ exports.createUserOrder = async (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
-    SaeeOrder.find({ user: userId, status: { $ne: "failed" } })
+    SaeeOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o

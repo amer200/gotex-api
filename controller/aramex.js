@@ -701,7 +701,7 @@ exports.createOrder = async (req, res) => {
 
 exports.getUserOrders = (req, res) => {
     const userId = req.user.user.id;
-    AramexOrder.find({ user: userId, status: { $ne: "failed" } })
+    AramexOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o
