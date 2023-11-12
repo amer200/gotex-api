@@ -75,7 +75,9 @@ exports.allOrders = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const { company, paytype = '', billCode = '', marktercode = '', keyword = '', startDate = new Date('2000-01-01'), endDate = new Date() } = req.query
+    const startDate = req.query.startDate || new Date('2000-01-01')
+    const endDate = req.query.endDate || new Date()
+    const { company, paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
 
     try {
         console.time('blocking await')
