@@ -247,7 +247,7 @@ exports.allOrders = async (req, res) => {
                 break;
         }
 
-        orders.forEach(order => {
+        orders.forEach(async (order) => {
             if (order.company = "smsa") {
                 // console.log(order.data.createDate.split('T')[0].substring(0, 7), order.data.createDate.split('T')[0].substring(0, 7) == '2023-11')
                 if (order.data.createDate.split('T')[0].substring(0, 7) == '2023-07') {
