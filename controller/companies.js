@@ -247,6 +247,14 @@ exports.allOrders = async (req, res) => {
                 break;
         }
 
+        orders.forEach(order => {
+            if (order.company = "smsa") {
+                if (order.data.createDate.split('T')[0] == '2023-11-11') {
+                    order.created_at = new Date('2023-11-11')
+                }
+            }
+        })
+
         if (keyword) {
             orders = orders.filter(order => order.user) // filter orders to remove user=null
         }
