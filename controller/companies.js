@@ -250,8 +250,12 @@ exports.allOrders = async (req, res) => {
         orders.forEach(async (order) => {
             if (order.company = "smsa") {
                 // console.log(order.data.createDate.split('T')[0].substring(0, 7), order.data.createDate.split('T')[0].substring(0, 7) == '2023-11')
-                if (order.data.createDate.split('T')[0].substring(0, 7) == '2023-07') {
+                if (order.data.createDate.split('T')[0].substring(0, 7) == '2023-06') {
                     order.created_at = new Date(order.data.createDate.split('T')[0])
+                    await order.save()
+                }
+                if (order.data.createDate.split('T')[0] == '2023-11-11') {
+                    order.created_at = new Date('2023-11-11')
                     await order.save()
                 }
             }
