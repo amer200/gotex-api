@@ -247,20 +247,6 @@ exports.allOrders = async (req, res) => {
                 break;
         }
 
-        orders.forEach(async (order) => {
-            if (order.company = "imile") {
-                console.log(order.data.data.expressNo)
-                if (order.data.data.expressNo == '6111123494475' || order.data.data.expressNo == '6111123949347' || order.data.data.expressNo == '6111123382002' || order.data.data.expressNo == '6111123966960' || order.data.data.expressNo == '6111123406870') {
-                    order.created_at = new Date('2023-11-11')
-                    await order.save()
-                }
-                if (order.data.data.expressNo == '6111223801972') {
-                    order.created_at = new Date('2023-11-12')
-                    await order.save()
-                }
-            }
-        })
-
         if (keyword) {
             orders = orders.filter(order => order.user) // filter orders to remove user=null
         }
