@@ -7,6 +7,6 @@ const userMiddleware = require("../middleware/user");
 routes.post('/', adminMiddleware.isAuth, addPackage);
 routes.get('/', getPackage);
 
-routes.post('/user-buy-package', userMiddleware.isAuth, userBuyPackage);
+routes.get('/user-buy-package', userMiddleware.isAuth, userBuyPackage);
 
 module.exports = routes;
