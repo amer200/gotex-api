@@ -1357,3 +1357,21 @@ method = get
 10) get smsa orders
 url = https://dashboard.go-tex.net/api/markter/smsa-orders?page=1
 method = get
+
+/************************************* Package *********************************/
+1) add package [admin]
+url = https://dashboard.go-tex.net/api/package
+method = post
+
+body {
+    "price": Number,
+    "numberOfOrders": Number
+}
+
+2) get package
+url = https://dashboard.go-tex.net/api/package
+method = get
+
+3) user buy package
+url = https://dashboard.go-tex.net/api/package/user-buy-package
+method = get
