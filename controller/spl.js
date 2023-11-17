@@ -231,6 +231,15 @@ exports.creteNewOrder = async (req, res) => {
                 order.marktercode = clint.marktercode ? clint.marktercode : null;
             }
 
+            if (!cod) {
+                if (user.packageOrders) {
+                    --user.packageOrders;
+                } else {
+                    user.wallet = user.wallet - totalShipPrice;
+                }
+                await user.save()
+            }
+
             await order.save();
             res.status(200).json({
                 // reciver: {

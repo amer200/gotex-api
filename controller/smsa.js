@@ -176,8 +176,12 @@ exports.createUserOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            user.wallet = user.wallet - totalShipPrice;
-            await user.save();
+            if (user.packageOrders) {
+                --user.packageOrders;
+            } else {
+                user.wallet = user.wallet - totalShipPrice;
+            }
+            await user.save()
         }
 
         await order.save();

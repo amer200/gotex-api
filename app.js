@@ -42,6 +42,7 @@ const imileRoutes = require("./routes/imile");
 const jtRouters = require("./routes/jt");
 const clientRouters = require("./routes/client");
 const marketerRoutes = require("./routes/markter");
+const packageRoutes = require("./routes/package");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -57,6 +58,7 @@ app.use("/imile", imileRoutes);
 app.use("/jt", jtRouters);
 app.use("/clients", clientRouters);
 app.use("/markter", marketerRoutes);
+app.use("/package", packageRoutes);
 /********************************************************************************* */
 mongoose.connect(dbUrl)
     .then(resu => {

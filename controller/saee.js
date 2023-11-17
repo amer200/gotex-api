@@ -151,7 +151,11 @@ exports.createUserOrder = async (req, res) => {
         }
 
         if (!cod) {
-            user.wallet = user.wallet - totalShipPrice;
+            if (user.packageOrders) {
+                --user.packageOrders;
+            } else {
+                user.wallet = user.wallet - totalShipPrice;
+            }
             await user.save()
         }
 
