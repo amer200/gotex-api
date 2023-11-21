@@ -38,7 +38,6 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    console.time('block')
     let ordersNum = await SaeeOrder.count();
     const user = await User.findById(req.user.user.id);
     const saee = await Saee.findOne();
@@ -151,8 +150,13 @@ exports.createUserOrder = async (req, res) => {
         }
 
         if (!cod) {
-            if (user.packageOrders) {
-                --user.packageOrders;
+            let available = false
+            if (user.package.userAvailableOrders) {
+                available = user.package.companies.some(company => company == "saee")
+            }
+
+            if (available) {
+                --user.package.userAvailableOrders;
             } else {
                 user.wallet = user.wallet - totalShipPrice;
             }
@@ -160,7 +164,6 @@ exports.createUserOrder = async (req, res) => {
         }
 
         await order.save();
-        console.timeEnd('block')
         res.status(200).json({
             msg: "order created successfully",
             data: order

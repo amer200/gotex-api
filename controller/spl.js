@@ -232,8 +232,13 @@ exports.creteNewOrder = async (req, res) => {
             }
 
             if (!cod) {
-                if (user.packageOrders) {
-                    --user.packageOrders;
+                let available = false
+                if (user.package.userAvailableOrders) {
+                    available = user.package.companies.some(company => company == "spl")
+                }
+
+                if (available) {
+                    --user.package.userAvailableOrders;
                 } else {
                     user.wallet = user.wallet - totalShipPrice;
                 }

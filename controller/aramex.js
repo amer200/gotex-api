@@ -685,8 +685,13 @@ exports.createOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (user.packageOrders) {
-                --user.packageOrders;
+            let available = false
+            if (user.package.userAvailableOrders) {
+                available = user.package.companies.some(company => company == "aramex")
+            }
+
+            if (available) {
+                --user.package.userAvailableOrders;
             } else {
                 user.wallet = user.wallet - totalShipPrice;
             }
