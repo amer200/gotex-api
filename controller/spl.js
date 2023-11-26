@@ -123,7 +123,7 @@ exports.creteNewOrder = async (req, res) => {
         var paytype = "cc";
         var TotalAmount = null;
     }
-    const data = qs.stringify({
+    const data = {
         'CRMAccountId': 31314344634,
         'BranchId': 0,
         'PickupType': 0,
@@ -158,7 +158,7 @@ exports.creteNewOrder = async (req, res) => {
                 "ItemPieces": Pieces
             }
         ]
-    })
+    }
 
     try {
         var config = {
@@ -171,7 +171,7 @@ exports.creteNewOrder = async (req, res) => {
             data: data
         };
         const response = await axios(config)
-        console.log(response.data)
+        // console.log(response.data)
         const order = await SplOrder.create({
             user: user._id,
             company: "Spl",
