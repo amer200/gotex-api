@@ -267,7 +267,7 @@ exports.creteNewOrder = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            error: err.response
+            error: err.response.data
         })
     }
 }
