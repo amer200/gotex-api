@@ -123,7 +123,7 @@ exports.creteNewOrder = async (req, res) => {
         var paytype = "cc";
         var TotalAmount = null;
     }
-    const data = {
+    const data = qs.stringify({
         'CRMAccountId': 31314344634,
         'BranchId': 0,
         'PickupType': 0,
@@ -158,7 +158,7 @@ exports.creteNewOrder = async (req, res) => {
                 "ItemPieces": Pieces
             }
         ]
-    }
+    })
 
     try {
         var config = {
