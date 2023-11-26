@@ -130,7 +130,7 @@ exports.creteNewOrder = async (req, res) => {
         'RequestTypeId': 1,
         'CustomerName': reciverName,
         'CustomerMobileNumber': reciverMobile,
-        'SenderName': nameCode,
+        'SenderName': SenderName,
         'SenderMobileNumber': SenderMobileNumber,
         'Items': [
             {
