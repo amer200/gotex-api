@@ -159,7 +159,6 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     })
-
     try {
         var config = {
             method: 'post',
