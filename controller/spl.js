@@ -159,6 +159,9 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     }
+    return res.json({
+        data: data
+    })
     try {
         var config = {
             method: 'post',
