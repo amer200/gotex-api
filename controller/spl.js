@@ -170,8 +170,8 @@ exports.creteNewOrder = async (req, res) => {
     };
     const response = await axios(config)
     return res.status(200).json({
-        fullres: response,
-        data: response.data
+        config: config,
+        body: data
     })
     try {
         var config = {
