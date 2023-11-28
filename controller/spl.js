@@ -159,6 +159,20 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     }
+    var config = {
+        method: 'post',
+        url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Authorization': `bearer ${spl.token}`
+        },
+        data: data
+    };
+    const response = await axios(config)
+    return res.status(200).json({
+        fullres: response,
+        data: response.data
+    })
     try {
         var config = {
             method: 'post',
