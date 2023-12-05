@@ -73,12 +73,12 @@ exports.getToken = (req, res) => {
                 })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.message)
         })
 }
 exports.creteNewOrder = async (req, res) => {
     const { reciverName, reciverMobile, SenderName, SenderMobileNumber,
-        ContentPrice, ContentDescription, Weight,
+        ContentPrice, ContentDescription, weight,
         pickUpDistrictID, pickUpAddress1, pickUpAddress2,
         deliveryDistrictID, deliveryAddress1, deliveryAddress2,
         description, status, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
@@ -126,7 +126,7 @@ exports.creteNewOrder = async (req, res) => {
                 'PaymentType': PaymentType,
                 'ContentPrice': ContentPrice,
                 'ContentDescription': ContentDescription,
-                'Weight': Weight,
+                'Weight': weight,
                 'BoxLength': BoxLength,
                 'BoxWidth': BoxWidth,
                 'BoxHeight': BoxHeight,
@@ -200,10 +200,10 @@ exports.creteNewOrder = async (req, res) => {
                 AddressLine2: pickUpAddress2
             },
             paytype: paytype,
-            price: +totalShipPrice,
+            price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date(),
-            weight: Weight,
+            weight: weight,
             desc: ContentDescription
         })
         console.log("order")
@@ -288,7 +288,7 @@ exports.getUserOrders = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err.request)
+            console.log(err.message)
         })
 }
 exports.getCountries = async (req, res) => {
@@ -313,7 +313,7 @@ exports.getCountries = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.message)
         })
 }
 exports.getCities = async (req, res) => {
@@ -336,7 +336,7 @@ exports.getCities = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.message)
         })
 }
 exports.getDistrict = async (req, res) => {
@@ -360,7 +360,7 @@ exports.getDistrict = async (req, res) => {
             })
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.message)
         })
 }
 /********************************** */
@@ -395,7 +395,7 @@ var job = new CronJob('00 00 00 * * *', async () => {
             return spl.save()
         })
         .catch(err => {
-            console.log(err)
+            console.log(err.message)
         })
 }, function () {
     console.log("spl token updated")
