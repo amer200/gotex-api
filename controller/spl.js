@@ -175,7 +175,11 @@ exports.creteNewOrder = async (req, res) => {
             },
             data: data
         };
+        console.log("data")
+        console.log(data)
         const response = await axios(config)
+        console.log("response.data")
+        console.log(response.data)
         const order = await SplOrder.create({
             user: user._id,
             company: "Spl",
@@ -202,7 +206,8 @@ exports.creteNewOrder = async (req, res) => {
             weight: Weight,
             desc: ContentDescription
         })
-
+        console.log("order")
+        console.log(order)
         if (response.data.Status != 1) {
             order.status = 'failed'
             await order.save()
