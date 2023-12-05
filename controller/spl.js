@@ -131,6 +131,7 @@ exports.creteNewOrder = async (req, res) => {
                 'BoxLength': BoxLength,
                 'BoxWidth': BoxWidth,
                 'BoxHeight': BoxHeight,
+                'DeliveryCost': cod,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
