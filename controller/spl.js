@@ -114,7 +114,7 @@ exports.creteNewOrder = async (req, res) => {
     }
     const data = {
         'CRMAccountId': 31314344634,
-        'BranchId': 0,
+        // 'BranchId': 0,
         'PickupType': 0,
         'RequestTypeId': 1,
         'CustomerName': reciverName,
@@ -131,7 +131,6 @@ exports.creteNewOrder = async (req, res) => {
                 'BoxLength': BoxLength,
                 'BoxWidth': BoxWidth,
                 'BoxHeight': BoxHeight,
-                'DeliveryCost': cod,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
