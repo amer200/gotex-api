@@ -10,7 +10,7 @@ const { createClientInvoice } = require("../modules/daftra");
 
 //********************************************* */
 exports.edit = (req, res) => {
-    const status = req.body.;
+    const status = req.body.status;
     const userprice = req.body.userprice;
     const userCodPrice = req.body.userCodPrice;
     const marketerprice = req.body.marketerprice;
