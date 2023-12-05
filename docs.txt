@@ -764,31 +764,35 @@ url = https://dashboard.go-tex.net/api/spl/crete-new-order
 method = post
 body
     {
-    "markterCode": String,
-    "clintid": String,
     "reciverName": "عامر مصطفى عامر",
-    "reciverMobile": "565011313",
+    "reciverMobile": "0565011313",
     "SenderName": "gotex",
-    "SenderMobileNumber": "50706615",
-    "cod": 1,
-    "ContentPrice": 12,
+    "SenderMobileNumber": "0565011313",
+    "ContentPrice": 28.7,
     "ContentDescription": "books",
     "Weight": 10.5,
-    "pickUpDistrictID": 4799,
+    "BoxLength": 350,
+    "BoxWidth": 200,
+    "BoxHeight": 200,
+    "description": "books",
+    "pickUpDistrictID": 19929,
     "pickUpAddress1": "short address",
     "pickUpAddress2": "short address 2",
-    "deliveryDistrictID": 4799,
+    "deliveryDistrictID": 11095,
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
-    "description: ""
-    "Pieces":[{ 
-        "PieceWeight": 3,
-        "PieceDescription": "book"
-    },
-    {
-        "PieceWeight": 3,
-        "PieceDescription": "ffff"
-    }]
+    "Pieces": [
+        {
+            "PieceWeight": 3,
+            "PieceDescription": "book"
+        },
+        {
+            "PieceWeight": 3,
+            "PieceDescription": "ffff"
+        }
+    ],
+    "daftraid": 30
+}
 response
 
 {
