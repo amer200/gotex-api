@@ -124,13 +124,13 @@ exports.creteNewOrder = async (req, res) => {
             {
                 'ReferenceId': `${Date.now()} + Gotex`,
                 'PaymentType': PaymentType,
-                'ContentPrice': +ContentPrice,
+                'ContentPrice': ContentPrice,
                 'ContentDescription': ContentDescription,
-                'Weight': +Weight,
-                'BoxLength': +BoxLength,
-                'BoxWidth': +BoxWidth,
-                'BoxHeight': +BoxHeight,
-                'TotalAmount': +TotalAmount,
+                'Weight': Weight,
+                'BoxLength': BoxLength,
+                'BoxWidth': BoxWidth,
+                'BoxHeight': BoxHeight,
+                'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
                     'LocationId': 21,
@@ -169,12 +169,12 @@ exports.creteNewOrder = async (req, res) => {
             method: 'post',
             url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                // 'Content-Type': 'application/x-www-form-urlencoded',
                 'Authorization': `bearer ${spl.token}`
             },
             data: data
         };
-        console.log(typeof ContentPrice, typeof Weight)
+        console.log(typeof totalShipPrice)
         console.log("data")
         console.log(data)
         const response = await axios(config)
@@ -200,7 +200,7 @@ exports.creteNewOrder = async (req, res) => {
                 AddressLine2: pickUpAddress2
             },
             paytype: paytype,
-            price: totalShipPrice,
+            price: +totalShipPrice,
             marktercode: markterCode,
             created_at: new Date(),
             weight: Weight,

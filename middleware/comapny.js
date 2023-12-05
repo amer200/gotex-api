@@ -33,6 +33,8 @@ exports.checkCompany = (CompanyModel) => {
                     }
                     res.locals.codAmount = shipPrice + weightPrice + +shipmentValue; // 10 + (25 - 15)22 + 100
                     res.locals.totalShipPrice = shipPrice + weightPrice;
+                    console.log('totalShipPrice')
+                    console.log(shipPrice, weightPrice, totalShipPrice)
 
                     next()
                 } else {
@@ -52,7 +54,8 @@ exports.checkCompany = (CompanyModel) => {
                     }
                     res.locals.codAmount = 0;
                     res.locals.totalShipPrice = shipPrice + weightPrice;
-
+                    console.log('totalShipPrice')
+                    console.log(shipPrice, weightPrice, totalShipPrice)
                     next()
                 }
             } catch (err) {
