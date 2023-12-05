@@ -35,7 +35,7 @@ exports.edit = (req, res) => {
         .catch(err => {
             console.log(err)
             res.status(500).json({
-                msg: err.message.message
+                msg: err.message
             })
         })
 }
@@ -173,7 +173,7 @@ exports.creteNewOrder = async (req, res) => {
             },
             data: data
         };
-        console.log("data", typeof ContentPrice, typeof +ContentPrice)
+        console.log("data")
         console.log(data)
         const response = await axios(config)
         console.log("response.data")
@@ -273,7 +273,7 @@ exports.creteNewOrder = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            error: err.response.data
+            error: err.message
         })
     }
 }
