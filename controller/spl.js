@@ -10,7 +10,7 @@ const { createClientInvoice } = require("../modules/daftra");
 
 //********************************************* */
 exports.edit = (req, res) => {
-    const status = req.body.status;
+    const status = req.body.;
     const userprice = req.body.userprice;
     const userCodPrice = req.body.userCodPrice;
     const marketerprice = req.body.marketerprice;
@@ -78,35 +78,24 @@ exports.getToken = (req, res) => {
         })
 }
 exports.creteNewOrder = async (req, res) => {
-    const spl = await Spl.findOne();
-    const reciverName = req.body.reciverName;
-    const reciverMobile = req.body.reciverMobile;
-    const SenderName = req.body.SenderName;
+    const { reciverName, reciverMobile, SenderName, SenderMobileNumber,
+        ContentPrice, ContentDescription, Weight,
+        pickUpDistrictID, pickUpAddress1, pickUpAddress2,
+        deliveryDistrictID, deliveryAddress1, deliveryAddress2,
+        description, status, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
+    let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
-    const SenderMobileNumber = req.body.SenderMobileNumber;
-    const ContentPrice = req.body.ContentPrice;
-    const ContentDescription = req.body.ContentDescription;
-    const Weight = req.body.Weight;
-    const pickUpDistrictID = req.body.pickUpDistrictID;
-    const pickUpAddress1 = req.body.pickUpAddress1;
-    const pickUpAddress2 = req.body.pickUpAddress2;
-    const deliveryDistrictID = req.body.deliveryDistrictID;
-    const deliveryAddress1 = req.body.deliveryAddress1;
-    const deliveryAddress2 = req.body.deliveryAddress2;
-    const description = req.body.description;
-    if (req.body.Pieces.length <= 0) {
-        var Pieces = [];
+    const totalShipPrice = res.locals.totalShipPrice;
+
+    if (Pieces.length <= 0) {
+        Pieces = [];
         var PiecesCount = 1;
     } else {
-        var Pieces = req.body.Pieces;
         var PiecesCount = Pieces.length + 1
     }
-    //********************************** */
-    const totalShipPrice = res.locals.totalShipPrice;
-    const clintid = req.body.clintid;
-    const cod = req.body.cod;
+
+    const spl = await Spl.findOne();
     const user = await User.findById(req.user.user.id);
-    const daftraid = req.body.daftraid;
     let ordersNum = await SplOrder.count();
     if (markterCode) {
         var nameCode = `${SenderName} (${markterCode})`;
@@ -139,6 +128,9 @@ exports.creteNewOrder = async (req, res) => {
                 'ContentPrice': ContentPrice,
                 'ContentDescription': ContentDescription,
                 'Weight': Weight,
+                'BoxLength': BoxLength,
+                'BoxWidth': BoxWidth,
+                'BoxHeight': BoxHeight,
                 'TotalAmount': TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
@@ -217,31 +209,43 @@ exports.creteNewOrder = async (req, res) => {
             }
             order.inovicedaftra = invo
 
+            let clint = {}
             if (clintid) {
-                const clint = await Clint.findById(clintid);
+                clint = await Clint.findById(clintid);
                 const co = {
-                    company: "spl",
+                    company: "smsa",
                     id: order._id
                 }
-                clint.wallet = clint.wallet - totalShipPrice;
                 clint.orders.push(co);
-                await clint.save();
 
                 order.marktercode = clint.marktercode ? clint.marktercode : null;
             }
-
             if (!cod) {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "spl")
-                }
+                if (clintid && clint.wallet > totalShipPrice) {
+                    let available = false
+                    if (clint.package.availableOrders) {
+                        available = clint.package.companies.some(company => company == "smsa")
+                    }
 
-                if (available) {
-                    --user.package.userAvailableOrders;
+                    if (available) {
+                        --clint.package.availableOrders;
+                    } else {
+                        clint.wallet = clint.wallet - totalShipPrice;
+                    }
+                    await clint.save()
                 } else {
-                    user.wallet = user.wallet - totalShipPrice;
+                    let available = false
+                    if (user.package.userAvailableOrders) {
+                        available = user.package.companies.some(company => company == "smsa")
+                    }
+
+                    if (available) {
+                        --user.package.userAvailableOrders;
+                    } else {
+                        user.wallet = user.wallet - totalShipPrice;
+                    }
+                    await user.save()
                 }
-                await user.save()
             }
 
             await order.save();
