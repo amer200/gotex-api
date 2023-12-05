@@ -173,6 +173,7 @@ exports.creteNewOrder = async (req, res) => {
             },
             data: data
         };
+        console.log(typeof ContentPrice, typeof Weight)
         console.log("data")
         console.log(data)
         const response = await axios(config)
