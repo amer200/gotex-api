@@ -151,20 +151,20 @@ exports.creteNewOrder = async (req, res) => {
             }
         ]
     }
-    var config = {
-        method: 'post',
-        url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': `bearer ${spl.token}`
-        },
-        data: data
-    };
-    return res.status(200).json({
-        config: config,
-        body: data
-    })
-    const response = await axios(config)
+    // var config = {
+    //     method: 'post',
+    //     url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
+    //     headers: {
+    //         'Content-Type': 'application/x-www-form-urlencoded',
+    //         'Authorization': `bearer ${spl.token}`
+    //     },
+    //     data: data
+    // };
+    // return res.status(200).json({
+    //     config: config,
+    //     body: data
+    // })
+    // const response = await axios(config)
     try {
         var config = {
             method: 'post',
@@ -176,7 +176,6 @@ exports.creteNewOrder = async (req, res) => {
             data: data
         };
         const response = await axios(config)
-        // console.log(response.data)
         const order = await SplOrder.create({
             user: user._id,
             company: "Spl",
