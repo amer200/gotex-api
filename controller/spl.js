@@ -4,7 +4,6 @@ const axios = require("axios");
 const qs = require("qs");
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const splorders = require("../model/splorders");
 const CronJob = require('cron').CronJob;
 const { createClientInvoice } = require("../modules/daftra");
 
@@ -125,13 +124,13 @@ exports.creteNewOrder = async (req, res) => {
             {
                 'ReferenceId': `${Date.now()} + Gotex`,
                 'PaymentType': PaymentType,
-                'ContentPrice': ContentPrice,
+                'ContentPrice': +ContentPrice,
                 'ContentDescription': ContentDescription,
-                'Weight': Weight,
-                'BoxLength': BoxLength,
-                'BoxWidth': BoxWidth,
-                'BoxHeight': BoxHeight,
-                'TotalAmount': TotalAmount,
+                'Weight': +Weight,
+                'BoxLength': +BoxLength,
+                'BoxWidth': +BoxWidth,
+                'BoxHeight': +BoxHeight,
+                'TotalAmount': +TotalAmount,
                 'SenderAddressDetail': {
                     'AddressTypeID': 6,
                     'LocationId': 21,
@@ -174,7 +173,7 @@ exports.creteNewOrder = async (req, res) => {
             },
             data: data
         };
-        console.log("data")
+        console.log("data", typeof ContentPrice, typeof +ContentPrice)
         console.log(data)
         const response = await axios(config)
         console.log("response.data")
@@ -267,20 +266,7 @@ exports.creteNewOrder = async (req, res) => {
 
             await order.save();
             res.status(200).json({
-                // reciver: {
-                //     name: reciverName,
-                //     mobile: reciverMobile,
-                //     city: pickUpDistrictID,
-                //     AddressLine1: pickUpAddress1,
-                //     AddressLine2: pickUpAddress2
-                // },
-                // sender: {
-                //     name: SenderName,
-                //     mobile: SenderMobileNumber,
-                //     city: deliveryDistrictID,
-                //     AddressLine1: deliveryAddress1,
-                //     AddressLine2: deliveryAddress2
-                // },
+                msg: "order created successfully",
                 data: order
             })
         }
@@ -293,7 +279,7 @@ exports.creteNewOrder = async (req, res) => {
 }
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
-    splorders.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
+    SplOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
         .then(o => {
             res.status(200).json({
                 data: o
