@@ -136,31 +136,43 @@ exports.createUserOrder = async (req, res) => {
         }
         order.inovicedaftra = invo
 
+        let clint = {}
         if (clintid) {
-            const clint = await Clint.findById(clintid);
+            clint = await Clint.findById(clintid);
             const co = {
                 company: "saee",
                 id: order._id
             }
-            clint.wallet = clint.wallet - totalShipPrice;
             clint.orders.push(co);
-            await clint.save();
 
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
-
         if (!cod) {
-            let available = false
-            if (user.package.userAvailableOrders) {
-                available = user.package.companies.some(company => company == "saee")
-            }
+            if (clintid && clint.wallet > totalShipPrice) {
+                let available = false
+                if (clint.package.availableOrders) {
+                    available = clint.package.companies.some(company => company == "saee")
+                }
 
-            if (available) {
-                --user.package.userAvailableOrders;
+                if (available) {
+                    --clint.package.availableOrders;
+                } else {
+                    clint.wallet = clint.wallet - totalShipPrice;
+                }
+                await clint.save()
             } else {
-                user.wallet = user.wallet - totalShipPrice;
+                let available = false
+                if (user.package.userAvailableOrders) {
+                    available = user.package.companies.some(company => company == "saee")
+                }
+
+                if (available) {
+                    --user.package.userAvailableOrders;
+                } else {
+                    user.wallet = user.wallet - totalShipPrice;
+                }
+                await user.save()
             }
-            await user.save()
         }
 
         await order.save();

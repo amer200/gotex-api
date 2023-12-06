@@ -34,6 +34,16 @@ const clintSchema = mongoose.Schema({
             city: String,
             address: String
         }
-    ]
+    ],
+    receipts: {
+        type: [String]
+    },
+    package: {
+        price: Number,
+        numberOfOrders: Number,
+        companies: Array,
+        paidBy: { type: String, enum: ['client', 'marketer'] },
+        availableOrders: Number,
+    }
 })
 module.exports = mongoose.model("Clint", clintSchema);

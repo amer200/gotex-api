@@ -30,12 +30,13 @@ exports.addNewClint = async (req, res) => {
 }
 exports.adddeposit = (req, res) => {
     const deposit = req.body.deposit;
-    const receipt = req.file;
     const cId = req.body.clintid;
     Clint.findById(cId)
         .then(c => {
-            c.wallet = c.wallet + deposit;
-            c.receipts.push(receipt.path);
+            c.wallet = c.wallet + +deposit;
+            if (req.file) {
+                c.receipts.push(req.file.path)
+            }
             c.save()
                 .then(c => {
                     res.status(200).json({

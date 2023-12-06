@@ -1402,3 +1402,17 @@ method = get
 7) user cancel package [user] (user can cancel package and refund money only if user does't use the package yet)
 url = https://dashboard.go-tex.net/api/package/user-cancel-package
 method = get
+
+/* client package apis */
+8) buy client package [marketer]
+url = https://dashboard.go-tex.net/api/package/buy-client-package/{packageId}
+method = post
+
+9) get client package info [marketer]
+url = https://dashboard.go-tex.net/api/package/get-client-package/{clientId}
+method = get
+
+10) cancel client package [marketer] (marketer can cancel client package and refund money only if user does't use the package yet)
+Note: money refund to who paid for it (marketer or client)
+url = https://dashboard.go-tex.net/api/package/cancel-client-package/{clientId}
+method = get
