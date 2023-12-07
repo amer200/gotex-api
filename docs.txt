@@ -1407,6 +1407,9 @@ method = get
 8) buy client package [marketer]
 url = https://dashboard.go-tex.net/api/package/buy-client-package/{packageId}
 method = post
+body{
+    clientId: "65132414cbb49c9724c1573d"
+}
 
 9) get client package info [marketer]
 url = https://dashboard.go-tex.net/api/package/get-client-package/{clientId}
