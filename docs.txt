@@ -1230,6 +1230,198 @@ response
         }
     ]
 }
+
+/************ user charge (tap payment gateway) *************/
+1) user charge
+url = https://dashboard.go-tex.net/api/user/user-charge
+method = post
+body{
+    "amount": 200
+}
+response
+{
+    "data": {
+        "id": "chg_TS07A0620232253Zi540712975",
+        "object": "charge",
+        "live_mode": false,
+        "customer_initiated": true,
+        "api_version": "V2",
+        "method": "CREATE",
+        "status": "INITIATED",
+        "amount": 200,
+        "currency": "SAR",
+        "threeDSecure": true,
+        "card_threeDSecure": false,
+        "save_card": false,
+        "product": "GOSELL",
+        "statement_descriptor": "Sample",
+        "description": "Test Description",
+        "metadata": {
+            "udf1": "test 1",
+            "udf2": "test 2"
+        },
+        "order": {},
+        "transaction": {
+            "timezone": "UTC+03:00",
+            "created": "1701989586990",
+            "url": "https://checkout.beta.tap.company/?mode=page&themeMode=&language=en&token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY1NzIyMmEzN2ExYTUwNWJhNThlMmU3MyJ9.jQIbw8FR2UkVgvtelwL0ConiLXV5suLixGMnWgqNlkw",
+            "expiry": {
+                "period": 30,
+                "type": "MINUTE"
+            },
+            "asynchronous": false,
+            "amount": 200,
+            "currency": "SAR"
+        },
+        "reference": {
+            "transaction": "txn_0001",
+            "order": "ord_0001"
+        },
+        "response": {
+            "code": "100",
+            "message": "Initiated"
+        },
+        "receipt": {
+            "email": true,
+            "sms": false
+        },
+        "customer": {
+            "first_name": "soha",
+            "email": "sohakandil71097@gmail.com",
+            "phone": {
+                "country_code": "966",
+                "number": ""
+            }
+        },
+        "merchant": {
+            "id": "599424"
+        },
+        "source": {
+            "object": "source",
+            "id": "src_all",
+            "on_file": false
+        },
+        "redirect": {
+            "status": "PENDING",
+            "url": "https://dashboard.go-tex.net/api/user/check-tap-payment/INITIATED/65131d0ccbb49c9724c15729/1244774831"
+        },
+        "post": {
+            "status": "PENDING",
+            "url": ""
+        },
+        "activities": [
+            {
+                "id": "activity_TS03A0720232253Ty2u0712912",
+                "object": "activity",
+                "created": 1701989586990,
+                "status": "INITIATED",
+                "currency": "SAR",
+                "amount": 200,
+                "remarks": "charge - created"
+            }
+        ],
+        "auto_reversed": false
+    }
+}
+
+2) get user payment orders
+url = https://dashboard.go-tex.net/api/user/get-user-payment-orders
+method = get
+response 
+{
+    "data": [
+        {
+            "_id": "65721637fc162602b469e23b",
+            "user": "65131d0ccbb49c9724c15729",
+            "data": {
+                "id": "chg_TS02A0620232200Rb4p0712540",
+                "object": "charge",
+                "live_mode": false,
+                "customer_initiated": true,
+                "api_version": "V2",
+                "method": "CREATE",
+                "status": "INITIATED",
+                "amount": 200,
+                "currency": "SAR",
+                "threeDSecure": true,
+                "card_threeDSecure": false,
+                "save_card": false,
+                "product": "GOSELL",
+                "statement_descriptor": "Sample",
+                "description": "Test Description",
+                "metadata": {
+                    "udf1": "test 1",
+                    "udf2": "test 2"
+                },
+                "transaction": {
+                    "timezone": "UTC+03:00",
+                    "created": "1701986406556",
+                    "url": "https://checkout.beta.tap.company/?mode=page&themeMode=&language=en&token=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjY1NzIxNjM3OGNlNGY3NDhiNGM1MmYyOSJ9.EwLua8viMOXONeKLpxY5b17vmYJo0yvjn8VczbeF0Ag",
+                    "expiry": {
+                        "period": 30,
+                        "type": "MINUTE"
+                    },
+                    "asynchronous": false,
+                    "amount": 200,
+                    "currency": "SAR"
+                },
+                "reference": {
+                    "transaction": "txn_0001",
+                    "order": "ord_0001"
+                },
+                "response": {
+                    "code": "100",
+                    "message": "Initiated"
+                },
+                "receipt": {
+                    "email": true,
+                    "sms": false
+                },
+                "customer": {
+                    "first_name": "soha",
+                    "email": "sohakandil71097@gmail.com",
+                    "phone": {
+                        "country_code": "966",
+                        "number": ""
+                    }
+                },
+                "merchant": {
+                    "id": "599424"
+                },
+                "source": {
+                    "object": "source",
+                    "id": "src_all",
+                    "on_file": false
+                },
+                "redirect": {
+                    "status": "PENDING",
+                    "url": "https://dashboard.go-tex.net/api/user/tap-payment"
+                },
+                "post": {
+                    "status": "PENDING",
+                    "url": ""
+                },
+                "activities": [
+                    {
+                        "id": "activity_TS04A0820232200Yy4h0712040",
+                        "object": "activity",
+                        "created": 1701986406556,
+                        "status": "INITIATED",
+                        "currency": "SAR",
+                        "amount": 200,
+                        "remarks": "charge - created"
+                    }
+                ],
+                "auto_reversed": false
+            },
+            "amount": 200,
+            "code": "4862663797",
+            "status": "INITIATED",
+            "__v": 0
+        }
+    ]
+}
+
 //********************************clients new***********************//
 url = https://dashboard.go-tex.net/api/clients/add-new-client
 method = post
