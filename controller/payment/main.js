@@ -2,6 +2,7 @@ const User = require("../../model/user");
 const PaymentOrder = require("../../model/payment/orders");
 const axios = require("axios");
 const genRandomString = require("../../modules/genRandomString");
+const { get } = require("mongoose");
 // const sdk = require('api')('@tappayments/v1.0#cu0hmhloy2ectd');
 // sdk.auth('Bearer sk_test_XKokBfNWv6FIYuTMg5sLPjhJ');
 
@@ -49,10 +50,10 @@ exports.userCharge = async (req, res) => {
                 "id": "src_all"
             },
             "post": {
-                "url": ""
+                "url": `https://dashboard.go-tex.net/api/user/check-tap-payment/${userId}/${code}`
             },
             "redirect": {
-                "url": `https://dashboard.go-tex.net/api/user/check-tap-payment/INITIATED/${userId}/${code}`
+                "url": `https://dashboard.go-tex.net/api/user/check-tap-payment/${userId}/${code}`
             }
         });
         let config = {
@@ -61,12 +62,12 @@ exports.userCharge = async (req, res) => {
             headers: {
                 accept: 'application/json',
                 'content-type': 'application/json',
-                Authorization: 'Bearer sk_test_XKokBfNWv6FIYuTMg5sLPjhJ'
+                Authorization: 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4'
             },
             data: data
         };
         const response = await axios(config);
-        console.log("response", response)
+
         const paymentOrder = await PaymentOrder.create({
             user: userId,
             data: response.data,
@@ -83,6 +84,26 @@ exports.userCharge = async (req, res) => {
         })
     }
 }
+const getCharge = (chargeId) => {
+    try {
+        const config = {
+            method: 'GET',
+            url: `https://api.tap.company/v2/charges/${chargeId}`,
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4'
+            }
+        };
+
+        const response = axios(config);
+        return response
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: { status: err.status, message: err.message, stack: err.stack }
+        })
+    }
+}
 
 exports.checkPaymentOrder = async (req, res) => {
     const userId = req.params.userId;
@@ -91,6 +112,9 @@ exports.checkPaymentOrder = async (req, res) => {
     try {
         const order = await PaymentOrder.findOne({ code });
         const user = await User.findById(userId);
+
+        const charge = await getCharge(order.data.id)
+        const currentStatus = charge.data.status
 
         if (!order) {
             return res.render("payment-result", {
@@ -101,9 +125,10 @@ exports.checkPaymentOrder = async (req, res) => {
                 data: "failed"
             })
         }
-        if (status != "INITIATED") {
+
+        if (currentStatus != "CAPTURED") {
             return res.render("payment-result", {
-                myText: `${status}, your wallet is =`,
+                myText: `${currentStatus}, your wallet is =`,
                 balance: user.wallet
             })
             return res.status(400).json({
@@ -114,11 +139,11 @@ exports.checkPaymentOrder = async (req, res) => {
             await user.save()
         }
 
-        order.status = status;
+        order.status = currentStatus;
         order.code = genRandomString(10);
         await order.save()
         return res.render("payment-result", {
-            myText: `${status}, your wallet is =`,
+            myText: `${currentStatus}, your wallet is =`,
             balance: user.wallet
         })
 

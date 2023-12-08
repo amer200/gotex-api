@@ -21,7 +21,7 @@ routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.ge
 
 /** user payment [with tap gateway] */
 routes.post("/user-charge", userMiddlewares.isAuth, paymentControllers.userCharge);
-routes.get("/check-tap-payment/:status/:userId/:code", paymentControllers.checkPaymentOrder);
+routes.get("/check-tap-payment/:userId/:code", paymentControllers.checkPaymentOrder);
 routes.get("/get-user-payment-orders", userMiddlewares.isAuth, paymentControllers.getUserPaymentOrders);
 
 /** By Marketer */
