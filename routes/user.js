@@ -16,17 +16,7 @@ routes.post("/send-email-update-password", userControllers.createNewPassword);
 routes.post("/update-password", userControllers.updatePassword);
 
 routes.post("/add-user-balance", userMiddlewares.isAuth, userControllers.addBalance);
-<<<<<<< HEAD
-routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
-routes.get('/get-user-balance', userMiddlewares.isAuth, userControllers.getUserBalance);
-=======
-<<<<<<< HEAD
-routes.get('/get-user-balance', userMiddlewares.isAuth, userControllers.getUserBalance);
-routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
-=======
 // routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
->>>>>>> 3165ba8 (payment tap)
->>>>>>> f054960 (commit)
 routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.getAllPaymentOrders);
 
 /** user payment [with tap gateway] */
