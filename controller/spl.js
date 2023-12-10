@@ -85,12 +85,13 @@ exports.creteNewOrder = async (req, res) => {
     let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
-
-    if (Pieces.length <= 0) {
-        Pieces = [];
-        var PiecesCount = 1;
-    } else {
-        var PiecesCount = Pieces.length + 1
+    if (Pieces) {
+        if (Pieces.length <= 0) {
+            Pieces = [];
+            var PiecesCount = 1;
+        } else {
+            var PiecesCount = Pieces.length + 1
+        }
     }
 
     const spl = await Spl.findOne();
@@ -145,8 +146,8 @@ exports.creteNewOrder = async (req, res) => {
                     'AddressLine1': deliveryAddress1,
                     "AddressLine2": deliveryAddress2
                 },
-                'PiecesCount': PiecesCount,
-                "ItemPieces": Pieces
+                // 'PiecesCount': PiecesCount,
+                // "ItemPieces": Pieces
             }
         ]
     }
