@@ -20,7 +20,7 @@ routes.post("/add-user-balance", userMiddlewares.isAuth, userControllers.addBala
 routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.getAllPaymentOrders);
 
 /** user payment [with tap gateway] */
-// routes.post("/user-charge", userMiddlewares.isAuth, paymentControllers.userCharge);
+routes.post("/user-charge", userMiddlewares.isAuth, paymentControllers.userCharge);
 routes.get("/check-tap-payment/:userId/:code", paymentControllers.checkPaymentOrder);
 routes.get("/get-user-payment-orders", userMiddlewares.isAuth, paymentControllers.getUserPaymentOrders);
 
