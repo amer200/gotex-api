@@ -2,6 +2,7 @@ const axios = require('axios');
 const genRandomString = require("../../modules/genRandomString");
 const User = require("../../model/user");
 const PaymentOrder = require("../../model/payment/orders");
+
 exports.addDepoist = async (req, res) => {
     const amount = req.body.amount;
     const firstName = req.body.first_name;
@@ -81,7 +82,7 @@ exports.addDepoist = async (req, res) => {
 }
 
 exports.userCharge = async (req, res) => {
-    const amount = req.body.amount;
+    const { amount } = req.body;
     const userId = req.user.user.id;
 
     try {
@@ -158,6 +159,7 @@ exports.userCharge = async (req, res) => {
         })
     }
 }
+
 const getCharge = (chargeId) => {
     try {
         const config = {
@@ -178,11 +180,9 @@ const getCharge = (chargeId) => {
         })
     }
 }
+exports.checkPayment = async (req, res) => {
+    const { userId, code } = req.params
 
-exports.checkPaymentOrder = async (req, res) => {
-    const userId = req.params.userId;
-    const code = req.params.code;
-    const status = req.params.status;
     try {
         const order = await PaymentOrder.findOne({ code });
         const user = await User.findById(userId);
@@ -192,7 +192,8 @@ exports.checkPaymentOrder = async (req, res) => {
 
         if (!order) {
             return res.render("payment-result", {
-                myText: "Failed, your wallet is =",
+                text1: `Your charge status is Failed`,
+                text2: `Your wallet is = `,
                 balance: user.wallet
             })
             res.status(400).json({
@@ -202,7 +203,8 @@ exports.checkPaymentOrder = async (req, res) => {
 
         if (currentStatus != "CAPTURED") {
             return res.render("payment-result", {
-                myText: `${currentStatus}, your wallet is =`,
+                text1: `Your charge status is ${currentStatus}`,
+                text2: `Your wallet is = `,
                 balance: user.wallet
             })
             return res.status(400).json({
@@ -211,13 +213,15 @@ exports.checkPaymentOrder = async (req, res) => {
         } else {
             user.wallet = user.wallet + order.amount
             await user.save()
+
+            order.code = genRandomString(10);
         }
 
         order.status = currentStatus;
-        order.code = genRandomString(10);
         await order.save()
         return res.render("payment-result", {
-            myText: `${currentStatus}, your wallet is =`,
+            text1: `Your charge status is ${currentStatus}`,
+            text2: `Your wallet is = `,
             balance: user.wallet
         })
 

@@ -3,7 +3,6 @@ const routes = express.Router();
 const userControllers = require("../controller/user");
 const paymentControllers = require("../controller/payment/main");
 const clintControllers = require("../controller/clints");
-const paymentContollers = require("../controller/payment/main")
 const userMiddlewares = require('../middleware/user');
 const check = require("../middleware/new-client");
 
@@ -21,7 +20,7 @@ routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.ge
 
 /** user payment [with tap gateway] */
 routes.post("/user-charge", userMiddlewares.isAuth, paymentControllers.userCharge);
-routes.get("/check-tap-payment/:userId/:code", paymentControllers.checkPaymentOrder);
+routes.get("/check-tap-payment/:userId/:code", paymentControllers.checkPayment);
 routes.get("/get-user-payment-orders", userMiddlewares.isAuth, paymentControllers.getUserPaymentOrders);
 
 /** By Marketer */
@@ -30,5 +29,5 @@ routes.post("/add-clint-deposit", userMiddlewares.isAuth, userMiddlewares.isMark
 routes.get("/all-markter-clint", userMiddlewares.isAuth, userMiddlewares.isMarkter, clintControllers.getAllMarkterClint);
 routes.post("/add-credit-to-client", userMiddlewares.isAuth, userMiddlewares.isMarkter, userControllers.addCreditsToClient);
 /******tap */
-routes.post("/request-payment", userMiddlewares.isAuth, paymentContollers.addDepoist);
+routes.post("/request-payment", userMiddlewares.isAuth, paymentControllers.addDepoist);
 module.exports = routes
