@@ -138,7 +138,7 @@ exports.userCharge = async (req, res) => {
             headers: {
                 accept: 'application/json',
                 'content-type': 'application/json',
-                Authorization: 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4'
+                Authorization: 'Bearer sk_live_tA5KGovXSIqkdOufcDpW9zre'
             },
             data: data
         };
