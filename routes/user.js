@@ -14,6 +14,7 @@ routes.get("/resend-activate-code", userMiddlewares.isAuth, userControllers.reSe
 routes.post("/send-email-update-password", userControllers.createNewPassword);
 routes.post("/update-password", userControllers.updatePassword);
 
+routes.get('/get-user-balance', userMiddlewares.isAuth, userControllers.getUserBalance);
 routes.post("/add-user-balance", userMiddlewares.isAuth, userControllers.addBalance);
 // routes.get("/checkpayment/:status/:uId/:code", userControllers.checkPaymentOrder);
 routes.get("/get-all-payment-orders", userMiddlewares.isAuth, userControllers.getAllPaymentOrders);
