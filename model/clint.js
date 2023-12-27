@@ -45,5 +45,5 @@ const clintSchema = mongoose.Schema({
         paidBy: { type: String, enum: ['client', 'marketer'] },
         availableOrders: Number,
     }
-})
+}, { timestamps: true })
 module.exports = mongoose.model("Clint", clintSchema);
