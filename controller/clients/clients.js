@@ -4,11 +4,12 @@ const User = require("../../model/user");
 const Imile = require("../../model/imile");
 const axios = require("axios");
 const { addDaftraClient, removeDaftraClient, editDaftraClient, getAllDaftraClientsPage } = require("./daftraClients")
-const { addImileClient, editImileClient } = require("./imileClients")
+const { addImileClient, editImileClient } = require("./imileClients");
+const paginate = require("../../modules/paginate");
 
 exports.addClient = async (req, res) => {
     const userId = req.user.user.id;
-    const { company, first_name, city, state, address, mobile, email,
+    const { company, first_name, city, state, address, mobile,
         notes, category, birth_date, street, branches } = req.body
 
     try {
@@ -25,19 +26,19 @@ exports.addClient = async (req, res) => {
             staff_id = user.daftraid;
         }
 
-        // const usedEmail = await Client.findOne({ email })
-        // if (usedEmail) {
-        //     return res.status(400).json({ msg: "This client email is already used." })
-        // }
+        const usedMobile = await Client.findOne({ mobile })
+        if (usedMobile) {
+            return res.status(400).json({ msg: "This client mobile is already used." })
+        }
 
-        const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
+        const daftraResult = await addDaftraClient(staff_id, company, first_name, address, city, state, mobile, notes, category, birth_date);
         if (daftraResult.result != "ok") {
             return res.status(400).json({
                 msg: "error with daftra",
                 err: daftraResult
             })
         }
-        const imileResult = await addImileClient(company, name, city, address, mobile, email, notes);
+        const imileResult = await addImileClient(company, name, city, address, mobile, notes);
         if (imileResult != 1) {
             await removeDaftraClient(daftraResult.id)
             return res.status(400).json({
@@ -48,7 +49,6 @@ exports.addClient = async (req, res) => {
         const myClient = new Client({
             name,
             company,
-            email,
             mobile,
             city,
             address,
@@ -71,22 +71,10 @@ exports.addClient = async (req, res) => {
         })
     }
 }
-exports.getAllClients = async (req, res) => {
-    try {
-        const clients = await Client.find({})
-
-        return res.status(200).json({ data: clients })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            error: error.message
-        })
-    }
-}
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const userId = req.user.user.id;
-    const { company, first_name, city, state, address, mobile, email,
+    const { company, first_name, city, state, address, mobile,
         notes, category, birth_date, street, branches } = req.body
 
     try {
@@ -107,12 +95,12 @@ exports.editClient = async (req, res) => {
             return res.status(400).json({ msg: `No client for this id ${clientId}` })
         }
 
-        // const usedEmail = await Client.findOne({ email })
-        // if (usedEmail && (usedEmail.email !== client.email)) {
-        //     return res.status(400).json({ msg: "This client email is already used." })
-        // }
+        const usedMobile = await Client.findOne({ mobile })
+        if (usedMobile && (usedMobile.mobile !== client.mobile)) {
+            return res.status(400).json({ msg: "This client mobile is already used." })
+        }
 
-        const daftraResult = await editDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date, client.daftraClientId);
+        const daftraResult = await editDaftraClient(staff_id, company, first_name, address, city, state, mobile, notes, category, birth_date, client.daftraClientId);
         if (daftraResult.result != "ok") {
             return res.status(400).json({
                 msg: "error with daftra",
@@ -120,7 +108,8 @@ exports.editClient = async (req, res) => {
             })
         }
 
-        const imileResult = await editImileClient(company, name, city, address, mobile, email, notes);
+        const editImileClientParams = { company, name, city, address, mobile, notes }
+        const imileResult = await editImileClient(editImileClientParams);
         if (imileResult != 1) {
             return res.status(400).json({ msg: "error with imile", err: imileResult })
         }
@@ -134,7 +123,6 @@ exports.editClient = async (req, res) => {
                 address,
                 street,
                 mobile,
-                email,
                 notes,
                 category,
                 branches
@@ -150,66 +138,102 @@ exports.editClient = async (req, res) => {
     }
 }
 
-/** Add user as a client to daftra */
-exports.addUserAsClient = async (user) => {
-    let { id: userId, name, location: city, address, mobile, email, daftraid } = user
-    // !Note : company sometimes make an error using this random number
-    const company = Math.floor(Math.random() * 10) // to be unique
-    const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
-    city = 'Najran'
+exports.getAllClients = async (req, res) => {
+    try {
+        const clients = await Client.find({})
 
-    const first_name = name
-    let staff_id = 0;
-
-    if (!companyName || !city || !address || !mobile) {
-        return { result: 'fail', msg: 'These info are required:  first_name, city, address and mobile' }
+        return res.status(200).json({ data: clients })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
     }
-    if (user.daftraid) {
-        staff_id = user.daftraid;
-    }
-
-    // const usedEmail = await Client.findOne({ email })
-    // if (usedEmail) {
-    //     return {
-    //         result: 'fail',
-    //         msg: "This client email is already used."
-    //     }
-    // }
-
-    const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
-    if (daftraResult.result != "ok") {
-        return {
-            result: 'fail',
-            msg: "error with daftra",
-            err: daftraResult
-        }
-    }
-    const imileResult = await addImileClient(company, name, city, address, mobile, email, notes);
-    if (imileResult != 1) {
-        await removeDaftraClient(daftraResult.id)
-        return {
-            result: 'fail',
-            msg: "error with imile",
-            err: imileResult
-        }
-    }
-    const myClient = new Client({
-        name: name,
-        company: company,
-        email: email,
-        mobile: mobile,
-        city: city,
-        address: address,
-        notes: notes,
-        street: street,
-        category: category,
-        addby: userId,
-        orders: [],
-        daftraClientId: daftraResult.id
-    })
-    await myClient.save();
-    return { result: 'success', data: myClient }
 }
+exports.allClients = async (req, res) => {
+    /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    let page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const { name = '', mobile = '', company = '', city = '' } = req.query
+
+    try {
+        const clients = await Client.find({
+            name: { $regex: name, $options: 'i' },
+            mobile: { $regex: mobile },
+            company: { $regex: company, $options: 'i' },
+            city: { $regex: city, $options: 'i' },
+        })
+
+        const clientsPagination = paginate(clients, page, limit)
+        return res.status(200).json({ ...clientsPagination })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
+    }
+}
+
+/** Add user as a client to daftra */
+// exports.addUserAsClient = async (user) => {
+//     let { id: userId, name, location: city, address, mobile, email, daftraid } = user
+//     // !Note : company sometimes make an error using this random number
+//     const company = Math.floor(Math.random() * 10) // to be unique
+//     const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
+//     city = 'Najran'
+
+//     const first_name = name
+//     let staff_id = 0;
+
+//     if (!companyName || !city || !address || !mobile) {
+//         return { result: 'fail', msg: 'These info are required:  first_name, city, address and mobile' }
+//     }
+//     if (user.daftraid) {
+//         staff_id = user.daftraid;
+//     }
+
+//     // const usedEmail = await Client.findOne({ email })
+//     // if (usedEmail) {
+//     //     return {
+//     //         result: 'fail',
+//     //         msg: "This client email is already used."
+//     //     }
+//     // }
+
+//     const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
+//     if (daftraResult.result != "ok") {
+//         return {
+//             result: 'fail',
+//             msg: "error with daftra",
+//             err: daftraResult
+//         }
+//     }
+//     const imileResult = await addImileClient(company, name, city, address, mobile, email, notes);
+//     if (imileResult != 1) {
+//         await removeDaftraClient(daftraResult.id)
+//         return {
+//             result: 'fail',
+//             msg: "error with imile",
+//             err: imileResult
+//         }
+//     }
+//     const myClient = new Client({
+//         name: name,
+//         company: company,
+//         email: email,
+//         mobile: mobile,
+//         city: city,
+//         address: address,
+//         notes: notes,
+//         street: street,
+//         category: category,
+//         addby: userId,
+//         orders: [],
+//         daftraClientId: daftraResult.id
+//     })
+//     await myClient.save();
+//     return { result: 'success', data: myClient }
+// }
 
 exports.AddClientToMarkter = async (req, res) => {
     const clientId = req.body.clientId;
@@ -228,6 +252,18 @@ exports.AddClientToMarkter = async (req, res) => {
             msg: "ok",
             data: client
         })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error: error
+        })
+    }
+}
+exports.getClientsWithCredit = async (req, res) => {
+    try {
+        const clients = await Client.find({ credit: { $exists: true } }).sort({ updatedAt: -1 })
+
+        res.status(200).json({ clients })
     } catch (error) {
         console.log(error)
         res.status(500).json({

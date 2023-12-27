@@ -1,7 +1,7 @@
 const Imile = require("../../model/imile");
 const axios = require("axios");
 
-exports.addImileClient = async (company, name, city, address, mobile, email = "", notes) => {
+exports.addImileClient = async (company, name, city, address, mobile, notes) => {
     const imile = await Imile.findOne();
     let data = JSON.stringify({
         "customerId": process.env.imile_customerid,
@@ -20,7 +20,7 @@ exports.addImileClient = async (company, name, city, address, mobile, email = ""
             "area": "",
             "address": address,
             "phone": mobile,
-            "email": email,
+            "email": "",
             "backupPhone": "",
             "attentions": notes,
             "defaultOption": "0"
@@ -41,7 +41,8 @@ exports.addImileClient = async (company, name, city, address, mobile, email = ""
     return 1
 }
 
-exports.editImileClient = async (company, name, city, address, mobile, email = "", notes) => {
+exports.editImileClient = async (obj) => {
+    const { company, name, city, address, mobile, notes } = obj
     const imile = await Imile.findOne();
     let data = JSON.stringify({
         "customerId": process.env.imile_customerid,
@@ -60,7 +61,7 @@ exports.editImileClient = async (company, name, city, address, mobile, email = "
             "area": "",
             "address": address,
             "phone": mobile,
-            "email": email,
+            "email": "",
             "backupPhone": "",
             "attentions": notes,
             "defaultOption": "0"

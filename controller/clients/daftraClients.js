@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-exports.addDaftraClient = async (staff_id, company, first_name, email = "", address, city, state, mobile, notes, category, birth_date) => {
+exports.addDaftraClient = async (staff_id, company, first_name, address, city, state, mobile, notes, category, birth_date) => {
     let data = {
         Client: {
             "is_offline": true,
@@ -8,7 +8,7 @@ exports.addDaftraClient = async (staff_id, company, first_name, email = "", addr
             "business_name": company,
             "first_name": first_name,
             "last_name": "",
-            "email": email,
+            "email": "",
             "address1": address,
             "city": city,
             "state": state,
@@ -57,7 +57,7 @@ exports.removeDaftraClient = async (id) => {
     };
     await axios(config);
 }
-exports.editDaftraClient = async (staff_id, company, first_name, email = "", address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
+exports.editDaftraClient = async (staff_id, company, first_name, address, city, state, mobile, notes, category, birth_date, daftraClientId) => {
     let data = JSON.stringify({
         "Client": {
             "is_offline": true,
@@ -65,7 +65,7 @@ exports.editDaftraClient = async (staff_id, company, first_name, email = "", add
             "business_name": company,
             "first_name": first_name,
             "last_name": " ",
-            "email": email,
+            "email": "",
             "address1": address,
             "city": city,
             "state": state,
