@@ -1423,6 +1423,7 @@ response
 }
 
 //********************************clients new***********************//
+1) Add new client
 url = https://dashboard.go-tex.net/api/clients/add-new-client
 method = post
 body{
@@ -1450,7 +1451,33 @@ body{
                 }
     ]
 }
-/****** get all clients ******/
+/************/
+2) edit client by id
+url = https://dashboard.go-tex.net/api/clients/edit-client/:id
+method = post
+body{
+{
+    "company": "company 123",
+    "first_name": "ahmed",
+    "city": "Najran",
+    "state": "abc", // optional
+    "address": "Najran",
+    "mobile": "9665442343",
+    "email": "client@test12.com", // optional
+    "notes": "notes", // optional
+    "category": "categ2", // optional
+    "birth_date": "1-1-2001", // optional
+    "street": "123 st",
+    "branches": [
+                {
+                    "city": "Najran",
+                    "address": "123 st",
+                    "_id": "6548bb9dd51a1c4cc25af068"
+                }
+            ]
+}
+/************/
+3) get all clients
 url = https://dashboard.go-tex.net/api/clients/get-all-clients
 method = get
 response {
@@ -1474,29 +1501,42 @@ response {
         }
     ]
 }
-/****** edit client by id ******/
-url = https://dashboard.go-tex.net/api/clients/edit-client/:id
-method = post
-body{
-{
-    "company": "company 123",
-    "first_name": "ahmed",
-    "city": "Najran",
-    "state": "abc", // optional
-    "address": "Najran",
-    "mobile": "9665442343",
-    "email": "client@test12.com", // optional
-    "notes": "notes", // optional
-    "category": "categ2", // optional
-    "birth_date": "1-1-2001", // optional
-    "street": "123 st",
-    "branches": [
-                {
-                    "city": "Najran",
-                    "address": "123 st",
-                    "_id": "6548bb9dd51a1c4cc25af068"
-                }
-            ]
+/************/
+3) get clients with credit (sorted desc)
+url = https://dashboard.go-tex.net/api/clients/clients-with-credit
+method = get
+response {
+    "clients": [
+        {
+            "credit": {
+                "status": "pending",
+                "limet": 200,
+                "addby": "65131d0ccbb49c9724c15729"
+            },
+            "package": {
+                "companies": []
+            },
+            "_id": "65132414cbb49c9724c1573d",
+            "name": "ahmed ali",
+            "company": "company 1234",
+            "email": "client@test1.com",
+            "mobile": "9665442343",
+            "city": "Najran",
+            "address": "Najran",
+            "notes": "notes",
+            "street": "123 st",
+            "wallet": 3300,
+            "category": "categ2",
+            "addby": "6511e27aa2b4b5d0877d0be8",
+            "orders": [],
+            "__v": 2,
+            "branches": [],
+            "receipts": [
+                "public\\receipts\\recipt-1701881487980لا-أبرح.jpg"
+            ],
+            "updatedAt": "2023-12-26T19:03:42.551Z"
+        }
+    ]
 }
 //***********************new markters ****************/
 1) signup
