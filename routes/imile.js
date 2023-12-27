@@ -5,7 +5,7 @@ const userMiddlewares = require("../middleware/user");
 const imileMiddlewares = require("../middleware/comapny");
 const imileController = require("../controller/imile");
 const Imile = require("../model/imile");
-const { beforeCreateOrder, afterCreateOrder } = require("../middleware/imileClientBranches");
+const { beforeCreateOrder, afterCreateOrder } = require("../middleware/imileClient");
 
 routes.post("/edit", adminMiddleware.isAuth, imileController.edit);
 routes.post("/add-client", userMiddlewares.isAuth, userMiddlewares.isVerfied, imileController.addClient);

@@ -44,7 +44,7 @@ exports.edit = (req, res) => {
 exports.addClient = async (req, res) => {
     try {
         const imile = await Imile.findOne();
-        let { companyName, contacts, city, address, phone, email,
+        let { companyName, contacts, city, address, phone,
             backupPhone, attentions } = req.body;
         let data = JSON.stringify({
             "customerId": process.env.imile_customerid,
@@ -91,7 +91,6 @@ exports.addClient = async (req, res) => {
             city: city,
             address: address,
             phone: phone,
-            email: email,
             backupPhone: backupPhone,
             attentions: attentions
         })
@@ -131,6 +130,8 @@ exports.createOrder = async (req, res) => {
     // front send p_city,p_address in case of choosing another client branch
     const p_city = req.body.p_city || '';
     const p_address = req.body.p_address || '';
+
+    const p_mobile = req.body.p_mobile || ''; // front send p_mobile in case of in case of using another mobile number
     //***************************************** */
     const token = Imile.token;
     const c_company = req.body.c_company;
@@ -424,10 +425,10 @@ exports.cancelOrder = async (req, res) => {
 }
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
-    const { companyName, contacts, city, address, phone, email, attentions } = req.body;
+    const { companyName, contacts, city, address, phone, attentions } = req.body;
 
     try {
-        const imileResult = await editImileClient(companyName, contacts, city, address, phone, email, attentions);
+        const imileResult = await editImileClient(companyName, contacts, city, address, phone, attentions);
         if (imileResult != 1) {
             return res.status(400).json({ msg: imileResult })
         }
@@ -440,7 +441,6 @@ exports.editClient = async (req, res) => {
                 city,
                 address,
                 phone,
-                email,
                 attentions
             },
             { new: true })
