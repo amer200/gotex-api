@@ -10,6 +10,7 @@ var cors = require('cors');
 var morgan = require('morgan')
 app.use(morgan('combined'))
 const { upload, uploadClintReceipts } = require('./modules/fileUpload')
+const { dbConnection } = require('./db/mongoose');
 /********************************************************************************* */
 /** File Upload */
 app.post('/user/signup', upload.array('cr'));
@@ -27,6 +28,10 @@ app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
 }));
+
+// Connect with database
+dbConnection()
+
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
 const companiesRoutes = require('./routes/companies');
@@ -60,13 +65,6 @@ app.use("/clients", clientRouters);
 app.use("/markter", marketerRoutes);
 app.use("/package", packageRoutes);
 /********************************************************************************* */
-mongoose.connect(dbUrl)
-    .then(resu => {
-        console.log('db connection done !');
-        app.listen(port, () => {
-            console.log('app conneted on port ' + port)
-        })
-    })
-    .catch(err => {
-        console.log(err)
-    })
+app.listen(port, () => {
+    console.log('app connected on port ' + port)
+})
