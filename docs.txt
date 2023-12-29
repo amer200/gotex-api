@@ -1502,7 +1502,49 @@ response {
     ]
 }
 /************/
-3) get clients with credit (sorted desc)
+4) get all clients (marketer or admin)
+url = https://dashboard.go-tex.net/api/clients/all-clients?page=&limit=&name=&mobile=&company=&city=
+default page=1, limit=30
+
+method = get
+response {
+    "result": 29,
+    "pagination": {
+        "currentPage": 1,
+        "limit": 500,
+        "numberOfPages": 1
+    },
+    "data": [
+        {
+            "package": {
+                "companies": []
+            },
+            "_id": "658b0f875a410eff7095a8ed",
+            "name": "Ahmed",
+            "company": "company 8888",
+            "mobile": "966000000",
+            "city": "Jeddah",
+            "address": "123 st",
+            "street": "124 st",
+            "wallet": 0,
+            "addby": "65131d0ccbb49c9724c15729",
+            "orders": [],
+            "daftraClientId": "622",
+            "branches": [
+                {
+                    "city": "Najran",
+                    "address": "123 st",
+                    "_id": "6548bb9dd51a1c4cc25af068"
+                }
+            ],
+            "receipts": [],
+            "__v": 0,
+            "updatedAt": "2023-12-26T19:44:41.390Z"
+        }
+    ]
+}
+/************/
+5) get clients with credit (sorted desc)
 url = https://dashboard.go-tex.net/api/clients/clients-with-credit
 method = get
 response {
@@ -1538,6 +1580,8 @@ response {
         }
     ]
 }
+
+
 //***********************new markters ****************/
 1) signup
 url = https://dashboard.go-tex.net/api/markter/signup

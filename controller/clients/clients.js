@@ -140,7 +140,7 @@ exports.editClient = async (req, res) => {
 
 exports.getAllClients = async (req, res) => {
     try {
-        const clients = await Client.find({})
+        const clients = await Client.find({}).sort({ name: 1 })
 
         return res.status(200).json({ data: clients })
     } catch (error) {
@@ -162,7 +162,7 @@ exports.allClients = async (req, res) => {
             mobile: { $regex: mobile },
             company: { $regex: company, $options: 'i' },
             city: { $regex: city, $options: 'i' },
-        })
+        }).sort({ name: 1 })
 
         const clientsPagination = paginate(clients, page, limit)
         return res.status(200).json({ ...clientsPagination })
