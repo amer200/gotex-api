@@ -1502,7 +1502,7 @@ response {
     ]
 }
 /************/
-4) get all clients (marketer or admin)
+4) get all clients with search & pagination (marketer or admin)
 url = https://dashboard.go-tex.net/api/clients/all-clients?page=&limit=&name=&mobile=&company=&city=
 default page=1, limit=30
 
