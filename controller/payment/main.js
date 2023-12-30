@@ -57,7 +57,7 @@ exports.addDepoist = async (req, res) => {
         maxBodyLength: Infinity,
         url: 'https://api.tap.company/v2/charges',
         headers: {
-            'Authorization': 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4',
+            'Authorization': process.env.TAP_TOKEN,
             'Content-Type': 'application/json'
         },
         data: data
@@ -138,7 +138,7 @@ exports.userCharge = async (req, res) => {
             headers: {
                 accept: 'application/json',
                 'content-type': 'application/json',
-                Authorization: 'Bearer sk_live_tA5KGovXSIqkdOufcDpW9zre'
+                Authorization: process.env.TAP_TOKEN
             },
             data: data
         };
@@ -169,7 +169,7 @@ const getCharge = (chargeId) => {
             url: `https://api.tap.company/v2/charges/${chargeId}`,
             headers: {
                 accept: 'application/json',
-                Authorization: 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4'
+                Authorization: process.env.TAP_TOKEN
             }
         };
 
