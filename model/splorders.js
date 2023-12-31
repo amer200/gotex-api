@@ -9,7 +9,10 @@ const splOrderSchema = mongoose.Schema({
     sender: Object,
     paytype: String,
     price: Number,
-    marktercode: String,
+    marktercode: {
+        type: String,
+        default: ''
+    },
     createdate: Date,
     created_at: Date,
     inovicedaftra: Object,
