@@ -146,8 +146,10 @@ exports.creteNewOrder = async (req, res) => {
                     'DistrictID': deliveryDistrictID,
                     'AddressLine1': deliveryAddress1,
                     "AddressLine2": deliveryAddress2
-                }
-            }
+                },
+                'PiecesCount': PiecesCount,
+                "ItemPieces": Pieces
+            },
         ]
     }
     // var config = {
