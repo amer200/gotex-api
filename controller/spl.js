@@ -147,8 +147,8 @@ exports.creteNewOrder = async (req, res) => {
                     'AddressLine1': deliveryAddress1,
                     "AddressLine2": deliveryAddress2
                 },
-                // 'PiecesCount': PiecesCount,
-                // "ItemPieces": Pieces
+                'PiecesCount': PiecesCount,
+                "ItemPieces": Pieces
             }
         ]
     }
