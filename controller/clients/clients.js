@@ -13,7 +13,7 @@ exports.addClient = async (req, res) => {
         notes, category, birth_date, street, branches } = req.body
 
     try {
-        const name = first_name
+        const name = first_name.trim()
         let staff_id = 0;
 
         if (!first_name || !city || !address || !mobile || !street) {
@@ -78,7 +78,7 @@ exports.editClient = async (req, res) => {
         notes, category, birth_date, street, branches } = req.body
 
     try {
-        const name = first_name
+        const name = first_name.trim()
         if (!first_name || !city || !address || !mobile || !street) {
             return res.status(400).json({
                 msg: 'These info are required:  first_name, city, address, mobile and street'
