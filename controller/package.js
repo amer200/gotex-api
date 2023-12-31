@@ -4,7 +4,7 @@ const User = require("../model/user");
 
 /** in case of several types of package */
 exports.addPackage = async (req, res) => {
-    const { price, numberOfOrders, companies } = req.body
+    const { price, numberOfOrders, companies = ['all'] } = req.body
     try {
         const package = await Package.create({
             price,

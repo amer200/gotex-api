@@ -5,6 +5,7 @@ const AnwanOrder = require("../model/anwanorders");
 const anwanorders = require("../model/anwanorders");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
+const ccOrderPay = require("../modules/ccOrderPay");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -138,31 +139,8 @@ exports.createUserOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (clintid && clint.wallet > totalShipPrice) {
-                let available = false
-                if (clint.package.availableOrders) {
-                    available = clint.package.companies.some(company => company == "anwan")
-                }
-
-                if (available) {
-                    --clint.package.availableOrders;
-                } else {
-                    clint.wallet = clint.wallet - totalShipPrice;
-                }
-                await clint.save()
-            } else {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "anwan")
-                }
-
-                if (available) {
-                    --user.package.userAvailableOrders;
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                }
-                await user.save()
-            }
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'anwan' }
+            ccOrderPay(ccOrderPayObj)
         }
 
         await order.save()

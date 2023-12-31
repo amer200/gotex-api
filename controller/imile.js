@@ -8,6 +8,7 @@ const cron = require('node-cron');
 const { createClientInvoice } = require("../modules/daftra");
 const imileorders = require("../model/imileorders");
 const { editImileClient } = require("./clients/imileClients");
+const ccOrderPay = require("../modules/ccOrderPay");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -278,31 +279,8 @@ exports.createOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (clintid && clint.wallet > totalShipPrice) {
-                let available = false
-                if (clint.package.availableOrders) {
-                    available = clint.package.companies.some(company => company == "imile")
-                }
-
-                if (available) {
-                    --clint.package.availableOrders;
-                } else {
-                    clint.wallet = clint.wallet - totalShipPrice;
-                }
-                await clint.save()
-            } else {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "imile")
-                }
-
-                if (available) {
-                    --user.package.userAvailableOrders;
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                }
-                await user.save()
-            }
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'imile' }
+            ccOrderPay(ccOrderPayObj)
         }
 
         await order.save();
