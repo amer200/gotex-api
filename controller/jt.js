@@ -8,6 +8,7 @@ var crypto = require('crypto');
 const qs = require('qs');
 const fs = require("fs");
 const base64 = require('base64topdf');
+const ccOrderPay = require("../modules/ccOrderPay");
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -173,31 +174,8 @@ exports.createUserOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (clintid && clint.wallet > totalShipPrice) {
-                let available = false
-                if (clint.package.availableOrders) {
-                    available = clint.package.companies.some(company => company == "jt")
-                }
-
-                if (available) {
-                    --clint.package.availableOrders;
-                } else {
-                    clint.wallet = clint.wallet - totalShipPrice;
-                }
-                await clint.save()
-            } else {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "jt")
-                }
-
-                if (available) {
-                    --user.package.userAvailableOrders;
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                }
-                await user.save()
-            }
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'jt' }
+            ccOrderPay(ccOrderPayObj)
         }
 
         await order.save();

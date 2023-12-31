@@ -5,6 +5,7 @@ const base64 = require('base64topdf');
 const User = require("../model/user");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
+const ccOrderPay = require("../modules/ccOrderPay");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -175,31 +176,8 @@ exports.createUserOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (clintid && clint.wallet > totalShipPrice) {
-                let available = false
-                if (clint.package.availableOrders) {
-                    available = clint.package.companies.some(company => company == "smsa")
-                }
-
-                if (available) {
-                    --clint.package.availableOrders;
-                } else {
-                    clint.wallet = clint.wallet - totalShipPrice;
-                }
-                await clint.save()
-            } else {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "smsa")
-                }
-
-                if (available) {
-                    --user.package.userAvailableOrders;
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                }
-                await user.save()
-            }
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'smsa' }
+            ccOrderPay(ccOrderPayObj)
         }
 
         await order.save();

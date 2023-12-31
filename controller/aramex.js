@@ -5,6 +5,7 @@ const User = require("../model/user");
 const axios = require("axios");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
+const ccOrderPay = require("../modules/ccOrderPay");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -300,6 +301,9 @@ exports.createOrder = async (req, res) => {
         let clint = {}
         if (clintid) {
             clint = await Clint.findById(clintid);
+            if (!clint) {
+                return res.status(400).json({ error: "Client not found" })
+            }
             const co = {
                 company: "aramex",
                 id: order._id
@@ -309,31 +313,8 @@ exports.createOrder = async (req, res) => {
             order.marktercode = clint.marktercode ? clint.marktercode : null;
         }
         if (!cod) {
-            if (clintid && clint.wallet > totalShipPrice) {
-                let available = false
-                if (clint.package.availableOrders) {
-                    available = clint.package.companies.some(company => company == "aramex")
-                }
-
-                if (available) {
-                    --clint.package.availableOrders;
-                } else {
-                    clint.wallet = clint.wallet - totalShipPrice;
-                }
-                await clint.save()
-            } else {
-                let available = false
-                if (user.package.userAvailableOrders) {
-                    available = user.package.companies.some(company => company == "aramex")
-                }
-
-                if (available) {
-                    --user.package.userAvailableOrders;
-                } else {
-                    user.wallet = user.wallet - totalShipPrice;
-                }
-                await user.save()
-            }
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'aramex' }
+            ccOrderPay(ccOrderPayObj)
         }
 
         await order.save();
