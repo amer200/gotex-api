@@ -1646,7 +1646,7 @@ method = post
 body {
     "price": Number,
     "numberOfOrders": Number,
-    "companies":Array of String  // ex: ["saee","smsa", ....] (small chars)
+    "companies":Array of String  // ex: ["saee","smsa", ....] (small chars) NOTE: by default = ['all] means all companies
 }
 
 2) edit package [admin]
