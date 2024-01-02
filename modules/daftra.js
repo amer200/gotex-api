@@ -123,7 +123,7 @@ const getClientById = async (id) => {
         // console.log(response.data)
         return response.data
     } catch (error) {
-        return error.response.data
+        return error.message
     }
 }
 //#endregion client invoice
@@ -214,7 +214,7 @@ const getSupplierById = async (supplierId) => {
         return response.data
     } catch (error) {
         console.log(error)
-        return error.response.data
+        return error.message
     }
 }
 //#endregion region supplier (shipment company) invoice
