@@ -182,6 +182,12 @@ exports.createUserOrder = async (req, res) => {
         let clint = {}
         if (clintid) {
             clint = await Clint.findById(clintid);
+            if (!clint) {
+                return res.status(400).json({ error: "Client not found" })
+            }
+            if (!clint) {
+                return res.status(400).json({ error: "Client not found" })
+            }
             const co = {
                 company: "smsa",
                 id: order._id
