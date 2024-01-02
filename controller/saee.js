@@ -5,6 +5,7 @@ const User = require("../model/user");
 const Clint = require("../model/clint");
 const { createClientInvoice, createSupplierInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 
 exports.edit = (req, res) => {
@@ -40,8 +41,9 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await SaeeOrder.count();
-    const user = await User.findById(req.user.user.id);
-    const saee = await Saee.findOne();
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
+    const saeePromise = Saee.findOne();
     const p_name = req.body.p_name;
     const p_city = req.body.p_city;
     const p_mobile = req.body.p_mobile;
@@ -99,11 +101,11 @@ exports.createUserOrder = async (req, res) => {
             url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
             data: data
         }
-        const response = await axios(config)
-        console.log('*******')
-        console.log(response.data)
-        const order = new SaeeOrder({
-            user: req.user.user.id,
+        const responsePromise = axios(config)
+        const [user, saee, response] = await Promise.all([userPromise, saeePromise, responsePromise])
+
+        const order = await SaeeOrder.create({
+            user: userId,
             company: "saee",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
@@ -111,6 +113,19 @@ exports.createUserOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date()
+        })
+        console.log(response.data.waybill)
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "saee",
+            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+            data: response.data,
+            paytype: paytype,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.waybill
         })
 
         if (!response.data.success) {

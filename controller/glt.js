@@ -9,6 +9,8 @@ const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const Clint = require("../model/clint");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
+
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -43,7 +45,8 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await GltOrder.count();
-    const user = await User.findById(req.user.user.id);
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
     const totalShipPrice = res.locals.totalShipPrice;
     /************************** */
     const pieces = req.body.pieces;
@@ -125,10 +128,11 @@ exports.createUserOrder = async (req, res) => {
             url: 'https://devapi.gltmena.com/api/create/order',
             data: data
         }
-        const response = await axios(config)
+        const responsePromise = axios(config)
+        const [user, response] = await Promise.all([userPromise, responsePromise])
 
         const order = await GltOrder.create({
-            user: req.user.user.id,
+            user: userId,
             company: "glt",
             ordernumber: ordersNum + 1,
             paytype: paytype,
@@ -137,6 +141,19 @@ exports.createUserOrder = async (req, res) => {
             marktercode: markterCode,
             created_at: new Date(),
             invoice: ""
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "glt",
+            ordernumber: ordersNum + 1,
+            paytype: paytype,
+            data: result,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            invoice: "",
+            // billCode: response.data.orderTrackingNumber // TODO : test it
         })
 
         let result = response.data.data.orders[0]; // !Note: check this again

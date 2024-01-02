@@ -9,6 +9,7 @@ const { createClientInvoice } = require("../modules/daftra");
 const imileorders = require("../model/imileorders");
 const { editImileClient } = require("./clients/imileClients");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -124,7 +125,8 @@ exports.createOrder = async (req, res) => {
     console.time('block')
     const imile = await Imile.findOne();
     let ordersNumPromise = ImileOrder.count();
-    const userPromise = User.findById(req.user.user.id);
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
     const totalShipPrice = res.locals.totalShipPrice;
     //*************************** */
     const p_company = req.body.p_company;
@@ -237,7 +239,7 @@ exports.createOrder = async (req, res) => {
         const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
 
         const order = await ImileOrder.create({
-            user: req.user.user.id,
+            user: userId,
             company: "imile",
             ordernumber: ordersNum + 2,
             data: response.data,
@@ -245,6 +247,18 @@ exports.createOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date()
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "imile",
+            ordernumber: ordersNum + 2,
+            data: response.data,
+            paytype: "cod",
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.data.expressNo
         })
 
         if (response.data.code != '200') {

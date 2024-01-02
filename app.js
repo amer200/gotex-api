@@ -48,6 +48,7 @@ const jtRouters = require("./routes/jt");
 const clientRouters = require("./routes/client");
 const marketerRoutes = require("./routes/markter");
 const packageRoutes = require("./routes/package");
+const ordersRoutes = require("./routes/orders");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -64,6 +65,7 @@ app.use("/jt", jtRouters);
 app.use("/clients", clientRouters);
 app.use("/markter", marketerRoutes);
 app.use("/package", packageRoutes);
+app.use("/orders", ordersRoutes);
 /********************************************************************************* */
 app.listen(port, () => {
     console.log('app connected on port ' + port)

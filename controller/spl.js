@@ -7,6 +7,7 @@ const Clint = require("../model/clint");
 const CronJob = require('cron').CronJob;
 const { createClientInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 //********************************************* */
 exports.edit = (req, res) => {
@@ -96,8 +97,9 @@ exports.creteNewOrder = async (req, res) => {
     }
 
     const spl = await Spl.findOne();
-    const user = await User.findById(req.user.user.id);
-    let ordersNum = await SplOrder.count();
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
+    let ordersNumPromise = SplOrder.count();
     if (markterCode) {
         var nameCode = `${SenderName} (${markterCode})`;
     } else {
@@ -180,11 +182,13 @@ exports.creteNewOrder = async (req, res) => {
         console.log(typeof totalShipPrice)
         console.log("data")
         console.log(data)
-        const response = await axios(config)
+        const responsePromise = axios(config)
+        const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
+
         console.log("response.data")
         console.log(response.data)
         const order = await SplOrder.create({
-            user: user._id,
+            user: userId,
             company: "Spl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
@@ -208,6 +212,34 @@ exports.creteNewOrder = async (req, res) => {
             created_at: new Date(),
             weight: weight,
             desc: ContentDescription
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "Spl",
+            ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
+            data: response.data,
+            reciver: {
+                name: reciverName,
+                mobile: reciverMobile,
+                city: deliveryDistrictID,
+                AddressLine1: deliveryAddress1,
+                AddressLine2: deliveryAddress2
+            },
+            sender: {
+                name: SenderName,
+                mobile: SenderMobileNumber,
+                city: pickUpDistrictID,
+                AddressLine1: pickUpAddress1,
+                AddressLine2: pickUpAddress2
+            },
+            paytype: paytype,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            weight: weight,
+            desc: ContentDescription,
+            billCode: response.data.Items.Barcode
         })
         console.log("order")
         console.log(order)

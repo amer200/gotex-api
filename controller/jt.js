@@ -9,6 +9,8 @@ const qs = require('qs');
 const fs = require("fs");
 const base64 = require('base64topdf');
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
+
 exports.edit = (req, res) => {
     const status = req.body.status;
     const userprice = req.body.userprice;
@@ -41,9 +43,10 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
-    let ordersNum = await JtOrder.count();
+    let ordersNumPromise = JtOrder.count();
     const markterCode = req.body.markterCode || '';
-    const user = await User.findById(req.user.user.id);
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
     const totalShipPrice = res.locals.totalShipPrice;
     /***************** */
     let { description, weight, re_address, re_city, re_mobile, re_name, re_prov, goodsType,
@@ -128,11 +131,11 @@ exports.createUserOrder = async (req, res) => {
         data: data
     };
     try {
-        const response = await axios(config);
-        console.log('********')
-        console.log(response.data.code)
-        const order = new JtOrder({
-            user: req.user.user.id,
+        const responsePromise = axios(config);
+        const [user, ordersNum, response] = await Promise.all([userPromise, ordersNumPromise, responsePromise])
+
+        const order = await JtOrder.create({
+            user: userId,
             company: "jt",
             ordernumber: ordersNum + 2,
             paytype: paytype,
@@ -140,6 +143,18 @@ exports.createUserOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date()
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "jt",
+            ordernumber: ordersNum + 2,
+            paytype: paytype,
+            data: response.data,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.data.billCode
         })
 
         if (response.data.code != 1) {

@@ -6,6 +6,7 @@ const axios = require("axios");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -40,15 +41,15 @@ exports.edit = (req, res) => {
 }
 
 exports.createOrder = async (req, res) => {
-    const userId = req.user.user.id
     const { c_name, c_company, c_phone, c_line1, c_city, c_CellPhone, c_StateOrProvinceCode,
         p_name, p_company, p_phone, p_line1, p_city, p_CellPhone, p_StateOrProvinceCode,
         weight, pieces, description, cod, clintid, daftraid } = req.body
     const markterCode = req.body.markterCode || '';
 
     try {
-        const user = await User.findById(userId);
-        let ordersNum = await AramexOrder.count();
+        const userId = req.user.user.id
+        const userPromise = User.findById(userId);
+        let ordersNumPromise = AramexOrder.count();
         const totalShipPrice = res.locals.totalShipPrice;
 
         if (cod) {
@@ -267,7 +268,8 @@ exports.createOrder = async (req, res) => {
             data: data
         };
 
-        const response = await axios(config)
+        const responsePromise = axios(config)
+        const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
 
         const order = await AramexOrder.create({
             user: userId,
@@ -278,6 +280,18 @@ exports.createOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date()
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "aramex",
+            ordernumber: ordersNum + 2,
+            data: response.data,
+            paytype,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.Shipments[0]["ID"]
         })
 
         if (response.data.HasErrors) {

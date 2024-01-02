@@ -6,6 +6,7 @@ const User = require("../model/user");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -40,8 +41,9 @@ exports.edit = (req, res) => {
 }
 exports.createUserOrder = async (req, res) => {
     try {
-        let ordersNum = await SmsaOrder.count();
-        const user = await User.findById(req.user.user.id);
+        let ordersNumPromise = SmsaOrder.count();
+        const userId = req.user.user.id
+        const userPromise = User.findById(userId);
         const totalShipPrice = res.locals.totalShipPrice;
         const c_name = req.body.c_name;
         const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
@@ -125,20 +127,33 @@ exports.createUserOrder = async (req, res) => {
             },
             data: data
         };
-        const smsaRes = await axios(config);
+        const responsePromise = await axios(config);
+        const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
 
-        const order = new SmsaOrder({
-            user: req.user.user.id,
+        const order = await SmsaOrder.create({
+            user: userId,
             company: "smsa",
             ordernumber: ordersNum + 1,
-            data: smsaRes.data,
+            data: response.data,
             price: totalShipPrice,
             paytype: paytype,
             marktercode: markterCode,
             created_at: new Date()
         })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "smsa",
+            ordernumber: ordersNum + 1,
+            data: response.data,
+            price: totalShipPrice,
+            paytype: paytype,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.sawb
+        })
 
-        if (smsaRes.status !== 200) {
+        if (response.status !== 200) {
             order.status = 'failed'
             await order.save()
 
@@ -159,7 +174,7 @@ exports.createUserOrder = async (req, res) => {
         order.inovicedaftra = invo
 
         let i = 1;
-        smsaRes.data.waybills.forEach(a => {
+        response.data.waybills.forEach(a => {
             base64.base64Decode(a.awbFile, `public/smsaAwb/${ordersNum + 1}-p${i}.pdf`);
             i++
         })

@@ -5,12 +5,6 @@ const adminMiddlewares = require("../middleware/admin");
 const companiesControllers = require("../controller/companies");
 
 routes.get('/get-all', companiesControllers.getAllCompanies);
-routes.get('/get-all-orders', companiesControllers.getAllOrders);
-
 routes.get('/orders/all', companiesControllers.allOrders);
-routes.get('/orders/filter-by-client-data', companiesControllers.filterByClientData);
-routes.get('/orders/filter-by-price', companiesControllers.filterByPrice);
-routes.get('/orders/filter-by-marketercode', companiesControllers.filterByMarketerCode);
-routes.get('/orders/filter-by-date', companiesControllers.filterByDate);
 
 module.exports = routes;

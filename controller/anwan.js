@@ -6,6 +6,7 @@ const anwanorders = require("../model/anwanorders");
 const Clint = require("../model/clint");
 const { createClientInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
+const Order = require("../model/orders");
 
 exports.edit = (req, res) => {
     const status = req.body.status;
@@ -41,7 +42,8 @@ exports.edit = (req, res) => {
 exports.createUserOrder = async (req, res) => {
     let ordersNum = await AnwanOrder.count();
     const markterCode = req.body.markterCode || '';
-    const user = await User.findById(req.user.user.id);
+    const userId = req.user.user.id
+    const userPromise = User.findById(userId);
     const totalShipPrice = res.locals.totalShipPrice;
     let { c_name, c_email, c_phone, c_city, c_address,
         s_name, s_email, s_phone, s_city, s_address,
@@ -94,10 +96,11 @@ exports.createUserOrder = async (req, res) => {
             },
             data: data
         };
-        const response = await axios(config)
+        const responsePromise = axios(config)
+        const [user, response] = await Promise.all([userPromise, responsePromise])
 
         const order = await anwanorders.create({
-            user: req.user.user.id,
+            user: userId,
             company: "anwan",
             ordernumber: ordersNum + 2,
             paytype: paytype,
@@ -105,6 +108,18 @@ exports.createUserOrder = async (req, res) => {
             price: totalShipPrice,
             marktercode: markterCode,
             created_at: new Date()
+        })
+        const myOrder = await Order.create({
+            _id: order._id,
+            user: userId,
+            company: "anwan",
+            ordernumber: ordersNum + 2,
+            paytype: paytype,
+            data: response.data,
+            price: totalShipPrice,
+            marktercode: markterCode,
+            created_at: new Date(),
+            billCode: response.data.awb_no
         })
 
         if (response.data.status !== 200) {
