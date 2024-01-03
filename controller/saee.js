@@ -165,6 +165,7 @@ exports.createUserOrder = async (req, res) => {
             clint.orders.push(co);
 
             order.marktercode = clint.marktercode ? clint.marktercode : null;
+            await clint.save()
         }
 
         if (!cod) {

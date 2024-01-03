@@ -325,6 +325,7 @@ exports.createOrder = async (req, res) => {
             clint.orders.push(co);
 
             order.marktercode = clint.marktercode ? clint.marktercode : null;
+            await clint.save()
         }
         if (!cod) {
             const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'aramex' }
