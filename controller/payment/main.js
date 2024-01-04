@@ -2,6 +2,9 @@ const axios = require('axios');
 const genRandomString = require("../../modules/genRandomString");
 const User = require("../../model/user");
 const PaymentOrder = require("../../model/payment/orders");
+const Client = require("../../model/clint");
+const cclink = require("../../model/payment/cclink");
+const { json } = require('body-parser');
 
 exports.addDepoist = async (req, res) => {
     const amount = req.body.amount;
@@ -256,4 +259,98 @@ exports.getUserPaymentOrders = async (req, res) => {
             error: err.message
         })
     }
+}
+
+exports.genrateCclink = async (req, res) => {
+    const clientId = req.body.clientId;
+    const userId = req.user.user.id;
+    const amount = req.body.amount;
+    const client = await Client.findById(clientId);
+    try {
+        if (!client) {
+            return res.status(400).json({
+                msg: "client note fount !"
+            })
+        }
+        if (!amount) {
+            return res.status(400).json({
+                msg: "amount is required"
+            })
+        }
+        const tapRes = await genratePaymentRequet(amount, client.name, client.email, client.mobile)
+        return res.status(200).json({
+            data: tapRes
+        })
+        const newLink = new cclink({
+            user: userId,
+            client: clientId,
+            amount: amount
+        })
+        await newLink.save();
+
+    } catch (error) {
+        res.status(500).json({
+            data: error
+        })
+        console.log(error)
+    }
+}
+
+//******************** */
+const genratePaymentRequet = async (amount, name, email, mobile) => {
+
+    let data = JSON.stringify({
+        "amount": amount,
+        "currency": "SAR",
+        "threeDSecure": true,
+        "save_card": false,
+        "customer_initiated": true,
+        "description": "gotex payment",
+        "statement_descriptor": "Sample",
+        "metadata": {
+            "udf1": "test 1",
+            "udf2": "test 2"
+        },
+        "reference": {
+            "transaction": "txn_0001",
+            "order": "ord_0001"
+        },
+        "receipt": {
+            "email": true,
+            "sms": true
+        },
+        "customer": {
+            "first_name": name,
+            "last_name": "",
+            "email": email,
+            "phone": {
+                "country_code": "966",
+                "number": mobile
+            }
+        },
+        "merchant": {
+            "id": ""
+        },
+        "source": {
+            "id": "src_all"
+        },
+        "post": {
+            "url": `https://dashboard.go-tex.net/api/user/check-tap-payment`
+        },
+        "redirect": {
+            "url": `https://dashboard.go-tex.net/api/user/check-tap-payment`
+        }
+    });
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://api.tap.company/v2/charges',
+        headers: {
+            'Authorization': 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4',
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+    const response = await axios(config);
+    return response.data
 }

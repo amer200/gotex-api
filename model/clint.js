@@ -19,7 +19,7 @@ const clintSchema = mongoose.Schema({
         {
             company: String,
             id: String,
-            markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+             markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
         }
     ],
     daftraClientId: String,
