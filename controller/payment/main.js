@@ -2,6 +2,9 @@ const axios = require('axios');
 const genRandomString = require("../../modules/genRandomString");
 const User = require("../../model/user");
 const PaymentOrder = require("../../model/payment/orders");
+const Client = require("../../model/clint");
+const cclink = require("../../model/payment/cclink");
+const { json } = require('body-parser');
 
 exports.addDepoist = async (req, res) => {
     const amount = req.body.amount;
@@ -162,26 +165,6 @@ exports.userCharge = async (req, res) => {
     }
 }
 
-const getCharge = (chargeId) => {
-    try {
-        const config = {
-            method: 'GET',
-            url: `https://api.tap.company/v2/charges/${chargeId}`,
-            headers: {
-                accept: 'application/json',
-                Authorization: process.env.TAP_TOKEN
-            }
-        };
-
-        const response = axios(config);
-        return response
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            error: { status: err.status, message: err.message, stack: err.stack }
-        })
-    }
-}
 exports.checkPayment = async (req, res) => {
     const { userId, code } = req.params
 
@@ -254,6 +237,151 @@ exports.getUserPaymentOrders = async (req, res) => {
         console.log(err)
         res.status(500).json({
             error: err.message
+        })
+    }
+}
+
+exports.genrateCclink = async (req, res) => {
+    const clientId = req.params.cId;
+    const userId = req.params.uId;
+    const amount = req.body.amount;
+    const client = await Client.findById(clientId);
+    try {
+        if (!client) {
+            return res.status(400).json({
+                msg: "client note fount !"
+            })
+        }
+        if (!amount) {
+            return res.status(400).json({
+                msg: "amount is required"
+            })
+        }
+        let newCc = new cclink({
+            user: userId,
+            client: clientId,
+            amount: amount,
+            url: "tapRes.transaction.url",
+            tapid: "tapRes.id",
+            status: "pending"
+        })
+        const tapRes = await genratePaymentRequet(amount, client.name, client.email, client.mobile, newCc._id)
+        newCc.url = tapRes.transaction.url;
+        newCc.tapid = tapRes.id
+        await newCc.save();
+        return res.status(200).json({
+            data: newCc
+        })
+    } catch (error) {
+        res.status(500).json({
+            data: error
+        })
+        console.log(error)
+    }
+}
+exports.checkCcPayment = async (req, res) => {
+    const ccId = req.params.ccId;
+    const cc = await cclink.findById(ccId);
+    try {
+        if (!cc) {
+            return res.status(404).json({
+                msg: "not fount!"
+            })
+        }
+        const charge = await getCharge(cc.tapid);
+        const currentStatus = charge.data.status
+        if (currentStatus != "CAPTURED") {
+            return res.send("failed");
+        } else {
+            const client = await Client.findById(cc.client);
+            client.wallet = client.wallet + cc.amount;
+            return res.render("payment-result", {
+                text1: `Your charge status is ${currentStatus}`,
+                text2: `Your wallet is = `,
+                balance: client.wallet
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            msg: error
+        })
+    }
+}
+//******************** */
+const genratePaymentRequet = async (amount, name, email, mobile, ccId) => {
+
+    let data = JSON.stringify({
+        "amount": amount,
+        "currency": "SAR",
+        "threeDSecure": true,
+        "save_card": false,
+        "customer_initiated": true,
+        "description": "gotex payment",
+        "statement_descriptor": "Sample",
+        "metadata": {
+            "udf1": "test 1",
+            "udf2": "test 2"
+        },
+        "reference": {
+            "transaction": "txn_0001",
+            "order": "ord_0001"
+        },
+        "receipt": {
+            "email": true,
+            "sms": true
+        },
+        "customer": {
+            "first_name": name,
+            "last_name": "",
+            "email": email,
+            "phone": {
+                "country_code": "966",
+                "number": mobile
+            }
+        },
+        "merchant": {
+            "id": ""
+        },
+        "source": {
+            "id": "src_all"
+        },
+        "post": {
+            "url": `https://dashboard.go-tex.net/api/markter/check-cc-payment/${ccId}`
+        },
+        "redirect": {
+            "url": `https://dashboard.go-tex.net/api/markter/check-cc-payment/${ccId}`
+        }
+    });
+    let config = {
+        method: 'post',
+        maxBodyLength: Infinity,
+        url: 'https://api.tap.company/v2/charges',
+        headers: {
+            'Authorization': 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4',
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+    const response = await axios(config);
+    return response.data
+}
+const getCharge = async (chargeId) => {
+    try {
+        const config = {
+            method: 'GET',
+            url: `https://api.tap.company/v2/charges/${chargeId}`,
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.TAP_TOKEN}`
+            }
+        };
+
+        const response = await axios(config);
+        return response
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: { status: err.status, message: err.message, stack: err.stack }
         })
     }
 }
