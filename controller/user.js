@@ -72,7 +72,7 @@ exports.MarkterSignUp = (req, res) => {
                     address: address,
                     location: location,
                     verified: false,
-                    emailcode: genRandomString(4),
+                    emailcode: genRandomString(6),
                     rolle: "marketer",
                 })
                 user.save()
@@ -168,7 +168,7 @@ exports.reSendActivateCode = (req, res) => {
     const userId = req.user.user.id;
     User.findById(userId)
         .then(u => {
-            u.emailcode = genRandomString(4);
+            u.emailcode = genRandomString(6);
             return u.save()
         })
         .then(u => {
@@ -209,7 +209,7 @@ exports.createNewPassword = async (req, res) => {
                 msg: "user email not found"
             })
         }
-        user.emailcode = genRandomString(4);
+        user.emailcode = genRandomString(6);
         console.log(user.emailcode);
         await user.save();
         sendEmail(user.email, user.emailcode, user._id, "/../views/password_mail.ejs", mailSubject);
