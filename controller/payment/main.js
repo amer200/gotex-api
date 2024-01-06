@@ -165,26 +165,6 @@ exports.userCharge = async (req, res) => {
     }
 }
 
-const getCharge = (chargeId) => {
-    try {
-        const config = {
-            method: 'GET',
-            url: `https://api.tap.company/v2/charges/${chargeId}`,
-            headers: {
-                accept: 'application/json',
-                Authorization: process.env.TAP_TOKEN
-            }
-        };
-
-        const response = axios(config);
-        return response
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            error: { status: err.status, message: err.message, stack: err.stack }
-        })
-    }
-}
 exports.checkPayment = async (req, res) => {
     const { userId, code } = req.params
 
@@ -262,8 +242,8 @@ exports.getUserPaymentOrders = async (req, res) => {
 }
 
 exports.genrateCclink = async (req, res) => {
-    const clientId = req.body.clientId;
-    const userId = req.user.user.id;
+    const clientId = req.params.cId;
+    const userId = req.params.uId;
     const amount = req.body.amount;
     const client = await Client.findById(clientId);
     try {
@@ -277,17 +257,21 @@ exports.genrateCclink = async (req, res) => {
                 msg: "amount is required"
             })
         }
-        const tapRes = await genratePaymentRequet(amount, client.name, client.email, client.mobile)
-        return res.status(200).json({
-            data: tapRes
-        })
-        const newLink = new cclink({
+        let newCc = new cclink({
             user: userId,
             client: clientId,
-            amount: amount
+            amount: amount,
+            url: "tapRes.transaction.url",
+            tapid: "tapRes.id",
+            status: "pending"
         })
-        await newLink.save();
-
+        const tapRes = await genratePaymentRequet(amount, client.name, client.email, client.mobile, newCc._id)
+        newCc.url = tapRes.transaction.url;
+        newCc.tapid = tapRes.id
+        await newCc.save();
+        return res.status(200).json({
+            data: newCc
+        })
     } catch (error) {
         res.status(500).json({
             data: error
@@ -295,9 +279,36 @@ exports.genrateCclink = async (req, res) => {
         console.log(error)
     }
 }
-
+exports.checkCcPayment = async (req, res) => {
+    const ccId = req.params.ccId;
+    const cc = await cclink.findById(ccId);
+    try {
+        if (!cc) {
+            return res.status(404).json({
+                msg: "not fount!"
+            })
+        }
+        const charge = await getCharge(cc.tapid);
+        const currentStatus = charge.data.status
+        if (currentStatus != "CAPTURED") {
+            return res.send("failed");
+        } else {
+            const client = await Client.findById(cc.client);
+            client.wallet = client.wallet + cc.amount;
+            return res.render("payment-result", {
+                text1: `Your charge status is ${currentStatus}`,
+                text2: `Your wallet is = `,
+                balance: client.wallet
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            msg: error
+        })
+    }
+}
 //******************** */
-const genratePaymentRequet = async (amount, name, email, mobile) => {
+const genratePaymentRequet = async (amount, name, email, mobile, ccId) => {
 
     let data = JSON.stringify({
         "amount": amount,
@@ -335,10 +346,10 @@ const genratePaymentRequet = async (amount, name, email, mobile) => {
             "id": "src_all"
         },
         "post": {
-            "url": `https://dashboard.go-tex.net/api/user/check-tap-payment`
+            "url": `https://dashboard.go-tex.net/api/markter/check-cc-payment/${ccId}`
         },
         "redirect": {
-            "url": `https://dashboard.go-tex.net/api/user/check-tap-payment`
+            "url": `https://dashboard.go-tex.net/api/markter/check-cc-payment/${ccId}`
         }
     });
     let config = {
@@ -353,4 +364,24 @@ const genratePaymentRequet = async (amount, name, email, mobile) => {
     };
     const response = await axios(config);
     return response.data
+}
+const getCharge = async (chargeId) => {
+    try {
+        const config = {
+            method: 'GET',
+            url: `https://api.tap.company/v2/charges/${chargeId}`,
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.TAP_TOKEN}`
+            }
+        };
+
+        const response = await axios(config);
+        return response
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: { status: err.status, message: err.message, stack: err.stack }
+        })
+    }
 }

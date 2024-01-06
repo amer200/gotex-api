@@ -4,6 +4,8 @@ const cclinkSchema = mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     client: { type: mongoose.Schema.Types.ObjectId, ref: 'Clint' },
     amount: Number,
+    url: String,
+    tapid: String,
     status: {
         type: String,
         default: "pending"

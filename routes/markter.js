@@ -12,5 +12,6 @@ routes.get("/imile-orders", marketerMiddlewares.isAuth, marketerControllers.getI
 routes.get("/jt-orders", marketerMiddlewares.isAuth, marketerControllers.getJtOrder);
 routes.get("/saee-orders", marketerMiddlewares.isAuth, marketerControllers.getSaeeOrder);
 routes.get("/smsa-orders", marketerMiddlewares.isAuth, marketerControllers.getSmsaOrder);
-routes.post("/genrate-cc-link", marketerMiddlewares.isAuth, paymentControllers.genrateCclink);
+routes.post("/genrate-cc-link/:uId/:cId", paymentControllers.genrateCclink);
+routes.get("/check-cc-payment/:ccId", paymentControllers.checkCcPayment);
 module.exports = routes
