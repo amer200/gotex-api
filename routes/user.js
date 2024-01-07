@@ -1,10 +1,11 @@
 const express = require("express");
 const routes = express.Router();
-const userControllers = require("../controller/user");
 const paymentControllers = require("../controller/payment/main");
 const clintControllers = require("../controller/clints");
 const userMiddlewares = require('../middleware/user');
 const check = require("../middleware/new-client");
+const userControllers = require("../controller/user");
+const userMobileControllers = require("../controller/mobile/user");
 
 routes.post('/signup', userMiddlewares.isValide, userControllers.signUp);
 routes.post('/marketer-signup', userMiddlewares.isValide, userControllers.MarkterSignUp);
@@ -31,4 +32,9 @@ routes.get("/all-markter-clint", userMiddlewares.isAuth, userMiddlewares.isMarkt
 routes.post("/add-credit-to-client", userMiddlewares.isAuth, userMiddlewares.isMarkter, userControllers.addCreditsToClient);
 /******tap */
 routes.post("/request-payment", userMiddlewares.isAuth, paymentControllers.addDepoist);
+
+/** Mobile Routes */
+routes.post('/sign-up', userMiddlewares.isValide, userMobileControllers.signUp);
+routes.post("/activate-user", userMobileControllers.activateUser);
+
 module.exports = routes

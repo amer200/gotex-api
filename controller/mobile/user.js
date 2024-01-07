@@ -18,7 +18,7 @@ exports.signUp = (req, res) => {
     User.findOne({ email: email })
         .then(u => {
             if (u) {
-                res.status(200).json({
+                res.status(409).json({
                     msg: "error this email is already used"
                 })
             } else {
@@ -43,6 +43,36 @@ exports.signUp = (req, res) => {
                         })
                     })
             }
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                msg: err.message
+            })
+        })
+}
+exports.activateUser = (req, res) => {
+    const { userId, code } = req.body
+
+    User.findById(userId)
+        .then(u => {
+            if (!u) {
+                return res.status(400).json({
+                    msg: "User not found"
+                })
+            }
+            if (u.emailcode == code) {
+                u.verified = true;
+                u.save()
+                    .then(u => {
+                        return res.status(200).json({ msg: "Activated successfully" })
+                    })
+            } else {
+                return res.status(404).json({
+                    msg: "not found"
+                })
+            }
+
         })
         .catch(err => {
             console.log(err)
