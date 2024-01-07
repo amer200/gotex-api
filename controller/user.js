@@ -21,7 +21,7 @@ exports.signUp = (req, res) => {
     User.findOne({ email: email })
         .then(u => {
             if (u) {
-                res.status(200).json({
+                res.status(409).json({
                     msg: "error this email is already used"
                 })
             } else {
@@ -60,7 +60,7 @@ exports.MarkterSignUp = (req, res) => {
     User.findOne({ email: email })
         .then(u => {
             if (u) {
-                res.status(200).json({
+                res.status(409).json({
                     msg: "error this email is already used"
                 })
             } else {
@@ -98,8 +98,8 @@ exports.activateUser = (req, res) => {
     User.findById(id)
         .then(u => {
             if (!u) {
-                return res.status(400).json({
-                    msg: "not found"
+                return res.status(404).json({
+                    msg: "User not found"
                 })
             }
             if (u.emailcode == code) {
@@ -109,7 +109,7 @@ exports.activateUser = (req, res) => {
                         return res.status(200).redirect("https://gotex.vercel.app/")
                     })
             } else {
-                return res.status(400).json({
+                return res.status(404).json({
                     msg: "not found"
                 })
             }
@@ -146,12 +146,12 @@ exports.logIn = (req, res) => {
                         token: token
                     })
                 } else {
-                    res.status(400).json({
+                    res.status(401).json({
                         msg: "wrong password or email"
                     })
                 }
             } else {
-                res.status(400).json({
+                res.status(401).json({
                     msg: "wrong password or email"
                 })
             }
@@ -205,7 +205,7 @@ exports.createNewPassword = async (req, res) => {
         const email = req.body.email;
         const user = await User.findOne({ email: email });
         if (!user) {
-            return res.status(400).json({
+            return res.status(404).json({
                 msg: "user email not found"
             })
         }
@@ -230,7 +230,7 @@ exports.updatePassword = async (req, res) => {
         const code = req.body.code;
         const user = await User.findOne({ emailcode: code });
         if (!user) {
-            return res.status(400).json({
+            return res.status(401).json({
                 msg: "wrong code"
             })
         }
