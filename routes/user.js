@@ -6,6 +6,7 @@ const userMiddlewares = require('../middleware/user');
 const check = require("../middleware/new-client");
 const userControllers = require("../controller/user");
 const userMobileControllers = require("../controller/mobile/user");
+const { isVerifiedCodeToken } = require("../middleware/verifyCodeToken");
 
 routes.post('/signup', userMiddlewares.isValide, userControllers.signUp);
 routes.post('/marketer-signup', userMiddlewares.isValide, userControllers.MarkterSignUp);
@@ -33,8 +34,13 @@ routes.post("/add-credit-to-client", userMiddlewares.isAuth, userMiddlewares.isM
 /******tap */
 routes.post("/request-payment", userMiddlewares.isAuth, paymentControllers.addDepoist);
 
-/** Mobile Routes */
+/** Mobile Routes [Note: login, updatePassword used by both web & mobile] */
 routes.post('/sign-up', userMiddlewares.isValide, userMobileControllers.signUp);
 routes.post("/activate-user", userMobileControllers.activateUser);
+routes.get("/resend-code", userMiddlewares.isAuth, userMobileControllers.reSendActivateCode);
+
+routes.post("/send-forget-password-email", userMobileControllers.forgetPasswordEmail);
+routes.post("/verify-forget-password-code", isVerifiedCodeToken, userMobileControllers.verifyForgetPasswordCode);
+routes.post("/set-new-password", isVerifiedCodeToken, userMobileControllers.setNewPassword);
 
 module.exports = routes
