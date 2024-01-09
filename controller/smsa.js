@@ -150,12 +150,11 @@ exports.createUserOrder = async (req, res) => {
             paytype: paytype,
             marktercode: markterCode,
             created_at: new Date(),
-            billCode: response.data.sawb
         })
 
         if (response.status !== 200) {
             order.status = 'failed'
-            await order.save()
+            await Promise.all([order.save(), myOrder.save()])
 
             res.status(400).json({
                 msg: response.data
@@ -194,7 +193,7 @@ exports.createUserOrder = async (req, res) => {
             }
             clint.orders.push(co);
 
-            order.marktercode = clint.marktercode ? clint.marktercode : null;
+            order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
             await clint.save()
         }
         if (!cod) {
@@ -202,7 +201,8 @@ exports.createUserOrder = async (req, res) => {
             ccOrderPay(ccOrderPayObj)
         }
 
-        await order.save();
+        myOrder.billCode = response.data.sawb
+        await Promise.all([order.save(), myOrder.save()]);
         return res.status(200).json({
             data: order
         })

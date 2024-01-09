@@ -239,13 +239,12 @@ exports.creteNewOrder = async (req, res) => {
             created_at: new Date(),
             weight: weight,
             desc: ContentDescription,
-            billCode: response.data.Items.Barcode
         })
         console.log("order")
         console.log(order)
         if (response.data.Status != 1) {
             order.status = 'failed'
-            await order.save()
+            await Promise.all([order.save(), myOrder.save()]);
 
             res.status(400).json({
                 data: response.data
@@ -274,7 +273,7 @@ exports.creteNewOrder = async (req, res) => {
                 }
                 clint.orders.push(co);
 
-                order.marktercode = clint.marktercode ? clint.marktercode : null;
+                order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
                 await clint.save()
             }
             if (!cod) {
@@ -282,7 +281,8 @@ exports.creteNewOrder = async (req, res) => {
                 ccOrderPay(ccOrderPayObj)
             }
 
-            await order.save();
+            myOrder.billCode = response.data.Items.Barcode
+            await Promise.all([order.save(), myOrder.save()]);;
             res.status(200).json({
                 msg: "order created successfully",
                 data: order

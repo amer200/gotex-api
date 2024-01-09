@@ -153,7 +153,6 @@ exports.createUserOrder = async (req, res) => {
             marktercode: markterCode,
             created_at: new Date(),
             invoice: "",
-            // billCode: response.data.orderTrackingNumber // TODO : test it
         })
 
         let result = response.data.data.orders[0]; // !Note: check this again
@@ -161,7 +160,7 @@ exports.createUserOrder = async (req, res) => {
         console.log(result)
         if (result.status == 'fail') {
             order.status = 'failed'
-            await order.save()
+            await Promise.all([order.save(), myOrder.save()])
 
             res.status(400).json({
                 msg: result.msg
@@ -191,7 +190,7 @@ exports.createUserOrder = async (req, res) => {
             }
             clint.orders.push(co);
 
-            order.marktercode = clint.marktercode ? clint.marktercode : null;
+            order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
             await clint.save()
         }
         if (!cod) {
@@ -199,7 +198,8 @@ exports.createUserOrder = async (req, res) => {
             ccOrderPay(ccOrderPayObj)
         }
 
-        await order.save();
+        // myOrder.billCode= response.data.orderTrackingNumber // TODO : test it
+        await Promise.all([order.save(), myOrder.save()]);
         res.status(200).json({ data: order })
     } catch (err) {
         console.log(err)

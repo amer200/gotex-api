@@ -47,7 +47,7 @@ exports.addClient = async (req, res) => {
     try {
         const imile = await Imile.findOne();
         let { companyName, contacts, city, address, phone,
-            backupPhone, attentions } = req.body;
+            backupPhone = "", attentions } = req.body;
         let data = JSON.stringify({
             "customerId": process.env.imile_customerid,
             "sign": process.env.imile_sign,
@@ -141,7 +141,7 @@ exports.createOrder = async (req, res) => {
     const c_name = req.body.c_name;
     const c_mobile = req.body.c_mobile;
     const c_city = req.body.c_city;
-    const c_area = req.body.c_area;
+    // const c_area = req.body.c_area;
     const c_street = req.body.c_street;
     const c_address = req.body.c_address;
     // const c_zipcode = req.bode.c_zipcode;
@@ -257,13 +257,12 @@ exports.createOrder = async (req, res) => {
             paytype: "cod",
             price: totalShipPrice,
             marktercode: markterCode,
-            created_at: new Date(),
-            billCode: response.data.data.expressNo
+            created_at: new Date()
         })
 
         if (response.data.code != '200') {
-            order.status = 'failed'
-            await order.save()
+            order.status = myOrder.status = 'failed'
+            await Promise.all([order.save(), myOrder.save()])
 
             return res.status(400).json({
                 msg: response.data
@@ -280,6 +279,7 @@ exports.createOrder = async (req, res) => {
             invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
         }
         order.inovicedaftra = invo
+        myOrder.inovicedaftra = invo
 
         let clint = {}
         if (clintid) {
@@ -293,7 +293,7 @@ exports.createOrder = async (req, res) => {
             }
             clint.orders.push(co);
 
-            order.marktercode = clint.marktercode ? clint.marktercode : null;
+            order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
             await clint.save()
         }
         if (!cod) {
@@ -301,7 +301,8 @@ exports.createOrder = async (req, res) => {
             ccOrderPay(ccOrderPayObj)
         }
 
-        await order.save();
+        myOrder.billCode = response.data.data.expressNo
+        await Promise.all([order.save(), myOrder.save()])
         console.timeEnd('block')
         res.status(200).json({ data: order })
     } catch (err) {
