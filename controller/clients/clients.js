@@ -71,6 +71,7 @@ exports.addClient = async (req, res) => {
         })
     }
 }
+
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const userId = req.user.user.id;
@@ -84,11 +85,16 @@ exports.editClient = async (req, res) => {
                 msg: 'These info are required:  first_name, city, address, mobile and street'
             })
         }
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(400).json({ msg: `No user for this id ${userId}` })
+        // userId=1 if admin
+        if (userId == 1) {
+            staff_id = 1
+        } else {
+            const user = await User.findById(userId);
+            if (!user) {
+                return res.status(400).json({ msg: `No user for this id ${userId}` })
+            }
+            staff_id = user.daftraid;
         }
-        staff_id = user.daftraid;
 
         const client = await Client.findOne({ _id: clientId })
         if (!client) {
