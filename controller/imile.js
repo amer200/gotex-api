@@ -107,20 +107,7 @@ exports.addClient = async (req, res) => {
         })
     }
 }
-exports.getAllClients = (req, res) => {
-    ImileClient.find()
-        .then(c => {
-            res.status(200).json({
-                data: c
-            })
-        })
-        .catch(err => {
-            console.log(err)
-            res.status(500).json({
-                error: err.message
-            })
-        })
-}
+
 exports.createOrder = async (req, res) => {
     console.time('block')
     const imile = await Imile.findOne();
@@ -312,60 +299,57 @@ exports.createOrder = async (req, res) => {
         })
     }
 }
-/**************************************  */
-cron.schedule('0 */2 * * *', async () => {
+exports.getSticker = async (req, res) => {
+    const orderId = req.params.id;
+
     try {
         const imile = await Imile.findOne();
-        let data = JSON.stringify({
+        const order = await ImileOrder.findById(orderId)
+        if (!order) {
+            return res.status(400).json({ msg: 'Order not found' })
+        }
+        const orderCodeNo = order.data.data.expressNo
+        console.log(orderCodeNo)
+
+        const data = JSON.stringify({
             "customerId": process.env.imile_customerid,
             "sign": process.env.imile_sign,
+            "accessToken": imile.token,
             "signMethod": "SimpleKey",
             "format": "json",
             "version": "1.0.0",
-            "timestamp": "1647727143355",
+            "timestamp": 1648883951481,
             "timeZone": "+4",
             "param": {
-                "grantType": "clientCredential"
+                "customerId": process.env.imile_customerid,
+                "orderCodeList": [
+                    orderCodeNo
+                ],
+                "orderCodeType": 2
             }
-        });
+        })
 
-        let config = {
-            method: 'post',
-            maxBodyLength: Infinity,
-            url: 'https://openapi.imile.com/auth/accessToken/grant',
+        const config = {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
+            url: `https://openapi.imile.com/client/order/batchRePrintOrder`,
             data: data
-        };
-        const tokenRes = await axios(config);
-        console.log(tokenRes.data.data.accessToken)
-        if (tokenRes.data.code == '200') {
-            imile.token = tokenRes.data.data.accessToken;
         }
-        await imile.save();
-        console.log(imile)
-    } catch (error) {
-        console.log(error);
+
+        const response = await axios(config)
+        if (response.data.message !== 'success') {
+            return res.status(400).json({ msg: response.data })
+        }
+        // return res.status(200).redirect(response.data.data[0].label)
+        return res.status(200).json({ billUrl: response.data.data[0].label })
+    } catch (err) {
+        console.log(err)
         res.status(500).json({
-            error: error.message
+            error: err.message
         })
     }
-});
-exports.getUserOrders = (req, res) => {
-    const userId = req.user.user.id;
-    imileorders.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
-        .then(o => {
-            res.status(200).json({
-                data: o
-            })
-        })
-        .catch(err => {
-            console.log(err.request)
-            res.status(500).json({
-                error: error.message
-            })
-        })
 }
 
 exports.cancelOrder = async (req, res) => {
@@ -420,6 +404,21 @@ exports.cancelOrder = async (req, res) => {
         })
     }
 }
+
+exports.getAllClients = (req, res) => {
+    ImileClient.find()
+        .then(c => {
+            res.status(200).json({
+                data: c
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(500).json({
+                error: err.message
+            })
+        })
+}
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const { companyName, contacts, city, address, phone, attentions } = req.body;
@@ -453,4 +452,59 @@ exports.editClient = async (req, res) => {
             error: error.message
         })
     }
+}
+/**************************************  */
+cron.schedule('0 */2 * * *', async () => {
+    try {
+        const imile = await Imile.findOne();
+        let data = JSON.stringify({
+            "customerId": process.env.imile_customerid,
+            "sign": process.env.imile_sign,
+            "signMethod": "SimpleKey",
+            "format": "json",
+            "version": "1.0.0",
+            "timestamp": "1647727143355",
+            "timeZone": "+4",
+            "param": {
+                "grantType": "clientCredential"
+            }
+        });
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://openapi.imile.com/auth/accessToken/grant',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        const tokenRes = await axios(config);
+        console.log(tokenRes.data.data.accessToken)
+        if (tokenRes.data.code == '200') {
+            imile.token = tokenRes.data.data.accessToken;
+        }
+        await imile.save();
+        console.log(imile)
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
+    }
+});
+exports.getUserOrders = (req, res) => {
+    const userId = req.user.user.id;
+    imileorders.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
+        .then(o => {
+            res.status(200).json({
+                data: o
+            })
+        })
+        .catch(err => {
+            console.log(err.request)
+            res.status(500).json({
+                error: error.message
+            })
+        })
 }
