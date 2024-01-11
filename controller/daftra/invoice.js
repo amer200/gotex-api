@@ -92,3 +92,26 @@ const getAllInovice = async () => {
     }
     return invs
 }
+
+
+exports.getInvoices = async (req, res) => {
+    try {
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://aljwadalmomez.daftra.com/api2/invoices`,
+            headers: {
+                'APIKEY': process.env.daftra_Key
+            }
+        }
+        const response = await axios(config);
+
+        res.status(200).json({
+            pagination: response.data.pagination,
+            data: response.data.data
+        })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: 'Server error' })
+    }
+}

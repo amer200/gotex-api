@@ -23,6 +23,7 @@ routes.post("/edit-client-info", userMiddlewares.isMarkter, clintController.edit
 routes.get("/inovic-get-all", adminMiddleware.isAuth, inovicController.getAll);
 routes.get("/get-all-markter-invoices", userMiddlewares.isMarkter, inovicController.getMarkterInovices);
 routes.get("/get-invoice/:id", userMiddlewares.isMarkter, inovicController.getInvoiceById);
+routes.get("/all-invoices", adminMiddleware.isAuth, inovicController.getInvoices);
 
 // suppliers
 routes.post("/edit-supplier/:id", adminMiddleware.isAuth, supplierController.editSupplier);
