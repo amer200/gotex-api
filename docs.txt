@@ -1015,7 +1015,7 @@ response{
     "data": "https://aljwadalmomez.daftra.com/invoices/preview/127?hash=79c569647e484eaf952805afef10f324"
 }
 4)get all invoice (admin)
-url = https://dashboard.go-tex.net/api/daftra/all-invoices
+url = https://dashboard.go-tex.net/api/daftra/all-invoices?page={}
 method = get
 response{
     "pagination": {

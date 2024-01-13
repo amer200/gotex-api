@@ -95,11 +95,13 @@ const getAllInovice = async () => {
 
 
 exports.getInvoices = async (req, res) => {
+    const page = req.query.page
+
     try {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,
-            url: `https://aljwadalmomez.daftra.com/api2/invoices`,
+            url: `https://aljwadalmomez.daftra.com/api2/invoices?page=${page}`,
             headers: {
                 'APIKEY': process.env.daftra_Key
             }
