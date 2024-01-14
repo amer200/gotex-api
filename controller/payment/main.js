@@ -357,7 +357,7 @@ const genratePaymentRequet = async (amount, name, email, mobile, ccId) => {
         maxBodyLength: Infinity,
         url: 'https://api.tap.company/v2/charges',
         headers: {
-            'Authorization': 'Bearer sk_test_iN3MadpErZUhYeIV9WCvXOo4',
+            'Authorization': process.env.TAP_TOKEN,
             'Content-Type': 'application/json'
         },
         data: data
@@ -372,7 +372,7 @@ const getCharge = async (chargeId) => {
             url: `https://api.tap.company/v2/charges/${chargeId}`,
             headers: {
                 accept: 'application/json',
-                Authorization: `Bearer ${process.env.TAP_TOKEN}`
+                Authorization: process.env.TAP_TOKEN
             }
         };
 
@@ -380,8 +380,5 @@ const getCharge = async (chargeId) => {
         return response
     } catch (err) {
         console.log(err)
-        res.status(500).json({
-            error: { status: err.status, message: err.message, stack: err.stack }
-        })
     }
 }
