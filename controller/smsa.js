@@ -40,32 +40,16 @@ exports.edit = (req, res) => {
         })
 }
 exports.createUserOrder = async (req, res) => {
+    const { c_name, c_ContactPhoneNumber, c_ContactPhoneNumber2 = "", c_District, c_City, c_AddressLine1, c_AddressLine2 = "",
+        p_name, p_ContactPhoneNumber, p_District, p_City, p_AddressLine1, p_AddressLine2 = "",
+        pieces, weight, description, Value, cod, markterCode, clintid, daftraid } = req.body
+    const userId = req.user.user.id
+
     try {
-        let ordersNumPromise = SmsaOrder.count();
-        const userId = req.user.user.id
         const userPromise = User.findById(userId);
+        let ordersNumPromise = SmsaOrder.count();
         const totalShipPrice = res.locals.totalShipPrice;
-        const c_name = req.body.c_name;
-        const c_ContactPhoneNumber = req.body.c_ContactPhoneNumber;
-        const c_ContactPhoneNumber2 = req.body.c_ContactPhoneNumber2;
-        const c_District = req.body.c_District;
-        const c_City = req.body.c_City;
-        const c_AddressLine1 = req.body.c_AddressLine1;
-        const c_AddressLine2 = req.body.c_AddressLine2;
-        const p_name = req.body.p_name;
-        const p_ContactPhoneNumber = req.body.p_ContactPhoneNumber;
-        const p_District = req.body.p_District;
-        const p_City = req.body.p_City;
-        const p_AddressLine1 = req.body.p_AddressLine1;
-        const p_AddressLine2 = req.body.p_AddressLine2;
-        const pieces = req.body.pieces;
-        const weight = req.body.weight;
-        const description = req.body.description;
-        const value = req.body.Value;
-        const cod = req.body.cod;
-        const markterCode = req.body.markterCode || '';
-        const clintid = req.body.clintid;
-        const daftraid = req.body.daftraid;
+
         if (cod) {
             var cashondelivery = res.locals.codAmount;
             var paytype = "cod";
@@ -79,6 +63,7 @@ exports.createUserOrder = async (req, res) => {
             var nameCode = p_name;
         }
         const date = new Date().toISOString().split('T')[0];
+
         var data = JSON.stringify({
             "ConsigneeAddress": {
                 "ContactName": c_name,
@@ -104,7 +89,7 @@ exports.createUserOrder = async (req, res) => {
                 "AddressLine2": p_AddressLine2
             },
             "OrderNumber": "FirstOrder001", /// code 
-            "DeclaredValue": value,
+            "DeclaredValue": Value,
             "CODAmount": cashondelivery,
             "Parcels": pieces,
             "ShipDate": `${date}`,
