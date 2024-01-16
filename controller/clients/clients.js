@@ -144,6 +144,42 @@ exports.editClient = async (req, res) => {
     }
 }
 
+// exports.removeClient = async (req, res) => {
+//     const clientId = req.params.id
+
+//     try {
+//         const client = await Client.findOne({ _id: clientId })
+//         if (!client) {
+//             return res.status(400).json({ msg: `No client for this id ${clientId}` })
+//         }
+
+//         const { company, name, city, address, mobile, notes, daftraClientId } = client
+//         const daftraResult = await removeDaftraClient(daftraClientId)
+
+//         const editImileClientParams = {
+//             company: `${client.company} - removed`,
+//             name,
+//             city,
+//             address,
+//             mobile,
+//             notes
+//         }
+//         const imileResult = await editImileClient(editImileClientParams);
+//         if (imileResult != 1) {
+//             return res.status(400).json({ msg: "error with imile", err: imileResult })
+//         }
+
+//         await Client.findByIdAndDelete(clientId)
+
+//         res.status(200).json({ msg: "Client removed successfully" })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({
+//             error: error.message
+//         })
+//     }
+// }
+
 exports.getAllClients = async (req, res) => {
     try {
         const clients = await Client.find({}).sort({ name: 1 })
