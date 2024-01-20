@@ -266,7 +266,7 @@ exports.getCities = (req, res) => {
 }
 
 exports.cancelOrder = async (req, res) => {
-    const { orderId, cancelReason } = req.body;
+    const { orderId, cancelReason = "" } = req.body;
     const userId = req.user.user.id
     const order = await SaeeOrder.findById(orderId);
 
@@ -281,11 +281,11 @@ exports.cancelOrder = async (req, res) => {
                 err: "This order is already canceled"
             })
         }
-        if (!cancelReason) {
-            return res.status(400).json({
-                err: "cancelReason is required"
-            })
-        }
+        // if (!cancelReason) {
+        //     return res.status(400).json({
+        //         err: "cancelReason is required"
+        //     })
+        // }
 
         let data = JSON.stringify({
             "waybill": order.data.waybill,
