@@ -393,3 +393,23 @@ exports.getOrders = async (req, res) => {
         })
     }
 }
+
+exports.getOrderById = async (req, res) => {
+    const orderId = req.params.orderId
+
+    try {
+        const order = await Order.findById(orderId)
+        if (!order) {
+            return res.status(400).json({ error: "Order not found" })
+        }
+
+        res.status(200).json({
+            data: order
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
