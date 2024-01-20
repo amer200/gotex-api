@@ -403,7 +403,8 @@ response{
 url = https://dashboard.go-tex.net/api/saee/cancel-order
 method = post 
 body {
-    orderId
+    orderId,
+    cancelReason:String
 }
 response{
     "data": {
@@ -1016,7 +1017,7 @@ response{
 }
 4)get all invoice (admin)
 url = https://dashboard.go-tex.net/api/daftra/all-invoices?page={}
-method = get
+method = getc
 response{
     "pagination": {
         "prev": null,
@@ -1346,7 +1347,8 @@ method = get
 url = https://dashboard.go-tex.net/api/imile/cancel-order
 method = post 
 body {
-    orderId
+    orderId,
+    cancelReason : String
 }
 response{
     "data": {
@@ -1418,6 +1420,22 @@ body{
     mincodmarkteer;
     maxcodmarkteer;
     kgprice;
+}
+4)cancel order
+url = https://dashboard.go-tex.net/api/jt/cancel-order
+body {
+    orderId,
+    cancelReason:String
+}
+response {
+    "data": {
+        "code": "1",
+        "msg": "success",
+        "data": {
+            "txlogisticId": "1695119354339Gotex",
+            "billCode": "UTE010010116584"
+        }
+    }
 }
 /**************telr*************/
 1)create payment request
