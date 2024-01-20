@@ -28,7 +28,7 @@ exports.addImileClient = async (company, name, city, address, mobile, notes) => 
     });
     let config = {
         method: 'post',
-        url: 'https://openapi.imile.com/client/consignor/add',
+        url: 'https://openapi.52imile.cn/client/consignor/add',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -71,7 +71,7 @@ exports.editImileClient = async (obj) => {
     let config = {
         method: 'post',
         maxBodyLength: Infinity,
-        url: 'https://openapi.imile.com/client/consignor/modify',
+        url: 'https://openapi.52imile.cn/client/consignor/modify',
         headers: {
             'Content-Type': 'application/json'
         },

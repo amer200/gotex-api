@@ -98,7 +98,7 @@ exports.createUserOrder = async (req, res) => {
         const config = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
+            url: 'https://k-w-h.com/deliveryrequest/newpickup',
             data: data
         }
         const responsePromise = axios(config)
@@ -201,13 +201,15 @@ exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
     SaeeOrder.findById(orderId)
         .then(o => {
+            const data = { waybill: o.data.waybill }
             axios({
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'secret': `${process.env.SAEE_KEY_P}`
                 },
-                url: `https://corporate.saeex.com/deliveryrequest/printsticker/${o.data.waybill}`
+                url: `https://corporate.k-w-h.com/deliveryrequest/printsticker/WAYBILL`,
+                data
             })
                 .then(bill => {
                     res.status(200).json({
@@ -229,7 +231,8 @@ exports.trakingOrderByNum = async (req, res) => {
             'Content-Type': 'application/json',
             'secret': `${process.env.SAEE_KEY_P}`
         },
-        url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
+        url: `https://corporate.k-w-h.com/tracking/ordernumber`,
+        ordernumber: order.data.waybill
     })
         .then(response => {
             res.status(200).json({
@@ -247,7 +250,7 @@ exports.getCities = (req, res) => {
             'Content-Type': 'application/json',
             'secret': `${process.env.SAEE_KEY_P}`
         },
-        url: `https://corporate.saeex.com/deliveryrequest/getallcities`
+        url: `https://corporate.k-w-h.com/deliveryrequest/getallcities`
     })
         .then(response => {
             res.status(200).json({
@@ -263,7 +266,7 @@ exports.getCities = (req, res) => {
 }
 
 exports.cancelOrder = async (req, res) => {
-    const { orderId } = req.body;
+    const { orderId, cancelReason = "" } = req.body;
     const userId = req.user.user.id
     const order = await SaeeOrder.findById(orderId);
 
@@ -273,6 +276,17 @@ exports.cancelOrder = async (req, res) => {
                 err: "order not found"
             })
         }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+        // if (!cancelReason) {
+        //     return res.status(400).json({
+        //         err: "cancelReason is required"
+        //     })
+        // }
+
         let data = JSON.stringify({
             "waybill": order.data.waybill,
             "canceled_by": 1
@@ -280,7 +294,7 @@ exports.cancelOrder = async (req, res) => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://corporate.saeex.com/deliveryrequest/cancelpickup',
+            url: 'https://corporate.k-w-h.com/deliveryrequest/cancelpickup',
             headers: {
                 'secret': process.env.SAEE_KEY_P,
                 'Content-Type': 'application/json',
@@ -291,6 +305,7 @@ exports.cancelOrder = async (req, res) => {
         const saeeRes = await axios.request(config);
         if (saeeRes.data.success == true) {
             order.status = 'canceled'
+            order.cancelReason = cancelReason
             await order.save()
 
             return res.status(200).json({ data: saeeRes.data })
