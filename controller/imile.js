@@ -77,7 +77,7 @@ exports.addClient = async (req, res) => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://openapi.52imile.cn/client/consignor/add',
+            url: 'https://openapi.imile.com/client/consignor/add',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -218,7 +218,7 @@ exports.createOrder = async (req, res) => {
 
         var config = {
             method: 'post',
-            url: 'https://openapi.52imile.cn/client/order/createOrder',
+            url: 'https://openapi.imile.com/client/order/createOrder',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -336,7 +336,7 @@ exports.getSticker = async (req, res) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: `https://openapi.52imile.cn/client/order/batchRePrintOrder`,
+            url: `https://openapi.imile.com/client/order/batchRePrintOrder`,
             data: data
         }
 
@@ -398,7 +398,7 @@ exports.cancelOrder = async (req, res) => {
             headers: {
                 'Content-Type': 'application/json'
             },
-            url: `https://openapi.52imile.cn/client/order/deleteOrder`,
+            url: `https://openapi.imile.com/client/order/deleteOrder`,
             data: data
         }
 
@@ -487,7 +487,7 @@ cron.schedule('0 */2 * * *', async () => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://openapi.52imile.cn/auth/accessToken/grant',
+            url: 'https://openapi.imile.com/auth/accessToken/grant',
             headers: {
                 'Content-Type': 'application/json'
             },

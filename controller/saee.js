@@ -98,7 +98,7 @@ exports.createUserOrder = async (req, res) => {
         const config = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            url: 'https://k-w-h.com/deliveryrequest/newpickup',
+            url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
             data: data
         }
         const responsePromise = axios(config)
@@ -201,15 +201,13 @@ exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
     SaeeOrder.findById(orderId)
         .then(o => {
-            const data = { waybill: o.data.waybill }
             axios({
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'secret': `${process.env.SAEE_KEY_P}`
                 },
-                url: `https://corporate.k-w-h.com/deliveryrequest/printsticker/WAYBILL`,
-                data
+                url: `https://corporate.saeex.com/deliveryrequest/printsticker/${o.data.waybill}`
             })
                 .then(bill => {
                     res.status(200).json({
@@ -231,8 +229,7 @@ exports.trakingOrderByNum = async (req, res) => {
             'Content-Type': 'application/json',
             'secret': `${process.env.SAEE_KEY_P}`
         },
-        url: `https://corporate.k-w-h.com/tracking/ordernumber`,
-        ordernumber: order.data.waybill
+        url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
     })
         .then(response => {
             res.status(200).json({
@@ -250,7 +247,7 @@ exports.getCities = (req, res) => {
             'Content-Type': 'application/json',
             'secret': `${process.env.SAEE_KEY_P}`
         },
-        url: `https://corporate.k-w-h.com/deliveryrequest/getallcities`
+        url: `https://corporate.saeex.com/deliveryrequest/getallcities`
     })
         .then(response => {
             res.status(200).json({
@@ -294,7 +291,7 @@ exports.cancelOrder = async (req, res) => {
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'https://corporate.k-w-h.com/deliveryrequest/cancelpickup',
+            url: 'https://corporate.saeex.com/deliveryrequest/cancelpickup',
             headers: {
                 'secret': process.env.SAEE_KEY_P,
                 'Content-Type': 'application/json',
