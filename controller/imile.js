@@ -44,10 +44,12 @@ exports.edit = (req, res) => {
         })
 }
 exports.addClient = async (req, res) => {
+    let { companyName, contacts, city, address, phone,
+        backupPhone = "", attentions } = req.body;
+
     try {
         const imile = await Imile.findOne();
-        let { companyName, contacts, city, address, phone,
-            backupPhone = "", attentions } = req.body;
+
         let data = JSON.stringify({
             "customerId": process.env.imile_customerid,
             "sign": process.env.imile_sign,
@@ -353,7 +355,7 @@ exports.getSticker = async (req, res) => {
 }
 
 exports.cancelOrder = async (req, res) => {
-    const { orderId } = req.body;
+    const { orderId, cancelReason } = req.body;
     const userId = req.user.user.id
     const imile = await Imile.findOne();
     const order = await ImileOrder.findById(orderId)
@@ -364,6 +366,17 @@ exports.cancelOrder = async (req, res) => {
                 err: "order not found"
             })
         }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+        if (!cancelReason) {
+            return res.status(400).json({
+                err: "cancelReason is required"
+            })
+        }
+
         const waybillNo = order.data.data.expressNo
 
         const data = JSON.stringify({
@@ -395,6 +408,7 @@ exports.cancelOrder = async (req, res) => {
         }
 
         order.status = 'canceled'
+        order.cancelReason = cancelReason
         await order.save()
         return res.status(200).json({ data: response.data })
     } catch (err) {

@@ -18,7 +18,8 @@ const imileOrderSchema = mongoose.Schema({
         type: String,
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
-    }
+    },
+    cancelReason: String
 })
 
 module.exports = mongoose.model("ImileOrder", imileOrderSchema);
