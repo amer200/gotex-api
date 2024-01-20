@@ -249,7 +249,7 @@ exports.getSticker = async (req, res) => {
 }
 
 exports.cancelOrder = async (req, res) => {
-    const { orderId, cancelReason } = req.body
+    const { orderId, cancelReason = "" } = req.body
     const userId = req.user.user.id
     const order = await JtOrder.findById(orderId)
     try {
@@ -263,11 +263,11 @@ exports.cancelOrder = async (req, res) => {
                 err: "This order is already canceled"
             })
         }
-        if (!cancelReason) {
-            return res.status(400).json({
-                err: "cancelReason is required"
-            })
-        }
+        // if (!cancelReason) {
+        //     return res.status(400).json({
+        //         err: "cancelReason is required"
+        //     })
+        // }
 
         const txlogisticId = order.data.data.txlogisticId
         const billCode = order.data.data.billCode
