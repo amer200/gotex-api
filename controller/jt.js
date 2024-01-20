@@ -121,7 +121,7 @@ exports.createUserOrder = async (req, res) => {
     var md5Hash = crypto.createHash('md5').update(myText).digest('base64');
     let config = {
         method: 'post',
-        url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/addOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+        url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/addOrder',
         headers: {
             'apiAccount': process.env.jt_api_account,
             'digest': md5Hash,
@@ -223,7 +223,7 @@ exports.getSticker = async (req, res) => {
         });
         let config = {
             method: 'post',
-            url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/printOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+            url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/printOrder',
             headers: {
                 'apiAccount': process.env.jt_api_account,
                 'digest': `${md5Hash}`,
@@ -287,7 +287,7 @@ exports.cancelOrder = async (req, res) => {
 
         let config = {
             method: 'post',
-            url: 'https://demoopenapi.jtjms-sa.com/webopenplatformapi/api/order/cancelOrder?uuid=7a73e66f9b9c42b18d986f581e6f931e',
+            url: 'https://openapi.jtjms-sa.com/webopenplatformapi/api/order/cancelOrder',
             headers: {
                 'apiAccount': process.env.jt_api_account,
                 'digest': md5Hash,
