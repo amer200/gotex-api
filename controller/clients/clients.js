@@ -206,6 +206,10 @@ exports.allClients = async (req, res) => {
             city: { $regex: city, $options: 'i' },
         }).sort({ name: 1 })
 
+        clients.forEach(client => {
+            client.company = client.company ? client.company : ""
+        })
+
         const clientsPagination = paginate(clients, page, limit)
         return res.status(200).json({ ...clientsPagination })
     } catch (error) {

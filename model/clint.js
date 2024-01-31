@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const clintSchema = mongoose.Schema({
     name: String,
-    company: String,
+    company: {
+        type: String,
+        default: ''
+    },
     email: String,
     mobile: String,
     city: String,
@@ -19,7 +22,7 @@ const clintSchema = mongoose.Schema({
         {
             company: String,
             id: String,
-             markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+            markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
         }
     ],
     daftraClientId: String,
