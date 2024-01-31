@@ -296,7 +296,7 @@ exports.createOrder = async (req, res) => {
         if (response.data.HasErrors) {
             order.status = 'failed'
             await Promise.all([order.save(), myOrder.save()])
-
+            console.log(response.data)
             return res.status(400).json({ msg: response.data })
         }
 
