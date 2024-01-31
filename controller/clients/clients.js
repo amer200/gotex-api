@@ -183,7 +183,10 @@ exports.editClient = async (req, res) => {
 exports.getAllClients = async (req, res) => {
     try {
         const clients = await Client.find({}).sort({ name: 1 })
-
+        clients.forEach(async (client) => {
+            client.company = client.company ? client.company : "";
+            await client.save()
+        })
         return res.status(200).json({ data: clients })
     } catch (error) {
         console.log(error);
@@ -205,11 +208,6 @@ exports.allClients = async (req, res) => {
             company: { $regex: company, $options: 'i' },
             city: { $regex: city, $options: 'i' },
         }).sort({ name: 1 })
-
-        clients.forEach(async (client) => {
-            client.company = client.company ? client.company : "";
-            await client.save()
-        })
 
         const clientsPagination = paginate(clients, page, limit)
         return res.status(200).json({ ...clientsPagination })
