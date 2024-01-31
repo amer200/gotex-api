@@ -206,8 +206,9 @@ exports.allClients = async (req, res) => {
             city: { $regex: city, $options: 'i' },
         }).sort({ name: 1 })
 
-        clients.forEach(client => {
-            client.company = client.company ? client.company : ""
+        clients.forEach(async (client) => {
+            client.company = client.company ? client.company : "";
+            await client.save()
         })
 
         const clientsPagination = paginate(clients, page, limit)
