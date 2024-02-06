@@ -47,16 +47,6 @@ exports.checkCompany = (CompanyModel) => {
                         var shipPrice = company.marketerprice;
                     }
 
-                    // if (clintid) {
-                    //     const clint = await Clint.findById(clintid);
-                    //     if (!clint) {
-                    //         return res.status(400).json({ error: "Client not found" })
-                    //     }
-
-                    //     if (clint.wallet < (shipPrice + weightPrice)) {
-                    //         return res.status(400).json({ msg: "Client wallet balance is not enough to make the shipment" })
-                    //     }
-                    // } else 
                     if (user.wallet < (shipPrice + weightPrice)) {
                         return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                     }
