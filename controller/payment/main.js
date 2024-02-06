@@ -294,7 +294,13 @@ exports.checkCcPayment = async (req, res) => {
             return res.send("failed");
         } else {
             const client = await Client.findById(cc.client);
+            if (!client) {
+                return res.status(400).json({
+                    err: "client not found"
+                })
+            }
             client.wallet = client.wallet + cc.amount;
+            await client.save()
             return res.render("payment-result", {
                 text1: `Your charge status is ${currentStatus}`,
                 text2: `Your wallet is = `,
