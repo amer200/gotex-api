@@ -1,9 +1,10 @@
 const User = require("../model/user");
+const Clint = require("../model/clint");
 
 exports.checkCompany = (CompanyModel) => {
     return (
         async (req, res, next) => {
-            let { cod, weight, shipmentValue } = req.body
+            let { cod, weight, shipmentValue, clintid } = req.body
             const { id: userId, rolle: userRolle } = req.user.user
 
             try {
@@ -46,9 +47,19 @@ exports.checkCompany = (CompanyModel) => {
                         var shipPrice = company.marketerprice;
                     }
 
-                    if (user.wallet < (shipPrice + weightPrice)) {
+                    if (clintid) {
+                        const clint = await Clint.findById(clintid);
+                        if (!clint) {
+                            return res.status(400).json({ error: "Client not found" })
+                        }
+
+                        if (clint.wallet < (shipPrice + weightPrice)) {
+                            return res.status(400).json({ msg: "Client wallet balance is not enough to make the shipment" })
+                        }
+                    } else if (user.wallet < (shipPrice + weightPrice)) {
                         return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                     }
+
                     res.locals.codAmount = 0;
                     res.locals.totalShipPrice = shipPrice + weightPrice;
                     next()
