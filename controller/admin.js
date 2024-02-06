@@ -62,13 +62,18 @@ exports.addWalletToUser = (req, res) => {
     const id = req.body.id;
     User.findById(id)
         .then(u => {
+            if (!u) {
+                return res.status(400).json({
+                    err: "user not found"
+                })
+            }
             u.wallet = u.wallet + deposit;
             return u.save()
-        })
-        .then(u => {
-            res.status(200).json({
-                msg: "ok"
-            })
+                .then(u => {
+                    res.status(200).json({
+                        msg: "ok"
+                    })
+                })
         })
         .catch(err => {
             console.log(err)

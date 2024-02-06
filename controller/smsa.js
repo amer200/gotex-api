@@ -169,9 +169,6 @@ exports.createUserOrder = async (req, res) => {
             if (!clint) {
                 return res.status(400).json({ error: "Client not found" })
             }
-            if (!clint) {
-                return res.status(400).json({ error: "Client not found" })
-            }
             const co = {
                 company: "smsa",
                 id: order._id
@@ -192,7 +189,7 @@ exports.createUserOrder = async (req, res) => {
             data: order
         })
     } catch (error) {
-        console.log(error);
+        console.log(error.response.data);
         res.status(500).json({
             msg: error.message
         })
