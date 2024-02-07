@@ -1,5 +1,5 @@
 const User = require("../model/user");
-// const Clint = require("../model/clint");
+const Clint = require("../model/clint");
 
 exports.checkCompany = (CompanyModel) => {
     return (
@@ -47,7 +47,16 @@ exports.checkCompany = (CompanyModel) => {
                         var shipPrice = company.marketerprice;
                     }
 
-                    if (user.wallet < (shipPrice + weightPrice)) {
+                    if (clintid) {
+                        const clint = await Clint.findById(clintid);
+                        if (!clint) {
+                            return res.status(400).json({ error: "Client not found" })
+                        }
+
+                        if (clint.wallet < (shipPrice + weightPrice) && user.wallet < (shipPrice + weightPrice)) {
+                            return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
+                        }
+                    } else if (user.wallet < (shipPrice + weightPrice)) {
                         return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                     }
 
