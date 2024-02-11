@@ -83,7 +83,7 @@ exports.creteNewOrder = async (req, res) => {
         ContentPrice, ContentDescription, weight,
         pickUpDistrictID, pickUpAddress1, pickUpAddress2,
         deliveryDistrictID, deliveryAddress1, deliveryAddress2,
-        description, status, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
+        description, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
     let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
@@ -113,7 +113,7 @@ exports.creteNewOrder = async (req, res) => {
     } else {
         var PaymentType = 1;
         var paytype = "cc";
-        var TotalAmount = 10;
+        var TotalAmount = res.locals.codAmount;
     }
     const data = {
         'CRMAccountId': 31314344634,
@@ -149,25 +149,12 @@ exports.creteNewOrder = async (req, res) => {
                     'AddressLine1': deliveryAddress1,
                     "AddressLine2": deliveryAddress2
                 },
-                'PiecesCount': 1,
+                'PiecesCount': PiecesCount,
                 "ItemPieces": Pieces
             },
         ]
     }
-    // var config = {
-    //     method: 'post',
-    //     url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
-    //     headers: {
-    //         'Content-Type': 'application/x-www-form-urlencoded',
-    //         'Authorization': `bearer ${spl.token}`
-    //     },
-    //     data: data
-    // };
-    // return res.status(200).json({
-    //     config: config,
-    //     body: data
-    // })
-    // const response = await axios(config)
+
     try {
         var config = {
             method: 'post',
@@ -182,6 +169,11 @@ exports.creteNewOrder = async (req, res) => {
         console.log(typeof totalShipPrice)
         console.log("data")
         console.log(data)
+
+        return res.status(200).json({
+            body: data
+        })
+
         const responsePromise = axios(config)
         const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
 
