@@ -181,10 +181,22 @@ exports.editClient = async (req, res) => {
 // }
 
 exports.getAllClients = async (req, res) => {
-    try {
-        const clients = await Client.find({}).sort({ name: 1 })
+    const { rolle = 'marketer' } = req.query
 
-        return res.status(200).json({ data: clients })
+    try {
+        const populateObj = {
+            path: 'addby',
+            match: {
+                $or: [
+                    { rolle: { $regex: rolle, $options: 'i' } }
+                ]
+            },
+            select: "email rolle"
+        }
+
+        let clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
+        clients = clients.filter(clients => clients.addby)
+        return res.status(200).json({ result: clients.length, data: clients })
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -196,15 +208,27 @@ exports.allClients = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const { name = '', mobile = '', company = '', city = '' } = req.query
+    const { name = '', mobile = '', company = '', city = '', rolle = 'marketer' } = req.query
 
     try {
-        const clients = await Client.find({
+        const populateObj = {
+            path: 'addby',
+            match: {
+                $or: [
+                    { rolle: { $regex: rolle, $options: 'i' } }
+                ]
+            },
+            select: "email rolle"
+        }
+
+        let clients = await Client.find({
             name: { $regex: name, $options: 'i' },
             mobile: { $regex: mobile },
             company: { $regex: company, $options: 'i' },
             city: { $regex: city, $options: 'i' },
-        }).sort({ name: 1 })
+        }).populate(populateObj).sort({ name: 1 })
+
+        clients = clients.filter(clients => clients.addby)
 
         const clientsPagination = paginate(clients, page, limit)
         return res.status(200).json({ ...clientsPagination })
