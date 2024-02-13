@@ -295,7 +295,14 @@ exports.createOrder = async (req, res) => {
         myOrder.billCode = response.data.data.expressNo
         await Promise.all([order.save(), myOrder.save()])
         console.timeEnd('block')
-        res.status(200).json({ data: order })
+        res.status(200).json({
+            msg: "order created successfully",
+            data: order,
+            clientData: {
+                wallet: clint.wallet,
+                package: clint.package
+            }
+        })
     } catch (err) {
         console.log(err)
         res.status(500).json({
