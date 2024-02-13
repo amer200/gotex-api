@@ -111,6 +111,7 @@ exports.createUserOrder = async (req, res) => {
             data: response.data,
             paytype: paytype,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -123,6 +124,7 @@ exports.createUserOrder = async (req, res) => {
             data: response.data,
             paytype: paytype,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date(),
         })

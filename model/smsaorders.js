@@ -7,6 +7,7 @@ const smsaOrderSchema = mongoose.Schema({
     data: Object,
     paytype: String,
     price: Number,
+    codPrice: Number,
     marktercode: {
         type: String,
         default: ''
