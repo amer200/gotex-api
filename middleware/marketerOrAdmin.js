@@ -9,7 +9,8 @@ exports.isMarketerOrAdmin = (req, res, next) => {
                 msg: err
             })
         }
-        if (user.data.user.rolle == 'marketer' || user.data.user.rolle == 'admin') {
+
+        if (user.data.user.rolle == 'marketer' || user.data.user.roll == 'admin') {
             console.log('ok')
             req.user = user.data
             next();
