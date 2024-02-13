@@ -43,8 +43,8 @@ exports.edit = (req, res) => {
 //shipment
 exports.createUserOrder = async (req, res) => {
     const {
-        p_name, p_phone, p_line1, p_city, p_company,
-        c_name, c_phone, c_line1, c_city, c_company,
+        p_name, p_phone, p_line1, p_city, p_company, p_postalCode,
+        c_name, c_phone, c_line1, c_city, c_company, c_postalCode,
         weight, quantity, packageLength, packageWidth, packageHeight, description, cod, clintid, daftraid } = req.body
     const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
@@ -110,7 +110,7 @@ exports.createUserOrder = async (req, res) => {
                         "postalAddress": {
                             "cityName": p_city,
                             "countryCode": "KSA",
-                            "postalCode": "",
+                            "postalCode": p_postalCode,
                             "addressLine1": p_line1
                         },
                         "contactInformation": {
@@ -123,7 +123,7 @@ exports.createUserOrder = async (req, res) => {
                         "postalAddress": {
                             "cityName": c_city,
                             "countryCode": "KSA",
-                            "postalCode": "",
+                            "postalCode": c_postalCode,
                             "addressLine1": c_line1,
                             "countyName": "OREGON"
                         },
@@ -153,55 +153,11 @@ exports.createUserOrder = async (req, res) => {
                                     "unitOfMeasurement": "KG",
                                     "value": quantity
                                 },
-                                "price": 608.39,
+                                "price": codAmount,
                                 "description": "La Prairie Skin Caviar Luxe Cream 100ml",
                                 "weight": {
                                     "netValue": weight,
                                     "grossValue": weight
-                                },
-                                "exportReasonType": "permanent",
-                                "manufacturerCountry": "KSA"
-                            },
-                            {
-                                "number": 2,
-                                "commodityCodes": [
-                                    {
-                                        "value": "33049900",
-                                        "typeCode": "outbound"
-                                    }
-                                ],
-                                "priceCurrency": "SAR",
-                                "quantity": {
-                                    "unitOfMeasurement": "BOX",
-                                    "value": 1
-                                },
-                                "price": 174.96,
-                                "description": "La Prairie Cellular Hydrating Serum 30ml",
-                                "weight": {
-                                    "netValue": 0.1,
-                                    "grossValue": 0.1
-                                },
-                                "exportReasonType": "permanent",
-                                "manufacturerCountry": "KSA"
-                            },
-                            {
-                                "number": 3,
-                                "commodityCodes": [
-                                    {
-                                        "value": "33049900",
-                                        "typeCode": "outbound"
-                                    }
-                                ],
-                                "priceCurrency": "SAR",
-                                "quantity": {
-                                    "unitOfMeasurement": "BOX",
-                                    "value": 1
-                                },
-                                "price": 356.4,
-                                "description": description,
-                                "weight": {
-                                    "netValue": 0.2,
-                                    "grossValue": 0.2
                                 },
                                 "exportReasonType": "permanent",
                                 "manufacturerCountry": "KSA"
