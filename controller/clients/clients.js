@@ -9,8 +9,8 @@ const paginate = require("../../modules/paginate");
 
 exports.addClient = async (req, res) => {
     const userId = req.user.user.id;
-    const { company, first_name, city, state, address, mobile,
-        notes, category, birth_date, street, branches } = req.body
+    const { company, first_name, city, state = '', address, mobile,
+        notes = '', category = '', birth_date, street, branches } = req.body
 
     try {
         const name = first_name.trim()
@@ -75,8 +75,8 @@ exports.addClient = async (req, res) => {
 exports.editClient = async (req, res) => {
     const clientId = req.params.id
     const userId = req.user.user.id;
-    const { company, first_name, city, state, address, mobile,
-        notes, category, birth_date, street, branches } = req.body
+    const { company, first_name, city, state = '', address, mobile,
+        notes = '', category = '', birth_date, street, branches } = req.body
 
     try {
         const name = first_name.trim()
@@ -85,20 +85,33 @@ exports.editClient = async (req, res) => {
                 msg: 'These info are required:  first_name, city, address, mobile and street'
             })
         }
+        let rolle = ''
         // userId=1 if admin
         if (userId == 1) {
             staff_id = 1
+            rolle = 'admin'
         } else {
-            const user = await User.findById(userId);
+            user = await User.findById(userId);
             if (!user) {
                 return res.status(400).json({ msg: `No user for this id ${userId}` })
             }
+            console.log(user.rolle)
+            rolle = user.rolle
             staff_id = user.daftraid;
         }
 
-        const client = await Client.findOne({ _id: clientId })
+        const populateObj = {
+            path: 'addby',
+            select: "email rolle"
+        }
+
+        const client = await Client.findOne({ _id: clientId }).populate(populateObj)
         if (!client) {
             return res.status(400).json({ msg: `No client for this id ${clientId}` })
+        }
+        // to prevent user from editing marketer clients and vice versa, but admin can edit any client.
+        if (rolle != 'admin' && rolle != client.addby.rolle) {
+            return res.status(400).json({ msg: `Can't edit this client` })
         }
 
         const usedMobile = await Client.findOne({ mobile })
@@ -180,22 +193,29 @@ exports.editClient = async (req, res) => {
 //     }
 // }
 
+/** Get marketer clients*/
 exports.getAllClients = async (req, res) => {
-    const { rolle = 'marketer' } = req.query
+    const rolle = req.user.user.rolle;
 
     try {
-        const populateObj = {
-            path: 'addby',
-            match: {
-                $or: [
-                    { rolle: { $regex: rolle, $options: 'i' } }
-                ]
-            },
-            select: "email rolle"
+        let clients = []
+        if (rolle == 'admin') {
+            clients = await Client.find({}).sort({ name: 1 })
+        } else {
+            const populateObj = {
+                path: 'addby',
+                match: {
+                    $or: [
+                        { rolle: { $regex: rolle, $options: 'i' } }
+                    ]
+                },
+                select: "email rolle"
+            }
+
+            clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
+            clients = clients.filter(clients => clients.addby)
         }
 
-        let clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
-        clients = clients.filter(clients => clients.addby)
         return res.status(200).json({ result: clients.length, data: clients })
     } catch (error) {
         console.log(error);
@@ -204,34 +224,70 @@ exports.getAllClients = async (req, res) => {
         })
     }
 }
+/** Get marketer clients + pagination */
 exports.allClients = async (req, res) => {
     /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
-    const { name = '', mobile = '', company = '', city = '', rolle = 'marketer' } = req.query
+    const { name = '', mobile = '', company = '', city = '' } = req.query
+    const rolle = req.user.user.rolle;
 
+    try {
+        let clients = []
+        if (rolle == 'admin') {
+            clients = await Client.find({
+                name: { $regex: name, $options: 'i' },
+                mobile: { $regex: mobile },
+                company: { $regex: company, $options: 'i' },
+                city: { $regex: city, $options: 'i' },
+            }).sort({ name: 1 })
+        } else {
+            const populateObj = {
+                path: 'addby',
+                match: {
+                    $or: [
+                        { rolle: { $regex: rolle, $options: 'i' } }
+                    ]
+                },
+                select: "email rolle"
+            }
+
+            clients = await Client.find({
+                name: { $regex: name, $options: 'i' },
+                mobile: { $regex: mobile },
+                company: { $regex: company, $options: 'i' },
+                city: { $regex: city, $options: 'i' },
+            }).populate(populateObj).sort({ name: 1 })
+
+            clients = clients.filter(clients => clients.addby)
+        }
+
+        const clientsPagination = paginate(clients, page, limit)
+        return res.status(200).json({ ...clientsPagination })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
+    }
+}
+
+/** Get user clients*/
+exports.getUserClients = async (req, res) => {
     try {
         const populateObj = {
             path: 'addby',
             match: {
                 $or: [
-                    { rolle: { $regex: rolle, $options: 'i' } }
+                    { rolle: { $regex: 'user', $options: 'i' } }
                 ]
             },
             select: "email rolle"
         }
 
-        let clients = await Client.find({
-            name: { $regex: name, $options: 'i' },
-            mobile: { $regex: mobile },
-            company: { $regex: company, $options: 'i' },
-            city: { $regex: city, $options: 'i' },
-        }).populate(populateObj).sort({ name: 1 })
-
+        let clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
         clients = clients.filter(clients => clients.addby)
-
-        const clientsPagination = paginate(clients, page, limit)
-        return res.status(200).json({ ...clientsPagination })
+        return res.status(200).json({ result: clients.length, data: clients })
     } catch (error) {
         console.log(error);
         res.status(500).json({
