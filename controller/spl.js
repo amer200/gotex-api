@@ -200,6 +200,7 @@ exports.creteNewOrder = async (req, res) => {
             },
             paytype: paytype,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date(),
             weight: weight,
@@ -227,6 +228,7 @@ exports.creteNewOrder = async (req, res) => {
             },
             paytype: paytype,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date(),
             weight: weight,
@@ -277,7 +279,11 @@ exports.creteNewOrder = async (req, res) => {
             await Promise.all([order.save(), myOrder.save()]);;
             res.status(200).json({
                 msg: "order created successfully",
-                data: order
+                data: order,
+                clientData: {
+                    wallet: clint.wallet,
+                    package: clint.package
+                }
             })
         }
     } catch (err) {

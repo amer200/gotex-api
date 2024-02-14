@@ -106,6 +106,7 @@ exports.createUserOrder = async (req, res) => {
             paytype: paytype,
             data: response.data,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -117,6 +118,7 @@ exports.createUserOrder = async (req, res) => {
             paytype: paytype,
             data: response.data,
             price: totalShipPrice,
+            codPrice: res.locals.codAmount,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -163,7 +165,14 @@ exports.createUserOrder = async (req, res) => {
 
         myOrder.billCode = response.data.awb_no
         await Promise.all([order.save(), myOrder.save()])
-        res.status(200).json({ data: order })
+        res.status(200).json({
+            msg: "order created successfully",
+            data: order,
+            clientData: {
+                wallet: clint.wallet,
+                package: clint.package
+            }
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({
