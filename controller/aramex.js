@@ -1,4 +1,3 @@
-// const aramex = require('aramex-api');
 const Aramex = require("../model/aramex");
 const AramexOrder = require("../model/aramexorders");
 const User = require("../model/user");
@@ -339,8 +338,9 @@ exports.createOrder = async (req, res) => {
             msg: "order created successfully",
             data: order,
             clientData: {
+                package: clint.package,
                 wallet: clint.wallet,
-                package: clint.package
+                credit: clint.credit
             }
         })
     } catch (err) {

@@ -1,29 +1,33 @@
 const ccOrderPay = async (params) => {
     const { clintid, clint, totalShipPrice, user, companyName } = params
 
-    if (clintid && clint.wallet > totalShipPrice) {
-        let available = false
+    if (clintid) {
         if (clint.package.availableOrders) {
-            available = clint.package.companies.some(company => company == companyName) || clint.package.companies[0] == 'all'
+            const availableCompany = clint.package.companies.some(company => company == companyName) || clint.package.companies[0] == 'all'
+            if (availableCompany) {
+                --clint.package.availableOrders;
+            }
+        } else if (clint.wallet > totalShipPrice) {
+            clint.wallet -= totalShipPrice;
+        } else if (clint.credit.status == 'accepted' && clint.credit.limet > totalShipPrice) {
+            clint.credit.limet -= totalShipPrice;
+        } else {
+            console.log('user.wallet')
+            user.wallet -= totalShipPrice;
+            await user.save()
         }
 
-        if (available) {
-            --clint.package.availableOrders;
-        } else {
-            clint.wallet = clint.wallet - totalShipPrice;
-        }
         await clint.save()
     } else {
-        let available = false
-        if (user.package.userAvailableOrders) {
-            available = user.package.companies.some(company => company == companyName) || user.package.companies[0] == 'all'
+        if (user.package.userAvailableOrders && user.rolle == 'user') {
+            const availableCompany = user.package.companies.some(company => company == companyName) || user.package.companies[0] == 'all'
+            if (availableCompany) {
+                --user.package.userAvailableOrders;
+            }
+        } else {
+            user.wallet -= totalShipPrice;
         }
 
-        if (available) {
-            --user.package.userAvailableOrders;
-        } else {
-            user.wallet = user.wallet - totalShipPrice;
-        }
         await user.save()
     }
 }

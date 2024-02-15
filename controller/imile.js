@@ -299,8 +299,9 @@ exports.createOrder = async (req, res) => {
             msg: "order created successfully",
             data: order,
             clientData: {
+                package: clint.package,
                 wallet: clint.wallet,
-                package: clint.package
+                credit: clint.credit
             }
         })
     } catch (err) {
