@@ -195,18 +195,18 @@ exports.editClient = async (req, res) => {
 
 /** Get marketer clients*/
 exports.getAllClients = async (req, res) => {
-    const rolle = req.user.user.rolle;
+    const user = req.user.user;
 
     try {
         let clients = []
-        if (rolle == 'admin') {
+        if (user.rolle == 'admin') {
             clients = await Client.find({}).sort({ name: 1 })
-        } else {
+        } else if (user.rolle == 'marketer') {
             const populateObj = {
                 path: 'addby',
                 match: {
                     $or: [
-                        { rolle: { $regex: rolle, $options: 'i' } }
+                        { rolle: { $regex: 'marketer', $options: 'i' } }
                     ]
                 },
                 select: "email rolle"
@@ -214,6 +214,8 @@ exports.getAllClients = async (req, res) => {
 
             clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
             clients = clients.filter(clients => clients.addby)
+        } else if (user.rolle == 'user') {
+            clients = await Client.find({ addby: user.id }).sort({ name: 1 })
         }
 
         return res.status(200).json({ result: clients.length, data: clients })
@@ -230,23 +232,23 @@ exports.allClients = async (req, res) => {
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
     const { name = '', mobile = '', company = '', city = '' } = req.query
-    const rolle = req.user.user.rolle;
+    const user = req.user.user;
 
     try {
         let clients = []
-        if (rolle == 'admin') {
+        if (user.rolle == 'admin') {
             clients = await Client.find({
                 name: { $regex: name, $options: 'i' },
                 mobile: { $regex: mobile },
                 company: { $regex: company, $options: 'i' },
                 city: { $regex: city, $options: 'i' },
             }).sort({ name: 1 })
-        } else {
+        } else if (user.rolle == 'marketer') {
             const populateObj = {
                 path: 'addby',
                 match: {
                     $or: [
-                        { rolle: { $regex: rolle, $options: 'i' } }
+                        { rolle: { $regex: 'marketer', $options: 'i' } }
                     ]
                 },
                 select: "email rolle"
@@ -260,34 +262,18 @@ exports.allClients = async (req, res) => {
             }).populate(populateObj).sort({ name: 1 })
 
             clients = clients.filter(clients => clients.addby)
+        } else if (user.rolle == 'user') {
+            clients = await Client.find({
+                addby: user.id,
+                name: { $regex: name, $options: 'i' },
+                mobile: { $regex: mobile },
+                company: { $regex: company, $options: 'i' },
+                city: { $regex: city, $options: 'i' },
+            }).sort({ name: 1 })
         }
 
         const clientsPagination = paginate(clients, page, limit)
         return res.status(200).json({ ...clientsPagination })
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            error: error.message
-        })
-    }
-}
-
-/** Get user clients*/
-exports.getUserClients = async (req, res) => {
-    try {
-        const populateObj = {
-            path: 'addby',
-            match: {
-                $or: [
-                    { rolle: { $regex: 'user', $options: 'i' } }
-                ]
-            },
-            select: "email rolle"
-        }
-
-        let clients = await Client.find({}).populate(populateObj).sort({ name: 1 })
-        clients = clients.filter(clients => clients.addby)
-        return res.status(200).json({ result: clients.length, data: clients })
     } catch (error) {
         console.log(error);
         res.status(500).json({
