@@ -170,9 +170,9 @@ exports.creteNewOrder = async (req, res) => {
         console.log("data")
         console.log(data)
 
-        return res.status(200).json({
-            body: data
-        })
+        // return res.status(200).json({
+        //     body: data
+        // })
 
         const responsePromise = axios(config)
         const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
