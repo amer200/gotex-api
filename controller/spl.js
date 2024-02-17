@@ -83,7 +83,7 @@ exports.creteNewOrder = async (req, res) => {
         ContentPrice, ContentDescription, weight,
         pickUpDistrictID, pickUpAddress1, pickUpAddress2,
         deliveryDistrictID, deliveryAddress1, deliveryAddress2,
-        description, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
+        clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
     let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
@@ -246,7 +246,7 @@ exports.creteNewOrder = async (req, res) => {
         } else {
             let invo = ""
             if (daftraid) {
-                invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
+                invo = await createClientInvoice(daftraid, req.user.user.daftraid, ContentDescription, paytype, totalShipPrice, PiecesCount);
                 if (invo.result != 'successful') {
                     invo = { result: "failed", daftra_response: invo }
                 }
