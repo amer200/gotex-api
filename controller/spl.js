@@ -303,12 +303,11 @@ exports.getSticker = async (req, res) => {
         if (!order) {
             return res.status(404).json('Order not found')
         }
-
+        console.log(order.data.Items, order.data.Items[0].Barcode)
         const Barcode = order.data.Items[0].Barcode;
 
         const data = {
             'CRMAccountId': process.env.spl_accountId,
-            'ReferenceId': `${Date.now()} + Gotex`,
             'Barcode': Barcode
         }
 
@@ -324,7 +323,7 @@ exports.getSticker = async (req, res) => {
 
         const response = await axios(config)
         console.log(response.data)
-        if (response.data.Status != 1) {
+        if (response.data.StatusCode != 1) {
             return res.status(400).json({
                 data: response.data
             })
