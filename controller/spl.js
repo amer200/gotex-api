@@ -298,11 +298,12 @@ exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
 
     try {
+        const spl = await Spl.findOne();
         const order = await SplOrder.findById(orderId);
         if (!order) {
             return res.status(404).json('Order not found')
         }
-        console.log(order.data.Items, order.data.Items[0].Barcode)
+
         const Barcode = order.data.Items[0].Barcode;
 
         const data = {
