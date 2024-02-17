@@ -298,7 +298,7 @@ exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
 
     try {
-        const order = await JtOrder.findById(oId);
+        const order = await SplOrder.findById(orderId);
         if (!order) {
             return res.status(404).json('Order not found')
         }
