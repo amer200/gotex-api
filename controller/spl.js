@@ -116,7 +116,7 @@ exports.creteNewOrder = async (req, res) => {
         var TotalAmount = res.locals.codAmount;
     }
     const data = {
-        'CRMAccountId': 31314344634,
+        'CRMAccountId': process.env.spl_accountId,
         // 'BranchId': 0,
         'PickupType': 0,
         'RequestTypeId': 1,
@@ -287,6 +287,49 @@ exports.creteNewOrder = async (req, res) => {
                 }
             })
         }
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+exports.getSticker = async (req, res) => {
+    const orderId = req.params.id;
+
+    try {
+        const order = await JtOrder.findById(oId);
+        if (!order) {
+            return res.status(404).json('Order not found')
+        }
+        console.log(order.data.Items, order.data.Items[0].Barcode)
+        const Barcode = order.data.Items[0].Barcode;
+
+        const data = {
+            'CRMAccountId': process.env.spl_accountId,
+            'ReferenceId': `${Date.now()} + Gotex`,
+            'Barcode': Barcode
+        }
+
+        var config = {
+            method: 'post',
+            url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/GetUPDSItemHistory',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'Authorization': `bearer ${spl.token}`
+            },
+            data: data
+        };
+
+        const response = await axios(config)
+        console.log(response.data)
+        if (response.data.Status != 1) {
+            return res.status(400).json({
+                data: response.data
+            })
+        }
+
+        res.status(200).json({ data: response.data })
     } catch (err) {
         console.log(err)
         res.status(500).json({
