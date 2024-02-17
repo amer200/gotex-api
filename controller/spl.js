@@ -294,49 +294,6 @@ exports.creteNewOrder = async (req, res) => {
         })
     }
 }
-exports.getSticker = async (req, res) => {
-    const orderId = req.params.id;
-
-    try {
-        const spl = await Spl.findOne();
-        const order = await SplOrder.findById(orderId);
-        if (!order) {
-            return res.status(404).json('Order not found')
-        }
-        console.log(order.data.Items, order.data.Items[0].Barcode)
-        const Barcode = order.data.Items[0].Barcode;
-
-        const data = {
-            'CRMAccountId': process.env.spl_accountId,
-            'Barcode': Barcode
-        }
-
-        var config = {
-            method: 'post',
-            url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/GetUPDSItemHistory',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                'Authorization': `bearer ${spl.token}`
-            },
-            data: data
-        };
-
-        const response = await axios(config)
-        console.log(response.data)
-        if (response.data.StatusCode != 1) {
-            return res.status(400).json({
-                data: response.data
-            })
-        }
-
-        res.status(200).json({ data: response.data })
-    } catch (err) {
-        console.log(err)
-        res.status(500).json({
-            error: err
-        })
-    }
-}
 exports.getUserOrders = async (req, res) => {
     const userId = req.user.user.id;
     SplOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
