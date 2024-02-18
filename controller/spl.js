@@ -155,6 +155,22 @@ exports.creteNewOrder = async (req, res) => {
         ]
     }
 
+    const sender = {
+        name: SenderName,
+        mobile: SenderMobileNumber,
+        city: pickUpDistrictID,
+        AddressLine1: pickUpAddress1,
+        AddressLine2: pickUpAddress2
+    }
+
+    const receiver = {
+        name: reciverName,
+        mobile: reciverMobile,
+        city: deliveryDistrictID,
+        AddressLine1: deliveryAddress1,
+        AddressLine2: deliveryAddress2
+    }
+
     try {
         var config = {
             method: 'post',
@@ -184,20 +200,8 @@ exports.creteNewOrder = async (req, res) => {
             company: "Spl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
-            reciver: {
-                name: reciverName,
-                mobile: reciverMobile,
-                city: deliveryDistrictID,
-                AddressLine1: deliveryAddress1,
-                AddressLine2: deliveryAddress2
-            },
-            sender: {
-                name: SenderName,
-                mobile: SenderMobileNumber,
-                city: pickUpDistrictID,
-                AddressLine1: pickUpAddress1,
-                AddressLine2: pickUpAddress2
-            },
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
@@ -212,20 +216,8 @@ exports.creteNewOrder = async (req, res) => {
             company: "Spl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
-            reciver: {
-                name: reciverName,
-                mobile: reciverMobile,
-                city: deliveryDistrictID,
-                AddressLine1: deliveryAddress1,
-                AddressLine2: deliveryAddress2
-            },
-            sender: {
-                name: SenderName,
-                mobile: SenderMobileNumber,
-                city: pickUpDistrictID,
-                AddressLine1: pickUpAddress1,
-                AddressLine2: pickUpAddress2
-            },
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,

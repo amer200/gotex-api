@@ -19,7 +19,9 @@ const smsaOrderSchema = mongoose.Schema({
         type: String,
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
-    }
+    },
+    sender: Object,
+    receiver: Object,
 })
 
 module.exports = mongoose.model("smsaOrder", smsaOrderSchema);

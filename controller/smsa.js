@@ -103,6 +103,25 @@ exports.createUserOrder = async (req, res) => {
             "DutyPaid": false
         });
 
+        const sender = {
+            name: p_name,
+            mobile: p_ContactPhoneNumber,
+            city: p_City,
+            address: p_AddressLine1,
+            address2: p_AddressLine2,
+            province: p_District,
+        }
+
+        const receiver = {
+            name: c_name,
+            mobile: c_ContactPhoneNumber,
+            mobile2: c_ContactPhoneNumber2,
+            city: c_City,
+            address: c_AddressLine1,
+            address2: c_AddressLine2,
+            province: c_District,
+        }
+
         var config = {
             method: 'post',
             url: 'https://ecomapis.smsaexpress.com/api/shipment/b2c/new',
@@ -120,6 +139,8 @@ exports.createUserOrder = async (req, res) => {
             company: "smsa",
             ordernumber: ordersNum + 1,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
             paytype: paytype,
@@ -132,6 +153,8 @@ exports.createUserOrder = async (req, res) => {
             company: "smsa",
             ordernumber: ordersNum + 1,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
             paytype: paytype,

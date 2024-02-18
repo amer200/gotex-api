@@ -258,6 +258,26 @@ exports.createOrder = async (req, res) => {
             }
         });
 
+        const sender = {
+            name: p_name,
+            mobile: p_phone,
+            city: p_city,
+            address: p_line1,
+            province: p_StateOrProvinceCode,
+            cellPhone: p_CellPhone,
+            company: p_company
+        }
+
+        const receiver = {
+            name: c_name,
+            mobile: c_phone,
+            city: c_city,
+            address: c_line1,
+            province: c_StateOrProvinceCode,
+            cellPhone: c_CellPhone,
+            company: c_company
+        }
+
         var config = {
             method: 'post',
             url: 'https://ws.aramex.net/ShippingAPI.V2/Shipping/Service_1_0.svc/json/CreateShipments',
@@ -275,6 +295,8 @@ exports.createOrder = async (req, res) => {
             company: "aramex",
             ordernumber: ordersNum + 2,
             data: response.data,
+            sender,
+            receiver,
             paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
@@ -287,6 +309,8 @@ exports.createOrder = async (req, res) => {
             company: "aramex",
             ordernumber: ordersNum + 2,
             data: response.data,
+            sender,
+            receiver,
             paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,

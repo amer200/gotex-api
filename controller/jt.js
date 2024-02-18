@@ -114,6 +114,23 @@ exports.createUserOrder = async (req, res) => {
         "payType":"PP_PM",
         "isUnpackEnabled":0
      }`;
+
+    const sender = {
+        name: s_name,
+        mobile: s_mobile,
+        city: s_city,
+        address: s_address,
+        province: s_prov
+    }
+
+    const receiver = {
+        name: re_name,
+        mobile: re_mobile,
+        city: re_city,
+        address: re_address,
+        province: re_prov
+    }
+
     let data = qs.stringify({
         bizContent: bizContent
     });
@@ -140,6 +157,8 @@ exports.createUserOrder = async (req, res) => {
             ordernumber: ordersNum + 2,
             paytype: paytype,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
             marktercode: markterCode,
@@ -152,6 +171,8 @@ exports.createUserOrder = async (req, res) => {
             ordernumber: ordersNum + 2,
             paytype: paytype,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
             marktercode: markterCode,

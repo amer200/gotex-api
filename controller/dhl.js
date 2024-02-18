@@ -194,6 +194,23 @@ exports.createUserOrder = async (req, res) => {
             }
         });
 
+        const sender = {
+            name: p_name,
+            mobile: p_phone,
+            city: p_city,
+            address: p_line1,
+            company: p_company,
+            postalCode: p_postalCode
+        }
+
+        const receiver = {
+            name: c_name,
+            mobile: c_phone,
+            city: c_city,
+            address: c_line1,
+            company: c_company,
+            postalCode: c_postalCode
+        }
 
         const config = {
             method: 'POST',
@@ -215,6 +232,8 @@ exports.createUserOrder = async (req, res) => {
             company: "dhl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
@@ -227,6 +246,8 @@ exports.createUserOrder = async (req, res) => {
             company: "dhl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
