@@ -10,6 +10,7 @@ const splOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     codPrice: Number,
+    weight: Number,
     marktercode: {
         type: String,
         default: ''
@@ -17,7 +18,6 @@ const splOrderSchema = mongoose.Schema({
     createdate: Date,
     created_at: Date,
     inovicedaftra: Object,
-    weight: Number,
     desc: String,
     status: {
         type: String,

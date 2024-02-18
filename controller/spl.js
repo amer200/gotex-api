@@ -205,9 +205,9 @@ exports.creteNewOrder = async (req, res) => {
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date(),
-            weight: weight,
             desc: ContentDescription
         })
         const myOrder = await Order.create({
@@ -221,9 +221,9 @@ exports.creteNewOrder = async (req, res) => {
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date(),
-            weight: weight,
             desc: ContentDescription,
         })
         console.log("order")

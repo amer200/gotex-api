@@ -8,6 +8,7 @@ const imileOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     codPrice: Number,
+    weight: Number,
     marktercode: {
         type: String,
         default: ''

@@ -126,6 +126,7 @@ exports.createUserOrder = async (req, res) => {
             receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -140,6 +141,7 @@ exports.createUserOrder = async (req, res) => {
             receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })
