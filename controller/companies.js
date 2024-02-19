@@ -84,8 +84,7 @@ exports.allOrders = async (req, res) => {
         }).populate(populateObj);
         const aramexOrders = AramexOrder.find({
             ...query,
-            // "data.Shipments[0].ID": { $regex: billCode, $options: 'i' }
-            "data.Shipments[0]['ID']": { $regex: billCode, $options: 'i' }
+            "data.Shipments.ID": { $regex: billCode, $options: 'i' }
         }).populate(populateObj);
         const imileOrders = ImileOrder.find({
             ...query,

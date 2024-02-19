@@ -337,9 +337,9 @@ exports.getOrders = async (req, res) => {
                     order.billCode = order.data.awb_no
                     break;
                 case 'aramex':
-                    if (order.data.Shipments && order.data.Shipments[0]) {
-                        console.log(order.data.Shipments[0], order.data.Shipments[0]["ID"])
-                        order.billCode = order.data.Shipments[0]["ID"]
+                    console.log(order.data.Shipments[0])
+                    if (order.data.Shipments[0]) {
+                        order.billCode = order.data.Shipments["ID"]
                     }
                     break;
                 case 'imile':
