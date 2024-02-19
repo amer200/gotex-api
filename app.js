@@ -3,7 +3,6 @@ dotenv.config({ path: 'test.env' })
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const dbUrl = process.env.DB_URL;
 const port = process.env.PORT;
 const jwt = require("jsonwebtoken");
@@ -22,8 +21,8 @@ app.post('/user/add-clint-deposit', uploadClintReceipts.single('recipt'));
 app.set("view engine", "ejs");
 /********************************************************************************* */
 app.use(express.static('public'));
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 /********************************************************************************* */
 app.use(cors({
     origin: '*',
