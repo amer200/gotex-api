@@ -832,33 +832,28 @@ method = get
 1) crete order
 url = https://dashboard.go-tex.net/api/spl/crete-new-order
 method = post
-body
-    {
-    "reciverName": "عامر مصطفى عامر",
-    "reciverMobile": "0565011313",
-    "SenderName": "gotex",
+body{
+    "cod": 0,
+    "SenderName": "gotex test2",
     "SenderMobileNumber": "0565011313",
-    "ContentPrice": 28.7,
-    "ContentDescription": "books",
-    "Weight": 10.5,
-    "BoxLength": 350,
-    "BoxWidth": 200,
-    "BoxHeight": 200,
-    "description": "books",
     "pickUpDistrictID": 19929,
     "pickUpAddress1": "short address",
     "pickUpAddress2": "short address 2",
+    "reciverName": "gotex test1",
+    "reciverMobile": "0565011313",
     "deliveryDistrictID": 11095,
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
+    "ContentPrice": 28.7,
+    "ContentDescription": "books",
+    "weight": 10.5,
+    "BoxLength": 10,
+    "BoxWidth": 12,
+    "BoxHeight": 15,
     "Pieces": [
         {
             "PieceWeight": 3,
             "PieceDescription": "book"
-        },
-        {
-            "PieceWeight": 3,
-            "PieceDescription": "ffff"
         }
     ],
     "daftraid": 30
