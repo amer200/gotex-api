@@ -298,6 +298,23 @@ exports.getUserOrders = async (req, res) => {
             console.log(err.message)
         })
 }
+exports.getOrderById = async (req, res) => {
+    const orderId = req.params.id;
+
+    try {
+        const order = await SplOrder.findById(orderId)
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' })
+        }
+
+        res.status(200).json({ data: order })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
 exports.getCountries = async (req, res) => {
     const spl = await Spl.findOne();
     var data = qs.stringify({
