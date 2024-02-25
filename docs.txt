@@ -836,12 +836,14 @@ body{
     "cod": 0,
     "SenderName": "gotex test2",
     "SenderMobileNumber": "0565011313",
-    "pickUpDistrictID": 19929,
+    "pickUpDistrictID": 5355,
+    "pickUpDistrict": "أم الوكور",
     "pickUpAddress1": "short address",
     "pickUpAddress2": "short address 2",
     "reciverName": "gotex test1",
     "reciverMobile": "0565011313",
-    "deliveryDistrictID": 11095,
+    "deliveryDistrictID": 17543,
+    "deliveryDistrict": "البردان",
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
     "ContentPrice": 28.7,
@@ -858,23 +860,22 @@ body{
     ],
     "daftraid": 30
 }
-response
-{
+response{
     "msg": "order created successfully",
     "data": {
         "user": "65d472ed151dbd1f7715629e",
         "company": "Spl",
-        "ordernumber": "56/1708867634027gotex",
+        "ordernumber": "57/1708875261613gotex",
         "data": {
             "Items": [
                 {
-                    "ReferenceId": "1708867631254 + Gotex",
+                    "ReferenceId": "1708875258432 + Gotex",
                     "ItemStatus": 1,
                     "Message": "Success",
-                    "Barcode": "CRDSAL0601098924",
+                    "Barcode": "CRDSAL0601099124",
                     "ItemPiecesResponse": [
                         {
-                            "PieceBarcode": "CRDSAL0601099024",
+                            "PieceBarcode": "CRDSAL0601099224",
                             "PieceWeight": 3,
                             "PiecePrice": 0,
                             "PieceDescription": "book"
@@ -888,7 +889,8 @@ response
         "sender": {
             "name": "gotex test2",
             "mobile": "0565011313",
-            "city": 19929,
+            "city": "أم الوكور",
+            "cityId": 5355,
             "AddressLine1": "short address",
             "AddressLine2": "short address 2"
         },
@@ -897,23 +899,24 @@ response
         "codPrice": 0,
         "weight": 10.5,
         "marktercode": "",
-        "created_at": "2024-02-25T13:27:14.027Z",
+        "created_at": "2024-02-25T15:34:21.613Z",
         "desc": "books",
         "status": "pending",
         "receiver": {
             "name": "gotex test1",
             "mobile": "0565011313",
-            "city": 11095,
+            "city": "البردان",
+            "cityId": 17543,
             "AddressLine1": "d short address",
             "AddressLine2": "d short address 2"
         },
-        "_id": "65db4032a4672aa9cc28a26e",
+        "_id": "65db5dfd4b29e42d29e5638c",
         "__v": 0,
         "inovicedaftra": {
             "result": "successful",
             "code": 202,
-            "id": "11465",
-            "invoice_number": "111435"
+            "id": "11469",
+            "invoice_number": "111439"
         }
     },
     "clientData": {}
