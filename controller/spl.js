@@ -81,8 +81,8 @@ exports.getToken = (req, res) => {
 exports.creteNewOrder = async (req, res) => {
     const { reciverName, reciverMobile, SenderName, SenderMobileNumber,
         ContentPrice, ContentDescription, weight,
-        pickUpDistrictID, pickUpDistrict, pickUpAddress1, pickUpAddress2,
-        deliveryDistrictID, deliveryDistrict, deliveryAddress1, deliveryAddress2,
+        pickUpDistrictID, pickUpDistrict, pickUpGovernorate, pickUpAddress1, pickUpAddress2,
+        deliveryDistrictID, deliveryDistrict, deliveryGovernorate, deliveryAddress1, deliveryAddress2,
         clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
     let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
@@ -159,6 +159,7 @@ exports.creteNewOrder = async (req, res) => {
         name: SenderName,
         mobile: SenderMobileNumber,
         city: pickUpDistrict,
+        governorate: pickUpGovernorate,
         cityId: pickUpDistrictID,
         AddressLine1: pickUpAddress1,
         AddressLine2: pickUpAddress2
@@ -168,6 +169,7 @@ exports.creteNewOrder = async (req, res) => {
         name: reciverName,
         mobile: reciverMobile,
         city: deliveryDistrict,
+        governorate: deliveryGovernorate,
         cityId: deliveryDistrictID,
         AddressLine1: deliveryAddress1,
         AddressLine2: deliveryAddress2
