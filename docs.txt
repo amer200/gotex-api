@@ -829,7 +829,7 @@ method = get
 url = https://dashboard.go-tex.net/api/invatation/accept-invitation/{id}
 method = get
 /////****************spl***************///////
-1) crete order
+1) create order
 url = https://dashboard.go-tex.net/api/spl/crete-new-order
 method = post
 body{
@@ -859,43 +859,208 @@ body{
     "daftraid": 30
 }
 response
-
 {
-    "reciver": {
-        "name": "عامر مصطفى عامر",
-        "mobile": "565011313",
-        "city": 4799,
-        "AddressLine1": "short address",
-        "AddressLine2": "short address 2"
-    },
-    "sender": {
-        "name": "gotex",
-        "mobile": "50706615",
-        "city": 4799,
-        "AddressLine1": "d short address",
-        "AddressLine2": "d short address 2"
-    },
+    "msg": "order created successfully",
     "data": {
-        "Items": [
-            {
-                "ReferenceId": "1691776614179 + Gotex",
-                "ItemStatus": 1,
-                "Message": "Success",
-                "Barcode": "CRDSAL0600478823",
-                "ItemPiecesResponse": null
-            }
-        ],
-        "Status": 1,
-        "Message": "Success"
-    }
+        "user": "65d472ed151dbd1f7715629e",
+        "company": "Spl",
+        "ordernumber": "56/1708867634027gotex",
+        "data": {
+            "Items": [
+                {
+                    "ReferenceId": "1708867631254 + Gotex",
+                    "ItemStatus": 1,
+                    "Message": "Success",
+                    "Barcode": "CRDSAL0601098924",
+                    "ItemPiecesResponse": [
+                        {
+                            "PieceBarcode": "CRDSAL0601099024",
+                            "PieceWeight": 3,
+                            "PiecePrice": 0,
+                            "PieceDescription": "book"
+                        }
+                    ]
+                }
+            ],
+            "Status": 1,
+            "Message": "Success"
+        },
+        "sender": {
+            "name": "gotex test2",
+            "mobile": "0565011313",
+            "city": 19929,
+            "AddressLine1": "short address",
+            "AddressLine2": "short address 2"
+        },
+        "paytype": "cc",
+        "price": 22,
+        "codPrice": 0,
+        "weight": 10.5,
+        "marktercode": "",
+        "created_at": "2024-02-25T13:27:14.027Z",
+        "desc": "books",
+        "status": "pending",
+        "receiver": {
+            "name": "gotex test1",
+            "mobile": "0565011313",
+            "city": 11095,
+            "AddressLine1": "d short address",
+            "AddressLine2": "d short address 2"
+        },
+        "_id": "65db4032a4672aa9cc28a26e",
+        "__v": 0,
+        "inovicedaftra": {
+            "result": "successful",
+            "code": 202,
+            "id": "11465",
+            "invoice_number": "111435"
+        }
+    },
+    "clientData": {}
 }
-//////**********//////////
+/************
 2)get cities  (use city id in create order)
 url = https://dashboard.go-tex.net/api/spl/get-cities  
 method  = get 
 response {
-
+    "data": {
+        "Cities": [
+            {
+                "Id": "5355",
+                "Name": "أم الوكور",
+                "GovernorateName": "الطائف"
+            },
+            {
+                "Id": "17543",
+                "Name": "البردان",
+                "GovernorateName": "الشملي"
+            }
+        ]
+    }
 }
+/************
+3) Get user orders 
+url = https://dashboard.go-tex.net/api/spl/get-all-orders
+response {
+    "data": [
+        {
+            "_id": "65db3be1151dbd1f771570e5",
+            "user": "65d472ed151dbd1f7715629e",
+            "company": "Spl",
+            "ordernumber": "55/1708866529446gotex",
+            "data": {
+                "Items": [
+                    {
+                        "ReferenceId": "1708866526780 + Gotex",
+                        "ItemStatus": 1,
+                        "Message": "Success",
+                        "Barcode": "CRDSAL0601098724",
+                        "ItemPiecesResponse": [
+                            {
+                                "PieceBarcode": "CRDSAL0601098824",
+                                "PieceWeight": 3,
+                                "PiecePrice": 0,
+                                "PieceDescription": "book"
+                            }
+                        ]
+                    }
+                ],
+                "Status": 1,
+                "Message": "Success"
+            },
+            "sender": {
+                "name": "gotex test2",
+                "mobile": "0565011313",
+                "city": 19929,
+                "AddressLine1": "short address",
+                "AddressLine2": "short address 2"
+            },
+            "paytype": "cc",
+            "price": 22,
+            "codPrice": 0,
+            "weight": 10.5,
+            "marktercode": "",
+            "created_at": "2024-02-25T13:08:49.446Z",
+            "desc": "books",
+            "status": "pending",
+            "receiver": {
+                "name": "gotex test1",
+                "mobile": "0565011313",
+                "city": 11095,
+                "AddressLine1": "d short address",
+                "AddressLine2": "d short address 2"
+            },
+            "__v": 0,
+            "inovicedaftra": {
+                "result": "successful",
+                "code": 202,
+                "id": "11463",
+                "invoice_number": "111433"
+            }
+        }
+    ]
+}
+/************
+4) Get order by id
+url = https://dashboard.go-tex.net/api/spl/get-order/:id
+response{
+    "data": {
+        "_id": "65db3be1151dbd1f771570e5",
+        "user": "65d472ed151dbd1f7715629e",
+        "company": "Spl",
+        "ordernumber": "55/1708866529446gotex",
+        "data": {
+            "Items": [
+                {
+                    "ReferenceId": "1708866526780 + Gotex",
+                    "ItemStatus": 1,
+                    "Message": "Success",
+                    "Barcode": "CRDSAL0601098724",
+                    "ItemPiecesResponse": [
+                        {
+                            "PieceBarcode": "CRDSAL0601098824",
+                            "PieceWeight": 3,
+                            "PiecePrice": 0,
+                            "PieceDescription": "book"
+                        }
+                    ]
+                }
+            ],
+            "Status": 1,
+            "Message": "Success"
+        },
+        "sender": {
+            "name": "gotex test2",
+            "mobile": "0565011313",
+            "city": 19929,
+            "AddressLine1": "short address",
+            "AddressLine2": "short address 2"
+        },
+        "paytype": "cc",
+        "price": 22,
+        "codPrice": 0,
+        "weight": 10.5,
+        "marktercode": "",
+        "created_at": "2024-02-25T13:08:49.446Z",
+        "desc": "books",
+        "status": "pending",
+        "receiver": {
+            "name": "gotex test1",
+            "mobile": "0565011313",
+            "city": 11095,
+            "AddressLine1": "d short address",
+            "AddressLine2": "d short address 2"
+        },
+        "__v": 0,
+        "inovicedaftra": {
+            "result": "successful",
+            "code": 202,
+            "id": "11463",
+            "invoice_number": "111433"
+        }
+    }
+}
+
 /******************************/
 3)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/spl/edit
