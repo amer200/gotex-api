@@ -106,7 +106,7 @@ exports.activateUser = (req, res) => {
                 u.verified = true;
                 u.save()
                     .then(u => {
-                        return res.status(200).redirect("https://gotex1-git-test-branch-gnada1221-gmailcom.vercel.app/")
+                        return res.status(200).redirect("https://gotex.vercel.app/")
                     })
             } else {
                 return res.status(404).json({
