@@ -8,6 +8,7 @@ const mailSubject = "Verify your gotex account"
 
 exports.signUp = (req, res) => {
     const { name, password, email, mobile, address, location } = req.body;
+    console.log(req.body)
     var cr = []
     if (req.files) {
         req.files.forEach(f => {
