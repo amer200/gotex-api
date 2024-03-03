@@ -94,6 +94,20 @@ exports.createUserOrder = async (req, res) => {
         // sendercountry: "SA"
     }
 
+    const sender = {
+        name: p_name,
+        mobile: p_mobile,
+        city: p_city,
+        address: p_streetaddress
+    }
+
+    const receiver = {
+        name: c_name,
+        mobile: c_mobile,
+        city: c_city,
+        address: c_streetaddress
+    }
+
     try {
         const config = {
             method: 'POST',
@@ -109,11 +123,14 @@ exports.createUserOrder = async (req, res) => {
             company: "saee",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
-            created_at: new Date()
+            created_at: new Date(),
         })
 
         const myOrder = await Order.create({
@@ -122,9 +139,12 @@ exports.createUserOrder = async (req, res) => {
             company: "saee",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date(),
         })

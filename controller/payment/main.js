@@ -4,7 +4,6 @@ const User = require("../../model/user");
 const PaymentOrder = require("../../model/payment/orders");
 const Client = require("../../model/clint");
 const cclink = require("../../model/payment/cclink");
-const { json } = require('body-parser');
 
 exports.addDepoist = async (req, res) => {
     const amount = req.body.amount;

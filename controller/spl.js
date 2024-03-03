@@ -81,9 +81,9 @@ exports.getToken = (req, res) => {
 exports.creteNewOrder = async (req, res) => {
     const { reciverName, reciverMobile, SenderName, SenderMobileNumber,
         ContentPrice, ContentDescription, weight,
-        pickUpDistrictID, pickUpAddress1, pickUpAddress2,
-        deliveryDistrictID, deliveryAddress1, deliveryAddress2,
-        description, clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
+        pickUpDistrictID, pickUpDistrict, pickUpGovernorate, pickUpAddress1, pickUpAddress2,
+        deliveryDistrictID, deliveryDistrict, deliveryGovernorate, deliveryAddress1, deliveryAddress2,
+        clintid, cod, daftraid, BoxLength, BoxWidth, BoxHeight } = req.body
     let Pieces = req.body.Pieces
     const markterCode = req.body.markterCode || '';
     const totalShipPrice = res.locals.totalShipPrice;
@@ -116,7 +116,7 @@ exports.creteNewOrder = async (req, res) => {
         var TotalAmount = res.locals.codAmount;
     }
     const data = {
-        'CRMAccountId': 31314344634,
+        'CRMAccountId': process.env.spl_accountId,
         // 'BranchId': 0,
         'PickupType': 0,
         'RequestTypeId': 1,
@@ -155,13 +155,33 @@ exports.creteNewOrder = async (req, res) => {
         ]
     }
 
+    const sender = {
+        name: SenderName,
+        mobile: SenderMobileNumber,
+        city: pickUpDistrict,
+        governorate: pickUpGovernorate,
+        cityId: pickUpDistrictID,
+        AddressLine1: pickUpAddress1,
+        AddressLine2: pickUpAddress2
+    }
+
+    const receiver = {
+        name: reciverName,
+        mobile: reciverMobile,
+        city: deliveryDistrict,
+        governorate: deliveryGovernorate,
+        cityId: deliveryDistrictID,
+        AddressLine1: deliveryAddress1,
+        AddressLine2: deliveryAddress2
+    }
+
     try {
         var config = {
             method: 'post',
             url: 'https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                // 'Content-Type': 'application/json;charset=utf-8',
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/json;charset=utf-8',
                 'Authorization': `bearer ${spl.token}`
             },
             data: data
@@ -170,9 +190,9 @@ exports.creteNewOrder = async (req, res) => {
         console.log("data")
         console.log(data)
 
-        return res.status(200).json({
-            body: data
-        })
+        // return res.status(200).json({
+        //     body: data
+        // })
 
         const responsePromise = axios(config)
         const [ordersNum, user, response] = await Promise.all([ordersNumPromise, userPromise, responsePromise])
@@ -184,26 +204,14 @@ exports.creteNewOrder = async (req, res) => {
             company: "Spl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
-            reciver: {
-                name: reciverName,
-                mobile: reciverMobile,
-                city: deliveryDistrictID,
-                AddressLine1: deliveryAddress1,
-                AddressLine2: deliveryAddress2
-            },
-            sender: {
-                name: SenderName,
-                mobile: SenderMobileNumber,
-                city: pickUpDistrictID,
-                AddressLine1: pickUpAddress1,
-                AddressLine2: pickUpAddress2
-            },
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date(),
-            weight: weight,
             desc: ContentDescription
         })
         const myOrder = await Order.create({
@@ -212,26 +220,14 @@ exports.creteNewOrder = async (req, res) => {
             company: "Spl",
             ordernumber: `${ordersNum + "/" + Date.now() + "gotex"}`,
             data: response.data,
-            reciver: {
-                name: reciverName,
-                mobile: reciverMobile,
-                city: deliveryDistrictID,
-                AddressLine1: deliveryAddress1,
-                AddressLine2: deliveryAddress2
-            },
-            sender: {
-                name: SenderName,
-                mobile: SenderMobileNumber,
-                city: pickUpDistrictID,
-                AddressLine1: pickUpAddress1,
-                AddressLine2: pickUpAddress2
-            },
+            sender,
+            receiver,
             paytype: paytype,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date(),
-            weight: weight,
             desc: ContentDescription,
         })
         console.log("order")
@@ -246,7 +242,7 @@ exports.creteNewOrder = async (req, res) => {
         } else {
             let invo = ""
             if (daftraid) {
-                invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, PiecesCount);
+                invo = await createClientInvoice(daftraid, req.user.user.daftraid, ContentDescription, paytype, totalShipPrice, PiecesCount);
                 if (invo.result != 'successful') {
                     invo = { result: "failed", daftra_response: invo }
                 }
@@ -290,7 +286,7 @@ exports.creteNewOrder = async (req, res) => {
     } catch (err) {
         console.log(err)
         res.status(500).json({
-            error: err.message
+            error: err
         })
     }
 }
@@ -305,6 +301,23 @@ exports.getUserOrders = async (req, res) => {
         .catch(err => {
             console.log(err.message)
         })
+}
+exports.getOrderById = async (req, res) => {
+    const orderId = req.params.id;
+
+    try {
+        const order = await SplOrder.findById(orderId)
+        if (!order) {
+            return res.status(404).json({ error: 'Order not found' })
+        }
+
+        res.status(200).json({ data: order })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            error: err.message
+        })
+    }
 }
 exports.getCountries = async (req, res) => {
     const spl = await Spl.findOne();

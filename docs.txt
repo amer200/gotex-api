@@ -829,80 +829,251 @@ method = get
 url = https://dashboard.go-tex.net/api/invatation/accept-invitation/{id}
 method = get
 /////****************spl***************///////
-1) crete order
+1) create order
 url = https://dashboard.go-tex.net/api/spl/crete-new-order
 method = post
-body
-    {
-    "reciverName": "عامر مصطفى عامر",
-    "reciverMobile": "0565011313",
-    "SenderName": "gotex",
+body{
+    "cod": 0,
+    "SenderName": "gotex test2",
     "SenderMobileNumber": "0565011313",
-    "ContentPrice": 28.7,
-    "ContentDescription": "books",
-    "Weight": 10.5,
-    "BoxLength": 350,
-    "BoxWidth": 200,
-    "BoxHeight": 200,
-    "description": "books",
-    "pickUpDistrictID": 19929,
+    "pickUpDistrictID": 5355,
+    "pickUpDistrict": "أم الوكور",
+    "pickUpGovernorate":"الطائف",
     "pickUpAddress1": "short address",
     "pickUpAddress2": "short address 2",
-    "deliveryDistrictID": 11095,
+    "reciverName": "gotex test1",
+    "reciverMobile": "0565011313",
+    "deliveryDistrictID": 17543,
+    "deliveryDistrict": "البردان",
+    "deliveryGovernorate": "الشملي",
     "deliveryAddress1": "d short address",
     "deliveryAddress2": "d short address 2",
+    "ContentPrice": 28.7,
+    "ContentDescription": "books",
+    "weight": 10.5,
+    "BoxLength": 10,
+    "BoxWidth": 12,
+    "BoxHeight": 15,
     "Pieces": [
         {
             "PieceWeight": 3,
             "PieceDescription": "book"
-        },
-        {
-            "PieceWeight": 3,
-            "PieceDescription": "ffff"
         }
     ],
     "daftraid": 30
 }
-response
-
-{
-    "reciver": {
-        "name": "عامر مصطفى عامر",
-        "mobile": "565011313",
-        "city": 4799,
-        "AddressLine1": "short address",
-        "AddressLine2": "short address 2"
-    },
-    "sender": {
-        "name": "gotex",
-        "mobile": "50706615",
-        "city": 4799,
-        "AddressLine1": "d short address",
-        "AddressLine2": "d short address 2"
-    },
+response{
+    "msg": "order created successfully",
     "data": {
-        "Items": [
-            {
-                "ReferenceId": "1691776614179 + Gotex",
-                "ItemStatus": 1,
-                "Message": "Success",
-                "Barcode": "CRDSAL0600478823",
-                "ItemPiecesResponse": null
-            }
-        ],
-        "Status": 1,
-        "Message": "Success"
-    }
+        "user": "65d472ed151dbd1f7715629e",
+        "company": "Spl",
+        "ordernumber": "58/1708882518442gotex",
+        "data": {
+            "Items": [
+                {
+                    "ReferenceId": "1708882516633 + Gotex",
+                    "ItemStatus": 1,
+                    "Message": "Success",
+                    "Barcode": "CRDSAL0601099324",
+                    "ItemPiecesResponse": [
+                        {
+                            "PieceBarcode": "CRDSAL0601099424",
+                            "PieceWeight": 3,
+                            "PiecePrice": 0,
+                            "PieceDescription": "book"
+                        }
+                    ]
+                }
+            ],
+            "Status": 1,
+            "Message": "Success"
+        },
+        "sender": {
+            "name": "gotex test2",
+            "mobile": "0565011313",
+            "city": "أم الوكور",
+            "governorate": "الطائف",
+            "cityId": 5355,
+            "AddressLine1": "short address",
+            "AddressLine2": "short address 2"
+        },
+        "paytype": "cc",
+        "price": 22,
+        "codPrice": 0,
+        "weight": 10.5,
+        "marktercode": "",
+        "created_at": "2024-02-25T17:35:18.442Z",
+        "desc": "books",
+        "status": "pending",
+        "receiver": {
+            "name": "gotex test1",
+            "mobile": "0565011313",
+            "city": "البردان",
+            "governorate": "الشملي",
+            "cityId": 17543,
+            "AddressLine1": "d short address",
+            "AddressLine2": "d short address 2"
+        },
+        "_id": "65db7a56b5b05591dde2d3b0",
+        "__v": 0,
+        "inovicedaftra": {
+            "result": "successful",
+            "code": 202,
+            "id": "11481",
+            "invoice_number": "111451"
+        }
+    },
+    "clientData": {}
 }
-//////**********//////////
+/************
 2)get cities  (use city id in create order)
 url = https://dashboard.go-tex.net/api/spl/get-cities  
 method  = get 
 response {
-
+    "data": {
+        "Cities": [
+            {
+                "Id": "5355",
+                "Name": "أم الوكور",
+                "GovernorateName": "الطائف"
+            },
+            {
+                "Id": "17543",
+                "Name": "البردان",
+                "GovernorateName": "الشملي"
+            }
+        ]
+    }
 }
-/******************************/
-3)edit info (must be admin)
+/************
+3) Get user orders 
+url = https://dashboard.go-tex.net/api/spl/get-all-orders
+response {
+    "data": [
+        {
+            "_id": "65db3be1151dbd1f771570e5",
+            "user": "65d472ed151dbd1f7715629e",
+            "company": "Spl",
+            "ordernumber": "55/1708866529446gotex",
+            "data": {
+                "Items": [
+                    {
+                        "ReferenceId": "1708866526780 + Gotex",
+                        "ItemStatus": 1,
+                        "Message": "Success",
+                        "Barcode": "CRDSAL0601098724",
+                        "ItemPiecesResponse": [
+                            {
+                                "PieceBarcode": "CRDSAL0601098824",
+                                "PieceWeight": 3,
+                                "PiecePrice": 0,
+                                "PieceDescription": "book"
+                            }
+                        ]
+                    }
+                ],
+                "Status": 1,
+                "Message": "Success"
+            },
+            "sender": {
+                "name": "gotex test2",
+                "mobile": "0565011313",
+                "city": 19929,
+                "AddressLine1": "short address",
+                "AddressLine2": "short address 2"
+            },
+            "paytype": "cc",
+            "price": 22,
+            "codPrice": 0,
+            "weight": 10.5,
+            "marktercode": "",
+            "created_at": "2024-02-25T13:08:49.446Z",
+            "desc": "books",
+            "status": "pending",
+            "receiver": {
+                "name": "gotex test1",
+                "mobile": "0565011313",
+                "city": 11095,
+                "AddressLine1": "d short address",
+                "AddressLine2": "d short address 2"
+            },
+            "__v": 0,
+            "inovicedaftra": {
+                "result": "successful",
+                "code": 202,
+                "id": "11463",
+                "invoice_number": "111433"
+            }
+        }
+    ]
+}
+/************
+4) Get order by id
+url = https://dashboard.go-tex.net/api/spl/get-order/:id
+response{
+    "data": {
+        "_id": "65db7a56b5b05591dde2d3b0",
+        "user": "65d472ed151dbd1f7715629e",
+        "company": "Spl",
+        "ordernumber": "58/1708882518442gotex",
+        "data": {
+            "Items": [
+                {
+                    "ReferenceId": "1708882516633 + Gotex",
+                    "ItemStatus": 1,
+                    "Message": "Success",
+                    "Barcode": "CRDSAL0601099324",
+                    "ItemPiecesResponse": [
+                        {
+                            "PieceBarcode": "CRDSAL0601099424",
+                            "PieceWeight": 3,
+                            "PiecePrice": 0,
+                            "PieceDescription": "book"
+                        }
+                    ]
+                }
+            ],
+            "Status": 1,
+            "Message": "Success"
+        },
+        "sender": {
+            "name": "gotex test2",
+            "mobile": "0565011313",
+            "city": "أم الوكور",
+            "governorate": "الطائف",
+            "cityId": 5355,
+            "AddressLine1": "short address",
+            "AddressLine2": "short address 2"
+        },
+        "paytype": "cc",
+        "price": 22,
+        "codPrice": 0,
+        "weight": 10.5,
+        "marktercode": "",
+        "created_at": "2024-02-25T17:35:18.442Z",
+        "desc": "books",
+        "status": "pending",
+        "receiver": {
+            "name": "gotex test1",
+            "mobile": "0565011313",
+            "city": "البردان",
+            "governorate": "الشملي",
+            "cityId": 17543,
+            "AddressLine1": "d short address",
+            "AddressLine2": "d short address 2"
+        },
+        "__v": 0,
+        "inovicedaftra": {
+            "result": "successful",
+            "code": 202,
+            "id": "11481",
+            "invoice_number": "111451"
+        }
+    }
+}
+
+/**************
+5)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/spl/edit
 method = post
 
@@ -919,13 +1090,6 @@ body
 response
 {
     "msg": "ok",
-}
-/**************
-4) get all user orders
-url = https://dashboard.go-tex.net/spl/get-all-orders
-method = get
-response {
-    "data": []
 }
 //******************************** daftra *******************************************************//
 **************staff******************

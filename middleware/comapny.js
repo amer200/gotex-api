@@ -57,7 +57,7 @@ exports.checkCompany = (CompanyModel) => {
                         if ((clint.wallet < totalShipPrice) && (clint.credit.status != 'accepted' && clint.credit.limet < totalShipPrice) && (user.wallet < totalShipPrice)) {
                             return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                         }
-                    } else if (user.wallet < totalShipPrice) {
+                    } else if (!user.wallet || user.wallet < totalShipPrice) {
                         return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                     }
 

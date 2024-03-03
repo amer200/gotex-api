@@ -8,7 +8,7 @@ const { isMarketerOrAdmin } = require("../middleware/marketerOrAdmin");
 // User || Marketer
 routes.post("/add-new-client", userMiddlewares.isAuth, clientController.addClient);
 
-// Marketer || Admin
+// User || Marketer || Admin
 routes.post("/edit-client/:id", userMiddlewares.isAuth, clientController.editClient);
 routes.get("/get-all-clients", userMiddlewares.isAuth, clientController.getAllClients);
 routes.get("/all-clients", userMiddlewares.isAuth, clientController.allClients);

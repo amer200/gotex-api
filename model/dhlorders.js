@@ -8,6 +8,7 @@ const dhlOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     codPrice: Number,
+    weight: Number,
     marktercode: {
         type: String,
         default: ''
@@ -21,7 +22,9 @@ const dhlOrderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     },
-    cancelReason: String
+    cancelReason: String,
+    sender: Object,
+    receiver: Object,
 })
 
 module.exports = mongoose.model("DhlOrder", dhlOrderSchema);

@@ -216,6 +216,23 @@ exports.createOrder = async (req, res) => {
             }
         });
 
+        let sender = {
+            company: p_company,
+
+            city: p_city,
+            address: p_address,
+            mobile: p_mobile,
+        }
+
+        const receiver = {
+            name: c_name,
+            mobile: c_mobile,
+            city: c_city,
+            address: c_address,
+            street: c_street,
+            company: c_company
+        }
+
         var config = {
             method: 'post',
             url: 'https://openapi.imile.com/client/order/createOrder',
@@ -232,9 +249,12 @@ exports.createOrder = async (req, res) => {
             company: "imile",
             ordernumber: ordersNum + 2,
             data: response.data,
+            sender,
+            receiver,
             paytype: "cod",
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -244,9 +264,12 @@ exports.createOrder = async (req, res) => {
             company: "imile",
             ordernumber: ordersNum + 2,
             data: response.data,
+            sender,
+            receiver,
             paytype: "cod",
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -286,6 +309,18 @@ exports.createOrder = async (req, res) => {
 
             order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
             await clint.save()
+
+            sender = {
+                name: clint.name,
+                street: clint.street,
+                company: clint.company,
+
+                city: p_city || clint.city,
+                address: p_address || clint.address,
+                mobile: p_mobile || clint.mobile,
+            }
+
+            order.sender = myOrder.sender = sender
         }
         if (!cod) {
             const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'imile' }

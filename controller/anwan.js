@@ -88,6 +88,23 @@ exports.createUserOrder = async (req, res) => {
                 "productType": "Parcel"
             }
         };
+
+        const sender = {
+            name: s_name,
+            mobile: s_phone,
+            city: s_city,
+            address: s_address,
+            email: s_email
+        }
+
+        const receiver = {
+            name: c_name,
+            mobile: c_phone,
+            city: c_city,
+            address: c_address,
+            email: c_email
+        }
+
         var config = {
             method: 'post',
             url: 'https://api.fastcoo-tech.com/API_v2/CreateOrder',
@@ -105,8 +122,11 @@ exports.createUserOrder = async (req, res) => {
             ordernumber: ordersNum + 2,
             paytype: paytype,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })
@@ -117,8 +137,11 @@ exports.createUserOrder = async (req, res) => {
             ordernumber: ordersNum + 2,
             paytype: paytype,
             data: response.data,
+            sender,
+            receiver,
             price: totalShipPrice,
             codPrice: res.locals.codAmount,
+            weight: weight,
             marktercode: markterCode,
             created_at: new Date()
         })

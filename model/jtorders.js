@@ -8,6 +8,7 @@ const jtOrderSchema = mongoose.Schema({
     paytype: String,
     price: Number,
     codPrice: Number,
+    weight: Number,
     marktercode: {
         type: String,
         default: ''
@@ -20,7 +21,9 @@ const jtOrderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     },
-    cancelReason: String
+    cancelReason: String,
+    sender: Object,
+    receiver: Object,
 })
 
 module.exports = mongoose.model("JtOrder", jtOrderSchema);
