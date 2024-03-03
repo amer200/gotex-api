@@ -254,9 +254,12 @@ exports.getCities = (req, res) => {
 exports.getSticker = (req, res) => {
     const orderId = req.params.id;
     AnwanOrder.findById(orderId)
-        .then(o => {
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
             res.status(200).json({
-                data: o.data.label_print
+                data: order.data.label_print
             })
         })
         .catch(error => {

@@ -228,14 +228,17 @@ exports.getUserOrders = async (req, res) => {
 exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
     SaeeOrder.findById(orderId)
-        .then(o => {
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
             axios({
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'secret': `${process.env.SAEE_KEY_P}`
                 },
-                url: `https://corporate.saeex.com/deliveryrequest/printsticker/${o.data.waybill}`
+                url: `https://corporate.saeex.com/deliveryrequest/printsticker/${order.data.waybill}`
             })
                 .then(bill => {
                     res.status(200).json({

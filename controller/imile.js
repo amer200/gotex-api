@@ -353,7 +353,7 @@ exports.getSticker = async (req, res) => {
         const imile = await Imile.findOne();
         const order = await ImileOrder.findById(orderId)
         if (!order) {
-            return res.status(400).json({ msg: 'Order not found' })
+            return res.status(404).json({ msg: 'Order not found' })
         }
         const orderCodeNo = order.data.data.expressNo
         console.log(orderCodeNo)

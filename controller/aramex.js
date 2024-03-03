@@ -392,8 +392,11 @@ exports.getUserOrders = (req, res) => {
 exports.getSticker = (req, res) => {
     const orderId = req.params.id;
     AramexOrder.findById(orderId)
-        .then(o => {
-            const url = o.data.Shipments[0].ShipmentLabel.LabelURL;
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
+            const url = order.data.Shipments[0].ShipmentLabel.LabelURL;
             res.status(200).json({
                 data: url
             })

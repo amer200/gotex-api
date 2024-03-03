@@ -339,9 +339,7 @@ exports.getSticker = async (req, res) => {
     DhlOrder.findById(orderId)
         .then(order => {
             if (!order) {
-                return res.status(400).json({
-                    err: "order not found"
-                })
+                return res.status(404).json({ error: 'Order not found' })
             }
 
             const shipmentTrackingNumber = order.data.shipmentTrackingNumber
