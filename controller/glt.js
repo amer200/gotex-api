@@ -257,9 +257,12 @@ exports.getUserOrders = async (req, res) => {
 exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
     GltOrder.findById(orderId)
-        .then(o => {
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
             var data = qs.stringify({
-                'orderid': o.data.orderTrackingNumber
+                'orderid': order.data.orderTrackingNumber
             });
             var config = {
                 method: 'post',

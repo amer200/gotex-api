@@ -228,8 +228,11 @@ exports.getUserOrders = async (req, res) => {
 exports.getSticker = async (req, res) => {
     const orderId = req.params.id;
     SaeeOrder.findById(orderId)
-        .then(o => {
-            const data = { waybill: o.data.waybill }
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
+            const data = { waybill: order.data.waybill }
             axios({
                 method: 'GET',
                 headers: {

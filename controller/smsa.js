@@ -243,11 +243,14 @@ exports.getUserOrders = (req, res) => {
 exports.getSticker = (req, res) => {
     const orderId = req.params.id;
     SmsaOrder.findById(orderId)
-        .then(o => {
+        .then(order => {
+            if (!order) {
+                return res.status(404).json({ error: 'Order not found' })
+            }
             let routes = [];
             let i = 1;
-            o.data.waybills.forEach(w => {
-                routes.push(`/smsaAwb/${o.ordernumber}-p${i}.pdf`);
+            order.data.waybills.forEach(w => {
+                routes.push(`/smsaAwb/${order.ordernumber}-p${i}.pdf`);
                 i++
             })
             res.status(200).json({

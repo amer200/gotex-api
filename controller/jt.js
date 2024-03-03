@@ -242,6 +242,9 @@ exports.createUserOrder = async (req, res) => {
 exports.getSticker = async (req, res) => {
     const oId = req.params.oId;
     const order = await JtOrder.findById(oId);
+    if (!order) {
+        return res.status(404).json({ error: 'Order not found' })
+    }
     const billCode = order.data.data.billCode;
     try {
         const bizContent = `{
