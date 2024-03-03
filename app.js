@@ -14,6 +14,7 @@ const { dbConnection } = require('./db/mongoose');
 /********************************************************************************* */
 /** File Upload */
 app.post('/user/signup', upload.array('cr'));
+app.post('/user/sign-up', upload.array('cr'));
 app.post('/user/marketer-signup', upload.array('cr'));
 app.post('/invatation/invited-user-signup', upload.array('cr'));
 app.post('/user/add-clint-deposit', uploadClintReceipts.single('recipt'));
