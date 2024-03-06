@@ -10,6 +10,7 @@ const GltOrder = require("../model/gltorders");
 const SaeeOrder = require("../model/saeeorders");
 const SmsaOrder = require("../model/smsaorders");
 const SplOrder = require("../model/splorders");
+const Client = require("../model/clint");
 
 exports.MarkterSignUp = async (req, res) => {
     try {
@@ -185,4 +186,20 @@ exports.getSmsaOrder = async (req, res) => {
         page: page,
         pages: pages
     })
+}
+
+exports.getMarketerClients = async (req, res) => {
+    const code = req.user.user.code;
+
+    try {
+        let clients = await Client.find({ marktercode: code }).sort({ name: 1 })
+        clients = clients.filter(clients => clients.addby)
+
+        return res.status(200).json({ result: clients.length, data: clients })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            error: error.message
+        })
+    }
 }
