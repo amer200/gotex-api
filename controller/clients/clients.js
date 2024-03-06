@@ -282,67 +282,7 @@ exports.allClients = async (req, res) => {
     }
 }
 
-/** Add user as a client to daftra */
-// exports.addUserAsClient = async (user) => {
-//     let { id: userId, name, location: city, address, mobile, email, daftraid } = user
-//     // !Note : company sometimes make an error using this random number
-//     const company = Math.floor(Math.random() * 10) // to be unique
-//     const state = "", notes = "", category = "", birth_date = "", street = "" // to neglect them
-//     city = 'Najran'
-
-//     const first_name = name
-//     let staff_id = 0;
-
-//     if (!companyName || !city || !address || !mobile) {
-//         return { result: 'fail', msg: 'These info are required:  first_name, city, address and mobile' }
-//     }
-//     if (user.daftraid) {
-//         staff_id = user.daftraid;
-//     }
-
-//     // const usedEmail = await Client.findOne({ email })
-//     // if (usedEmail) {
-//     //     return {
-//     //         result: 'fail',
-//     //         msg: "This client email is already used."
-//     //     }
-//     // }
-
-//     const daftraResult = await addDaftraClient(staff_id, company, first_name, email, address, city, state, mobile, notes, category, birth_date);
-//     if (daftraResult.result != "ok") {
-//         return {
-//             result: 'fail',
-//             msg: "error with daftra",
-//             err: daftraResult
-//         }
-//     }
-//     const imileResult = await addImileClient(company, name, city, address, mobile, email, notes);
-//     if (imileResult != 1) {
-//         await removeDaftraClient(daftraResult.id)
-//         return {
-//             result: 'fail',
-//             msg: "error with imile",
-//             err: imileResult
-//         }
-//     }
-//     const myClient = new Client({
-//         name: name,
-//         company: company,
-//         email: email,
-//         mobile: mobile,
-//         city: city,
-//         address: address,
-//         notes: notes,
-//         street: street,
-//         category: category,
-//         addby: userId,
-//         orders: [],
-//         daftraClientId: daftraResult.id
-//     })
-//     await myClient.save();
-//     return { result: 'success', data: myClient }
-// }
-
+// By Admin
 exports.AddClientToMarkter = async (req, res) => {
     const clientId = req.body.clientId;
     const marketerCode = req.body.marketerCode;
@@ -376,6 +316,79 @@ exports.getClientsWithCredit = async (req, res) => {
         console.log(error)
         res.status(500).json({
             error: error
+        })
+    }
+}
+
+
+exports.registerClient = async (req, res) => {
+    const marketerCode = req.params.marketerCode;
+    let { company, name, city, state = '', address, mobile,
+        notes = '', category = '', birth_date, street, branches } = req.body
+
+    try {
+        const marketer = await Markter.findOne({ "code": marketerCode });
+        if (!marketer) {
+            return res.status(400).json({
+                msg: "marketer code not found"
+            })
+        }
+
+        name = name.trim()
+        let staff_id = 0;
+
+        if (!name || !city || !address || !mobile || !street) {
+            return res.status(400).json({
+                msg: 'These info are required:  name, city, address, mobile and street'
+            })
+        }
+
+        const usedMobile = await Client.findOne({ mobile })
+        console.log(mobile)
+        console.log(usedMobile)
+        if (usedMobile) {
+            return res.status(400).json({ msg: "This client mobile is already used." })
+        }
+
+        const daftraResult = await addDaftraClient(staff_id, company, name, address, city, state, mobile, notes, category, birth_date);
+        if (daftraResult.result != "ok") {
+            return res.status(400).json({
+                msg: "error with daftra",
+                err: daftraResult
+            })
+        }
+        const imileResult = await addImileClient(company, name, city, address, mobile, notes);
+        if (imileResult != 1) {
+            await removeDaftraClient(daftraResult.id)
+            return res.status(400).json({
+                msg: "error with imile",
+                err: imileResult
+            })
+        }
+        const myClient = await Client.create({
+            name,
+            company,
+            mobile,
+            city,
+            address,
+            notes,
+            street,
+            category,
+            addby: marketer._id,
+            orders: [],
+            daftraClientId: daftraResult.id,
+            branches,
+            marktercode: marketerCode
+        })
+
+        return res.status(200).json({
+            msg: "ok",
+            data: myClient
+        })
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({
+            error: error.message
         })
     }
 }
