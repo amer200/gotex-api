@@ -18,4 +18,6 @@ routes.post("/add-client-code", adminMiddleware.isAuth, clientController.AddClie
 routes.get("/clients-with-credit", adminMiddleware.isAuth, clientController.getClientsWithCredit);
 // routes.get("/remove-client/:id", adminMiddleware.isAuth, clientController.removeClient);
 
+routes.post("/register-client/:marketerCode", clientController.registerClient);
+
 module.exports = routes;
