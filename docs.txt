@@ -2027,7 +2027,29 @@ response {
         }
     ]
 }
-
+/************/
+6) Register client
+url = https://dashboard.go-tex.net/api/clients/register-client/:marketerCode
+method = post
+body {
+    "company": "1234899999 test company",
+    "name": "soha",
+    "city": "Jeddah",
+    "address": "12345 st test",
+    "mobile": "966000016",
+    "birth_date": "1-1-2001",
+    "street": "123 st",
+    "branches":[
+        {
+            "city":"Najran",
+            "address":"123 st"
+        },
+        {
+           "city":"Mecca",
+            "address":"123 st" 
+        }
+    ]
+}
 
 //***********************new markters ****************/
 1) signup
@@ -2084,6 +2106,50 @@ method = get
 10) get smsa orders
 url = https://dashboard.go-tex.net/api/markter/smsa-orders?page=1
 method = get
+//*************
+11) get marketer clients
+method = get
+url = https://dashboard.go-tex.net/api/markter/get-marketer-clients
+response{
+    "result": 1,
+    "data": [
+        {
+            "package": {
+                "companies": []
+            },
+            "_id": "65e9b25ade8cef8d320dfa20",
+            "name": "soha",
+            "company": "1234899999 test company",
+            "mobile": "966000016",
+            "city": "Jeddah",
+            "address": "12345 st test",
+            "notes": "",
+            "street": "123 st",
+            "wallet": 0,
+            "category": "",
+            "addby": "65e9b24cde8cef8d320dfa19",
+            "orders": [],
+            "daftraClientId": "828",
+            "marktercode": "abc",
+            "branches": [
+                {
+                    "city": "Najran",
+                    "address": "123 st",
+                    "_id": "65e9b25ade8cef8d320dfa21"
+                },
+                {
+                    "city": "Mecca",
+                    "address": "123 st",
+                    "_id": "65e9b25ade8cef8d320dfa22"
+                }
+            ],
+            "receipts": [],
+            "createdAt": "2024-03-07T12:26:02.134Z",
+            "updatedAt": "2024-03-07T12:26:02.134Z",
+            "__v": 0
+        }
+    ]
+}
 
 /************************************* Package *********************************/
 1) add package [admin]
