@@ -53,7 +53,7 @@ exports.getToken = (req, res) => {
     });
     var config = {
         method: 'post',
-        url: 'https://gateway-minasapre.sp.com.sa/token',
+        url: ' https://gateway-minasa.sp.com.sa/APIGateway/token',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
@@ -400,7 +400,7 @@ var job = new CronJob('00 00 00 * * *', async () => {
      */
     const spl = await Spl.findOne();
     const grant_type = "password";
-    const UserName = "extrAccount";
+    const UserName = process.env.spl_userName;
     const Password = process.env.spl_password;
     var data = qs.stringify({
         'grant_type': 'password',
