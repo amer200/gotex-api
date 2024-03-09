@@ -65,7 +65,7 @@ exports.allOrders = async (req, res) => {
             status: { $ne: "failed" }
         }
 
-        const populateObj = {
+        const populateObj = [{
             path: 'user',
             /**@Desc if users.name or user.email != keyword, it returns user=null */
             match: {
@@ -76,7 +76,13 @@ exports.allOrders = async (req, res) => {
                 ]
             },
             select: "name email mobile"
+        },
+        {
+            path: 'markters',
+            options: { strictPopulate: false },
+            select: "name"
         }
+        ]
 
         const anwanOrders = AnwanOrder.find({
             ...query,

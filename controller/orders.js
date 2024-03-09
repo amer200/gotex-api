@@ -282,6 +282,14 @@ exports.getOrders = async (req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: 'markters',
+                    localField: 'marktercode',
+                    foreignField: 'code',
+                    as: 'marketer'
+                }
+            },
+            {
                 $match: matchObj
             },
             { $sort: { created_at: -1 } },
@@ -303,6 +311,13 @@ exports.getOrders = async (req, res) => {
                     "user.daftraid": 0,
                     "user.package": 0,
                     "user.daftraClientId": 0,
+
+                    "marketer._id": 0,
+                    "marketer.password": 0,
+                    "marketer.email": 0,
+                    "marketer.mobile": 0,
+                    "marketer.code": 0,
+                    "marketer.__v": 0,
                 }
             }
         ])
@@ -330,44 +345,44 @@ exports.getOrders = async (req, res) => {
         const [orders, allOrders] = await Promise.all([ordersPromise, allOrdersPromise])
 
 
-        const myOrders = await Order.find({})
-        myOrders.forEach(async (order) => {
-            switch (order.company) {
-                case 'anwan':
-                    order.billCode = order.data.awb_no
-                    break;
-                case 'aramex':
-                    console.log(order.data.Shipments[0])
-                    if (order.data.Shipments[0]) {
-                        order.billCode = order.data.Shipments["ID"]
-                    }
-                    break;
-                case 'imile':
-                    if (order.data.code == "200") {
-                        order.billCode = order.data.data.expressNo
-                    }
-                    break;
-                case 'jt':
-                    if (order.data.msg == "success") {
-                        console.log(order.data.data.billCode)
-                        order.billCode = order.data.data.billCode
-                    }
-                    break;
-                case 'saee':
-                    order.billCode = order.data.waybill
-                    break;
-                case 'smsa':
-                    order.billCode = order.data.sawb
-                    break;
-                case 'spl':
-                    order.billCode = order.data.Items.Barcode
-                    break;
-                default:
-                    break;
-            }
-            order.billCode = order.billCode || ''
-            await order.save()
-        })
+        // const myOrders = await Order.find({})
+        // myOrders.forEach(async (order) => {
+        //     switch (order.company) {
+        //         case 'anwan':
+        //             order.billCode = order.data.awb_no
+        //             break;
+        //         case 'aramex':
+        //             console.log(order.data.Shipments[0])
+        //             if (order.data.Shipments[0]) {
+        //                 order.billCode = order.data.Shipments["ID"]
+        //             }
+        //             break;
+        //         case 'imile':
+        //             if (order.data.code == "200") {
+        //                 order.billCode = order.data.data.expressNo
+        //             }
+        //             break;
+        //         case 'jt':
+        //             if (order.data.msg == "success") {
+        //                 console.log(order.data.data.billCode)
+        //                 order.billCode = order.data.data.billCode
+        //             }
+        //             break;
+        //         case 'saee':
+        //             order.billCode = order.data.waybill
+        //             break;
+        //         case 'smsa':
+        //             order.billCode = order.data.sawb
+        //             break;
+        //         case 'spl':
+        //             order.billCode = order.data.Items.Barcode
+        //             break;
+        //         default:
+        //             break;
+        //     }
+        //     order.billCode = order.billCode || ''
+        //     await order.save()
+        // })
 
 
         let numberOfOrders, numberOfPages = 0
