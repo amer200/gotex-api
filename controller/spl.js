@@ -53,7 +53,7 @@ exports.getToken = (req, res) => {
     });
     var config = {
         method: 'post',
-        url: ' https://gateway-minasa.sp.com.sa/APIGateway/token',
+        url: 'https://gateway-minasa.sp.com.sa/APIGateway/token',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
