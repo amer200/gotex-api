@@ -3,9 +3,7 @@ dotenv.config({ path: '.env' })
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const dbUrl = process.env.DB_URL;
 const port = process.env.PORT;
-const jwt = require("jsonwebtoken");
 var cors = require('cors');
 var morgan = require('morgan')
 app.use(morgan('combined'))

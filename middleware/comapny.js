@@ -46,18 +46,18 @@ exports.checkCompany = (CompanyModel) => {
                     } else {
                         var shipPrice = company.marketerprice;
                     }
-
                     const totalShipPrice = shipPrice + weightPrice
+                    console.log(user.wallet, !user.wallet, user.wallet < totalShipPrice, !user.wallet || user.wallet < totalShipPrice)
                     if (clintid) {
                         const clint = await Clint.findById(clintid);
                         if (!clint) {
                             return res.status(400).json({ error: "Client not found" })
                         }
 
-                        if ((clint.wallet < totalShipPrice) && (clint.credit.status != 'accepted' && clint.credit.limet < totalShipPrice) && (user.wallet < totalShipPrice)) {
+                        if ((clint.wallet < totalShipPrice) && (clint.credit.status != 'accepted' || clint.credit.limet < totalShipPrice) && (user.wallet < totalShipPrice)) {
                             return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                         }
-                    } else if (!user.wallet || user.wallet < totalShipPrice) {
+                    } else if ((!user.wallet || user.wallet < totalShipPrice) && !user.package.userAvailableOrders) {
                         return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                     }
 
