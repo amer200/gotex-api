@@ -73,7 +73,7 @@ exports.createUserOrder = async (req, res) => {
     var nameCode = p_name;
   }
   var data = {
-    secret: process.env.SAEE_KEY,
+    secret: process.env.SAEE_KEY_P,
     cashonpickup: 0,
     p_name: p_name,
     p_city: p_city,
@@ -236,7 +236,7 @@ exports.getSticker = async (req, res) => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'secret': `${process.env.SAEE_KEY}`
+          'secret': `${process.env.SAEE_KEY_P}`
         },
         url: `https://corporate.saeex.com/deliveryrequest/printsticker/${order.data.waybill}`
       })
@@ -258,7 +258,7 @@ exports.trakingOrderByNum = async (req, res) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'secret': `${process.env.SAEE_KEY}`
+      'secret': `${process.env.SAEE_KEY_P}`
     },
     url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
   })
@@ -276,7 +276,7 @@ exports.getCities = (req, res) => {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
-      'secret': `${process.env.SAEE_KEY}`
+      'secret': `${process.env.SAEE_KEY_P}`
     },
     url: `https://corporate.saeex.com/deliveryrequest/getallcities`
   })
@@ -324,7 +324,7 @@ exports.cancelOrder = async (req, res) => {
       maxBodyLength: Infinity,
       url: 'https://corporate.saeex.com/deliveryrequest/cancelpickup',
       headers: {
-        'secret': process.env.SAEE_KEY,
+        'secret': process.env.SAEE_KEY_P,
         'Content-Type': 'application/json',
       },
       data: data
