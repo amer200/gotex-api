@@ -54,7 +54,7 @@ exports.checkCompany = (CompanyModel) => {
                             return res.status(400).json({ error: "Client not found" })
                         }
 
-                        if ((clint.wallet < totalShipPrice) && (clint.credit.status != 'accepted' || clint.credit.limet < totalShipPrice) && (user.wallet < totalShipPrice)) {
+                        if (!clint.package.userAvailableOrders && (clint.wallet < totalShipPrice) && (clint.credit.status != 'accepted' || clint.credit.limet < totalShipPrice) && (user.wallet < totalShipPrice)) {
                             return res.status(400).json({ msg: "Your wallet balance is not enough to make the shipment" })
                         }
                     } else if ((!user.wallet || user.wallet < totalShipPrice) && !user.package.userAvailableOrders) {
