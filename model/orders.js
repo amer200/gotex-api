@@ -7,6 +7,8 @@ const orderSchema = mongoose.Schema({
     data: Object,
     paytype: String,
     price: Number,
+    codPrice: Number,
+    weight: Number,
     marktercode: {
         type: String,
         default: ''
@@ -23,6 +25,7 @@ const orderSchema = mongoose.Schema({
     },
     sender: Object,
     receiver: Object,
+    cancelReason: String,
     order: {
         for: {
             type: String,
@@ -36,7 +39,6 @@ const orderSchema = mongoose.Schema({
             default: 'user-wallet'
         }
     },
-    cancelReason: String,
     cancel: {
         request: {
             type: Boolean,
