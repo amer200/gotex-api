@@ -21,6 +21,8 @@ const orderSchema = mongoose.Schema({
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
     },
+    sender: Object,
+    receiver: Object,
     order: {
         for: {
             type: String,
@@ -47,5 +49,12 @@ const orderSchema = mongoose.Schema({
         }
     }
 })
+
+orderSchema.index({ created_at: -1 }, { unique: false })
+orderSchema.index({ company: 1 }, { unique: false })
+orderSchema.index({ paytype: 1 }, { unique: false })
+orderSchema.index({ billCode: 1 }, { unique: false })
+orderSchema.index({ marktercode: 1 }, { unique: false })
+orderSchema.index({ user: 1 }, { unique: false })
 
 module.exports = mongoose.model("Order", orderSchema);
