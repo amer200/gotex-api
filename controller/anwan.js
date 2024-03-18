@@ -182,11 +182,12 @@ exports.createUserOrder = async (req, res) => {
             await clint.save()
         }
         if (!cod) {
-            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'anwan' }
-            ccOrderPay(ccOrderPayObj)
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'anwan', order }
+            await ccOrderPay(ccOrderPayObj)
         }
 
         myOrder.billCode = response.data.awb_no
+        myOrder.order = order.order
         await Promise.all([order.save(), myOrder.save()])
         res.status(200).json({
             msg: "order created successfully",

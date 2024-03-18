@@ -217,12 +217,14 @@ exports.createUserOrder = async (req, res) => {
             await clint.save()
         }
         if (!cod) {
-            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'jt' }
-            ccOrderPay(ccOrderPayObj)
+            const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'jt', order }
+            await ccOrderPay(ccOrderPayObj)
         }
 
         myOrder.billCode = response.data.data.billCode
+        myOrder.order = order.order
         await Promise.all([order.save(), myOrder.save()]);
+
         res.status(200).json({
             msg: "order created successfully",
             data: order,
@@ -299,11 +301,6 @@ exports.cancelOrder = async (req, res) => {
                 err: "This order is already canceled"
             })
         }
-        // if (!cancelReason) {
-        //     return res.status(400).json({
-        //         err: "cancelReason is required"
-        //     })
-        // }
 
         const txlogisticId = order.data.data.txlogisticId
         const billCode = order.data.data.billCode
@@ -343,6 +340,8 @@ exports.cancelOrder = async (req, res) => {
         order.status = 'canceled'
         order.cancelReason = cancelReason
         await order.save()
+
+        await refundCanceledOrder(order)
 
         return res.status(200).json({ data: response.data })
     } catch (err) {
