@@ -6,6 +6,7 @@ const Clint = require("../model/clint");
 const { createClientInvoice, createSupplierInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
 const Order = require("../model/orders");
+const refundCanceledOrder = require("../modules/refundCanceledOrder");
 
 
 exports.edit = (req, res) => {
@@ -313,11 +314,6 @@ exports.cancelOrder = async (req, res) => {
         err: "This order is already canceled"
       })
     }
-    // if (!cancelReason) {
-    //     return res.status(400).json({
-    //         err: "cancelReason is required"
-    //     })
-    // }
 
     let data = JSON.stringify({
       "waybill": order.data.waybill,
@@ -338,7 +334,9 @@ exports.cancelOrder = async (req, res) => {
     if (saeeRes.data.success == true) {
       order.status = 'canceled'
       order.cancelReason = cancelReason
-      await order.save()
+      await order.save(order)
+
+      await refundCanceledOrder(order)
 
       return res.status(200).json({ data: saeeRes.data })
     } else {

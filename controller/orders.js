@@ -7,6 +7,7 @@ const AramexOrder = require("../model/aramexorders");
 const SmsaOrder = require("../model/smsaorders");
 const SplOrder = require("../model/splorders");
 const Client = require("../model/clint");
+const refundCanceledOrder = require("../modules/refundCanceledOrder");
 
 /**
  * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
@@ -486,37 +487,7 @@ exports.cancelOrderRequestStatus = async (req, res) => {
         if (requestStatus == 'accepted') {
             order.status = 'canceled'
 
-            if (order.paytype == 'cc') {
-                let user = {}
-                if (order.order.for == 'user' || (order.order.for == 'client' && order.order.payedFrom == 'user-wallet')) {
-                    user = await User.findById(order.user)
-                }
-
-                if (order.order.for == 'client') {
-                    const client = await Client.findById(order.order.client)
-                    console.log(client)
-                    if (order.order.payedFrom == 'client-package') {
-                        ++client.package.availableOrders;
-                    } else if (order.order.payedFrom == 'client-wallet') {
-                        client.wallet += order.price
-                    } else if (order.order.payedFrom == 'client-credit') {
-                        client.credit.limet += order.price
-                    } else {
-                        user.wallet += order.price
-                        await user.save()
-                    }
-
-                    await client.save()
-                } else {
-                    if (order.order.payedFrom == 'user-package') {
-                        ++user.package.availableOrders;
-                    } else {
-                        user.wallet += order.price
-                    }
-
-                    await user.save()
-                }
-            }
+            await refundCanceledOrder(order)
         }
 
         await order.save()
@@ -532,15 +503,12 @@ exports.cancelOrderRequestStatus = async (req, res) => {
 
 exports.getCancelOrderRequests = async (req, res) => {
     try {
-        const anwanOrderPromise = AnwanOrder.find({ "cancel.request": true });
-        const aramexOrderPromise = AramexOrder.find({ "cancel.request": true });
-        const smsaOrderPromise = SmsaOrder.find({ "cancel.request": true });
-        const splOrderPromise = SplOrder.find({ "cancel.request": true });
+        const orders = await Order.find({
+            "cancel.request": true,
+            company: { $nin: ['saee', 'imile', 'jt'] }
+        }).sort({ created_at: -1 })
 
-        const [anwanOrder, aramexOrder, smsaOrder, splOrder] = await Promise.all([anwanOrderPromise, aramexOrderPromise, smsaOrderPromise, splOrderPromise])
-        const orders = [...anwanOrder, ...aramexOrder, ...smsaOrder, ...splOrder]
-
-        return res.status(200).json({ orders })
+        return res.status(200).json({ result: orders.length, data: orders })
     } catch (err) {
         console.log(err)
         res.status(500).json({

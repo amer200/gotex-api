@@ -418,11 +418,6 @@ exports.cancelOrder = async (req, res) => {
                 err: "This order is already canceled"
             })
         }
-        // if (!cancelReason) {
-        //     return res.status(400).json({
-        //         err: "cancelReason is required"
-        //     })
-        // }
 
         const waybillNo = order.data.data.expressNo
 
@@ -457,6 +452,9 @@ exports.cancelOrder = async (req, res) => {
         order.status = 'canceled'
         order.cancelReason = cancelReason
         await order.save()
+
+        await refundCanceledOrder(order)
+
         return res.status(200).json({ data: response.data })
     } catch (err) {
         console.log(err)

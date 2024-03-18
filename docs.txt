@@ -224,7 +224,7 @@ response {
 }
 
 4) get all orders with search (admin) ------ New API ------
-url = https://dashboard.go-tex.net/api/orders?page=1&limit=30&company={}&paytype={}&billCode={}&marktercode={}&keyword{}&startDate={}&endDate={}
+url = /orders?page=1&limit=30&company={}&paytype={}&billCode={}&marktercode={}&keyword{}&startDate={}&endDate={}
 method = GET
 
 by default (using only -> https://dashboard.go-tex.net/api/orders) : get all orders with pagination -> page=1, limit=30
@@ -271,7 +271,7 @@ response {
 }
 
 5) get order by id (admin)
-url = https://dashboard.go-tex.net/api/orders/:orderId
+url = /orders/:orderId
 method = GET
 
 response {
@@ -308,6 +308,149 @@ response {
         "billCode": "6110723394970"
     }
 }
+
+6) cancel order request [user]
+url = /orders/cancel-order-request
+method = POST
+
+body {
+    "orderId": "65f7879ed86cf017f068e705",
+    "cancelReason": "test"
+}
+
+response {
+    "msg": "Your canceling request is saved. Wait until admin accept it."
+}
+
+7) change cancel order request status [admin]
+url = /orders/cancel-order-request-status
+method = POST
+note: requestStatus is pending by default, can be set to one of these values : pending, accepted or rejected
+if it set to accepted the order status changed to canceled and user refunds order money (in his package, wallet, credit or user wallet)
+
+body {
+    "orderId": "65f7879ed86cf017f068e705",
+    "requestStatus":"accepted"
+}
+
+response {
+    "msg": "ok"
+}
+
+8) get all cancel order requests [admin]
+url = /orders/get-cancel-order-requests
+method = GET
+
+response {
+    "orders": [
+        {
+            "order": {
+                "for": "user",
+                "payedFrom": "user-wallet"
+            },
+            "cancel": {
+                "request": true,
+                "requestStatus": "accepted"
+            },
+            "_id": "65d35bf828a9518b56caa7f3",
+            "user": "65aa75eda40865c366f08fb9",
+            "company": "aramex",
+            "ordernumber": 26,
+            "data": {
+                "Transaction": null,
+                "Notifications": [],
+                "HasErrors": false,
+                "Shipments": [
+                    {
+                        "ID": "50069865731",
+                        "Reference1": "Shipment Reference",
+                        "Reference2": null,
+                        "Reference3": null,
+                        "ForeignHAWB": null,
+                        "HasErrors": false,
+                        "Notifications": [],
+                        "ShipmentLabel": {
+                            "LabelURL": "https://ws.aramex.net/ShippingAPI.V2/rpt_cache/7eded32fc088493fb072be2297dddc8a.pdf",
+                            "LabelFileContents": []
+                        },
+                        "ShipmentDetails": {
+                            "Origin": "JED",
+                            "Destination": "DHA",
+                            "ChargeableWeight": {
+                                "Unit": "KG",
+                                "Value": 3
+                            },
+                            "DescriptionOfGoods": "test desc",
+                            "GoodsOriginCountry": "SA",
+                            "NumberOfPieces": 1,
+                            "ProductGroup": "DOM",
+                            "ProductType": "CDS",
+                            "PaymentType": "3",
+                            "PaymentOptions": "",
+                            "CustomsValueAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 0
+                            },
+                            "CashOnDeliveryAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 10
+                            },
+                            "InsuranceAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 0
+                            },
+                            "CashAdditionalAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 0
+                            },
+                            "CollectAmount": {
+                                "CurrencyCode": "SAR",
+                                "Value": 0
+                            },
+                            "Services": "CODS,",
+                            "OriginCity": "Makkah",
+                            "DestinationCity": "Dammam"
+                        },
+                        "ShipmentAttachments": []
+                    }
+                ]
+            },
+            "paytype": "cod",
+            "price": 10,
+            "codPrice": 10,
+            "weight": 3,
+            "marktercode": "",
+            "created_at": "2024-02-19T13:47:36.013Z",
+            "status": "canceled",
+            "sender": {
+                "name": "test2",
+                "mobile": "966000000",
+                "city": "MAKKA",
+                "address": "Test Shipper Address Line1234",
+                "province": "389429",
+                "cellPhone": "2349859",
+                "company": "company abc"
+            },
+            "receiver": {
+                "name": "test1",
+                "mobile": "966505694459",
+                "city": "DAMMAM",
+                "address": "Test Shipper Address Line123",
+                "province": "234997",
+                "cellPhone": "3842789",
+                "company": "company"
+            },
+            "__v": 0,
+            "inovicedaftra": {
+                "result": "failed",
+                "msg": "daftraid for client is required to create daftra invoice"
+            },
+            "cancelReason": "test123"
+        }
+    ]
+}
+
+
 /*********************************saee***************************/
 1)edit info (must be admin)
 url = https://dashboard.go-tex.net/api/saee/edit
