@@ -190,11 +190,12 @@ exports.createUserOrder = async (req, res) => {
     }
 
     if (!cod) {
-      const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'saee' }
-      ccOrderPay(ccOrderPayObj)
+      const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'saee', order }
+      await ccOrderPay(ccOrderPayObj)
     }
 
     myOrder.billCode = response.data.waybill
+    myOrder.order = order.order
     await Promise.all([order.save(), myOrder.save()]);
 
     res.status(200).json({

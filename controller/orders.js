@@ -2,6 +2,12 @@ const User = require("../model/user")
 const Order = require("../model/orders")
 const paginate = require("../modules/paginate")
 
+const AnwanOrder = require("../model/anwanorders");
+const AramexOrder = require("../model/aramexorders");
+const SmsaOrder = require("../model/smsaorders");
+const SplOrder = require("../model/splorders");
+const Client = require("../model/clint");
+
 /**
  * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
  *        + Filter by date
@@ -425,6 +431,120 @@ exports.getOrderById = async (req, res) => {
         console.log(err);
         res.status(500).json({
             error: err.message
+        })
+    }
+}
+
+
+exports.cancelOrderRequest = async (req, res) => {
+    const { orderId, cancelReason = "" } = req.body;
+    const userId = req.user.user.id
+    const order = await Order.findById(orderId);
+
+    try {
+        if (!order || order.user != userId) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+
+        order.cancel.request = true
+        order.cancelReason = cancelReason
+        await order.save()
+
+        return res.status(200).json({ msg: "Your canceling request is saved. Wait until admin accept it." })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
+}
+
+exports.cancelOrderRequestStatus = async (req, res) => {
+    const { orderId, requestStatus } = req.body;
+    const order = await Order.findById(orderId);
+
+    try {
+        if (!order) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+
+        order.cancel.requestStatus = requestStatus
+        if (requestStatus == 'accepted') {
+            order.status = 'canceled'
+
+            if (order.paytype == 'cc') {
+                let user = {}
+                if (order.order.for == 'user' || (order.order.for == 'client' && order.order.payedFrom == 'user-wallet')) {
+                    user = await User.findById(order.user)
+                }
+
+                if (order.order.for == 'client') {
+                    const client = await Client.findById(order.order.client)
+                    console.log(client)
+                    if (order.order.payedFrom == 'client-package') {
+                        ++client.package.availableOrders;
+                    } else if (order.order.payedFrom == 'client-wallet') {
+                        client.wallet += order.price
+                    } else if (order.order.payedFrom == 'client-credit') {
+                        client.credit.limet += order.price
+                    } else {
+                        user.wallet += order.price
+                        await user.save()
+                    }
+
+                    await client.save()
+                } else {
+                    if (order.order.payedFrom == 'user-package') {
+                        ++user.package.availableOrders;
+                    } else {
+                        user.wallet += order.price
+                    }
+
+                    await user.save()
+                }
+            }
+        }
+
+        await order.save()
+        return res.status(200).json({ msg: "ok" })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
+}
+
+
+exports.getCancelOrderRequests = async (req, res) => {
+    try {
+        const anwanOrderPromise = AnwanOrder.find({ "cancel.request": true });
+        const aramexOrderPromise = AramexOrder.find({ "cancel.request": true });
+        const smsaOrderPromise = SmsaOrder.find({ "cancel.request": true });
+        const splOrderPromise = SplOrder.find({ "cancel.request": true });
+
+        const [anwanOrder, aramexOrder, smsaOrder, splOrder] = await Promise.all([anwanOrderPromise, aramexOrderPromise, smsaOrderPromise, splOrderPromise])
+        const orders = [...anwanOrder, ...aramexOrder, ...smsaOrder, ...splOrder]
+
+        return res.status(200).json({ orders })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
         })
     }
 }

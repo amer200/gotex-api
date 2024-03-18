@@ -267,12 +267,14 @@ exports.creteNewOrder = async (req, res) => {
                 await clint.save()
             }
             if (!cod) {
-                const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'spl' }
-                ccOrderPay(ccOrderPayObj)
+                const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'spl', order }
+                await ccOrderPay(ccOrderPayObj)
             }
 
             myOrder.billCode = response.data.Items.Barcode
-            await Promise.all([order.save(), myOrder.save()]);;
+            myOrder.order = order.order
+            await Promise.all([order.save(), myOrder.save()]);
+
             res.status(200).json({
                 msg: "order created successfully",
                 data: order,
