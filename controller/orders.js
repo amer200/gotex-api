@@ -2,6 +2,13 @@ const User = require("../model/user")
 const Order = require("../model/orders")
 const paginate = require("../modules/paginate")
 
+const AnwanOrder = require("../model/anwanorders");
+const AramexOrder = require("../model/aramexorders");
+const SmsaOrder = require("../model/smsaorders");
+const SplOrder = require("../model/splorders");
+const Client = require("../model/clint");
+const refundCanceledOrder = require("../modules/refundCanceledOrder");
+
 /**
  * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
  *        + Filter by date
@@ -345,44 +352,44 @@ exports.getOrders = async (req, res) => {
         const [orders, allOrders] = await Promise.all([ordersPromise, allOrdersPromise])
 
 
-        // const myOrders = await Order.find({})
-        // myOrders.forEach(async (order) => {
-        //     switch (order.company) {
-        //         case 'anwan':
-        //             order.billCode = order.data.awb_no
-        //             break;
-        //         case 'aramex':
-        //             console.log(order.data.Shipments[0])
-        //             if (order.data.Shipments[0]) {
-        //                 order.billCode = order.data.Shipments["ID"]
-        //             }
-        //             break;
-        //         case 'imile':
-        //             if (order.data.code == "200") {
-        //                 order.billCode = order.data.data.expressNo
-        //             }
-        //             break;
-        //         case 'jt':
-        //             if (order.data.msg == "success") {
-        //                 console.log(order.data.data.billCode)
-        //                 order.billCode = order.data.data.billCode
-        //             }
-        //             break;
-        //         case 'saee':
-        //             order.billCode = order.data.waybill
-        //             break;
-        //         case 'smsa':
-        //             order.billCode = order.data.sawb
-        //             break;
-        //         case 'spl':
-        //             order.billCode = order.data.Items.Barcode
-        //             break;
-        //         default:
-        //             break;
-        //     }
-        //     order.billCode = order.billCode || ''
-        //     await order.save()
-        // })
+        const myOrders = await Order.find({})
+        myOrders.forEach(async (order) => {
+            switch (order.company) {
+                case 'anwan':
+                    order.billCode = order.data.awb_no
+                    break;
+                case 'aramex':
+                    console.log(order.data.Shipments[0])
+                    if (order.data.Shipments[0]) {
+                        order.billCode = order.data.Shipments["ID"]
+                    }
+                    break;
+                case 'imile':
+                    if (order.data.code == "200") {
+                        order.billCode = order.data.data.expressNo
+                    }
+                    break;
+                case 'jt':
+                    if (order.data.msg == "success") {
+                        console.log(order.data.data.billCode)
+                        order.billCode = order.data.data.billCode
+                    }
+                    break;
+                case 'saee':
+                    order.billCode = order.data.waybill
+                    break;
+                case 'smsa':
+                    order.billCode = order.data.sawb
+                    break;
+                case 'spl':
+                    order.billCode = order.data.Items.Barcode
+                    break;
+                default:
+                    break;
+            }
+            order.billCode = order.billCode || ''
+            await order.save()
+        })
 
 
         let numberOfOrders, numberOfPages = 0
@@ -425,6 +432,87 @@ exports.getOrderById = async (req, res) => {
         console.log(err);
         res.status(500).json({
             error: err.message
+        })
+    }
+}
+
+
+exports.cancelOrderRequest = async (req, res) => {
+    const { orderId, cancelReason = "" } = req.body;
+    const userId = req.user.user.id
+    const order = await Order.findById(orderId);
+
+    try {
+        if (!order || order.user != userId) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+
+        order.cancel.request = true
+        order.cancelReason = cancelReason
+        await order.save()
+
+        return res.status(200).json({ msg: "Your canceling request is saved. Wait until admin accept it." })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
+}
+
+exports.cancelOrderRequestStatus = async (req, res) => {
+    const { orderId, requestStatus } = req.body;
+    const order = await Order.findById(orderId);
+
+    try {
+        if (!order) {
+            return res.status(400).json({
+                err: "order not found"
+            })
+        }
+        if (order.status == 'canceled') {
+            return res.status(400).json({
+                err: "This order is already canceled"
+            })
+        }
+
+        order.cancel.requestStatus = requestStatus
+        if (requestStatus == 'accepted') {
+            order.status = 'canceled'
+
+            await refundCanceledOrder(order)
+        }
+
+        await order.save()
+        return res.status(200).json({ msg: "ok" })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
+        })
+    }
+}
+
+
+exports.getCancelOrderRequests = async (req, res) => {
+    try {
+        const orders = await Order.find({
+            "cancel.request": true,
+            company: { $nin: ['saee', 'imile', 'jt'] }
+        }).sort({ created_at: -1 })
+
+        return res.status(200).json({ result: orders.length, data: orders })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({
+            msg: err.message
         })
     }
 }

@@ -20,7 +20,41 @@ const orderSchema = mongoose.Schema({
         type: String,
         enum: ['failed', 'pending', 'accepted', 'canceled'],
         default: 'pending'
+    },
+    sender: Object,
+    receiver: Object,
+    order: {
+        for: {
+            type: String,
+            enum: ['user', 'client'],
+            default: 'user'
+        },
+        client: { type: mongoose.Schema.Types.ObjectId, ref: 'Clint' },
+        payedFrom: {
+            type: String,
+            enum: ['user-wallet', 'user-package', 'client-package', 'client-wallet', 'client-credit'],
+            default: 'user-wallet'
+        }
+    },
+    cancelReason: String,
+    cancel: {
+        request: {
+            type: Boolean,
+            default: false
+        },
+        requestStatus: {
+            type: String,
+            enum: ['pending', 'accepted', 'rejected'],
+            default: 'pending'
+        }
     }
 })
+
+orderSchema.index({ created_at: -1 }, { unique: false })
+orderSchema.index({ company: 1 }, { unique: false })
+orderSchema.index({ paytype: 1 }, { unique: false })
+orderSchema.index({ billCode: 1 }, { unique: false })
+orderSchema.index({ marktercode: 1 }, { unique: false })
+orderSchema.index({ user: 1 }, { unique: false })
 
 module.exports = mongoose.model("Order", orderSchema);
