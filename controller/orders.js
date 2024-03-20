@@ -18,12 +18,15 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder")
 //     const endDate = req.query.endDate || new Date()
 //     const { company = '', paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
 
+//     const { company = '', paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
+
 //     try {
 //         console.time('blocking await')
 //         const query = {
 //             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
 //             marktercode: { $regex: marktercode, $options: 'i' },
 //             company: { $regex: company, $options: 'i' },
+//             billCode: { $regex: billCode, $options: 'i' },
 //             billCode: { $regex: billCode, $options: 'i' },
 //             created_at: {
 //                 $gte: startDate,
@@ -46,6 +49,8 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder")
 
 //         let ordersPerPage = await Order.find(query)
 //             .limit(limit).skip(skip).sort({ created_at: -1 })
+//             .populate(populateObj)
+//             .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
 //             .populate(populateObj)
 //             .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
 
@@ -165,6 +170,11 @@ exports.getOrders = async (req, res) => {
                     "data.data.imileAwb": 0,
                     "data.sticker": 0,
                     "data.Shipments.ShipmentDetails": 0,
+
+                    "data.waybills": 0,
+                    "data.data.imileAwb": 0,
+                    "data.sticker": 0,
+                    "data.Shipments.ShipmentDetails": 0,
                 }
             }
         ])
@@ -247,6 +257,57 @@ exports.getOrders = async (req, res) => {
                 numberOfPages
             },
             data: orders
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+// Filter orders by date + company
+exports.filterOrdersByDate = async (req, res) => {
+    /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    let page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const skip = (page - 1) * limit
+    const startDate = req.query.startDate || new Date('2000-01-01')
+    const endDate = req.query.endDate || new Date()
+    const { company = '' } = req.query
+
+    try {
+        console.time('blocking await')
+        const query = {
+            company: { $regex: company, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
+            status: { $ne: "failed" },
+        }
+        const populateObj = {
+            path: 'user',
+            select: "name email mobile"
+        }
+
+        let ordersPerPage = await Order.find(query)
+            .limit(limit).skip(skip).sort({ created_at: -1 })
+            .populate(populateObj)
+            .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
+
+        const numberOfOrders = await Order.find(query).countDocuments()
+        const numberOfPages = (numberOfOrders % limit == 0) ? numberOfOrders / limit : Math.floor(numberOfOrders / limit) + 1;
+
+        console.timeEnd('blocking await')
+        res.status(200).json({
+            result: ordersPerPage.length,
+            pagination: {
+                currentPage: page,
+                limit,
+                numberOfPages
+            },
+            data: ordersPerPage
         })
     } catch (err) {
         console.log(err);
