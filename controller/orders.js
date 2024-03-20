@@ -16,15 +16,18 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder")
 //     const skip = (page - 1) * limit
 //     const startDate = req.query.startDate || new Date('2000-01-01')
 //     const endDate = req.query.endDate || new Date()
-//     const { company = '', paytype = '', marktercode = '', keyword = '' } = req.query
-//     // , billCode = ''
+//     const { company = '', paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
+
+//     const { company = '', paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
+
 //     try {
 //         console.time('blocking await')
 //         const query = {
 //             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
 //             marktercode: { $regex: marktercode, $options: 'i' },
 //             company: { $regex: company, $options: 'i' },
-//             // "data.awb_no": { $regex: billCode, $options: 'i' },
+//             billCode: { $regex: billCode, $options: 'i' },
+//             billCode: { $regex: billCode, $options: 'i' },
 //             created_at: {
 //                 $gte: startDate,
 //                 $lte: endDate
@@ -46,7 +49,10 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder")
 
 //         let ordersPerPage = await Order.find(query)
 //             .limit(limit).skip(skip).sort({ created_at: -1 })
-//             .populate(populateObj);
+//             .populate(populateObj)
+//             .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
+//             .populate(populateObj)
+//             .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
 
 //         let numberOfOrders = ''
 //         let allOrders = []
@@ -78,163 +84,11 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder")
 //     }
 // }
 
-// exports.getOrders = async (req, res) => {
-//     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
-//     let page = +req.query.page || 1
-//     const limit = +req.query.limit || 30
-//     const skip = (page - 1) * limit
-//     const startDate = req.query.startDate || new Date('2000-01-01')
-//     const endDate = req.query.endDate || new Date()
-//     const { company = '', paytype = '', marktercode = '', keyword = '' } = req.query
-//     // , billCode = ''
-
-//     try {
-//         console.time('block')
-//         let matchObj = {}
-//         if (!company && !paytype && !marktercode && !keyword) {
-//             matchObj = {}
-//         } else if (!keyword) {
-//             matchObj = {
-//                 paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-//                 marktercode: { $regex: marktercode, $options: 'i' },
-//                 company: { $regex: company, $options: 'i' },
-//                 // "data.awb_no": { $regex: billCode, $options: 'i' },
-//                 created_at: {
-//                     $gte: startDate,
-//                     $lte: endDate
-//                 },
-//                 status: { $ne: "failed" },
-//             }
-//         } else {
-//             matchObj = {
-//                 paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-//                 marktercode: { $regex: marktercode, $options: 'i' },
-//                 company: { $regex: company, $options: 'i' },
-//                 // "data.awb_no": { $regex: billCode, $options: 'i' },
-//                 created_at: {
-//                     $gte: startDate,
-//                     $lte: endDate
-//                 },
-//                 status: { $ne: "failed" },
-//                 $or: [
-//                     { 'user.name': { $regex: keyword, $options: 'i' } },
-//                     { 'user.email': { $regex: keyword, $options: 'i' } },
-//                     { 'user.mobile': { $regex: keyword, $options: 'i' } }
-//                 ]
-//             }
-//         }
-
-//         const orders = await Order.aggregate([
-//             {
-//                 $lookup: { // populate with user data
-//                     from: 'users', // collection name in mongoDB
-//                     localField: 'user',
-//                     foreignField: '_id',
-//                     as: 'user'
-//                 }
-//             },
-//             {
-//                 $match: matchObj
-//             },
-//             {
-//                 $group: {
-//                     _id: null,
-//                     count: { $sum: 1 },
-//                     data: { $push: '$$ROOT' }
-//                 },
-//             },
-//             // { $skip: skip },
-//             // { $limit: limit },
-//             { $sort: { created_at: -1 } },
-//             {
-//                 $project: { // select
-//                     // "__v": 0,
-//                     // "user.password": 0,
-//                     // "user.address": 0,
-//                     // "user.location": 0,
-//                     // "user.emailcode": 0,
-//                     // "user.verified": 0,
-//                     // "user.rolle": 0,
-//                     // "user.wallet": 0,
-//                     // "user.cr": 0,
-//                     // "user.iscrproofed": 0,
-//                     // "user.__v": 0,
-//                     // "user.daftraid": 0,
-//                     // "user.package": 0,
-//                     // "user.daftraClientId": 0,
-//                     count: 1,
-//                     data: { $slice: ['$data', skip, limit] },
-//                 }
-//             }
-//         ])
-
-//         // const allOrdersPromise = Order.aggregate([
-//         //     {
-//         //         $lookup: {
-//         //             from: 'users',
-//         //             localField: 'user',
-//         //             foreignField: '_id',
-//         //             as: 'user'
-//         //         }
-//         //     },
-//         //     {
-//         //         $match: {
-//         //             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-//         //             marktercode: { $regex: marktercode, $options: 'i' },
-//         //             company: { $regex: company, $options: 'i' },
-//         //             // "data.awb_no": { $regex: billCode, $options: 'i' },
-//         //             created_at: {
-//         //                 $gte: startDate,
-//         //                 $lte: endDate
-//         //             },
-//         //             status: { $ne: "failed" },
-//         //             $or: [
-//         //                 { 'user.name': { $regex: keyword, $options: 'i' } },
-//         //                 { 'user.email': { $regex: keyword, $options: 'i' } },
-//         //                 { 'user.mobile': { $regex: keyword, $options: 'i' } }
-//         //             ]
-//         //         }
-//         //     },
-//         //     {
-//         //         $group: {
-//         //             _id: null,
-//         //             count: { $sum: 1 }
-//         //         }
-//         //     }
-//         // ])
-//         // const [orders, allOrders] = await Promise.all([ordersPromise, allOrdersPromise])
-
-//         let numberOfOrders, numberOfPages = 0
-//         if (orders[0]) {
-//             numberOfOrders = orders[0].count
-//             numberOfPages = (numberOfOrders % limit == 0) ? numberOfOrders / limit : Math.floor(numberOfOrders / limit) + 1;
-//         }
-
-//         console.timeEnd('block')
-//         res.status(200).json({
-//             result: orders[0].data.length,
-//             pagination: {
-//                 currentPage: page,
-//                 limit,
-//                 numberOfPages
-//             },
-//             ...orders[0]
-//         })
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).json({
-//             error: err.message
-//         })
-//     }
-// }
-
 exports.getOrders = async (req, res) => {
     /**Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
     let page = +req.query.page || 1
     const limit = +req.query.limit || 30
     const skip = (page - 1) * limit
-    const startDate = req.query.startDate || new Date('2000-01-01')
-    const endDate = req.query.endDate || new Date()
     const { company = '', paytype = '', billCode = '', marktercode = '', keyword = '' } = req.query
 
     try {
@@ -248,10 +102,6 @@ exports.getOrders = async (req, res) => {
                 marktercode: { $regex: marktercode, $options: 'i' },
                 company: { $regex: company, $options: 'i' },
                 billCode: { $regex: billCode, $options: 'i' },
-                created_at: {
-                    $gte: startDate,
-                    $lte: endDate
-                },
                 status: { $ne: "failed" },
             }
         } else {
@@ -260,10 +110,6 @@ exports.getOrders = async (req, res) => {
                 marktercode: { $regex: marktercode, $options: 'i' },
                 company: { $regex: company, $options: 'i' },
                 billCode: { $regex: billCode, $options: 'i' },
-                created_at: {
-                    $gte: startDate,
-                    $lte: endDate
-                },
                 status: { $ne: "failed" },
                 $or: [
                     { 'user.name': { $regex: keyword, $options: 'i' } },
@@ -319,6 +165,16 @@ exports.getOrders = async (req, res) => {
                     "marketer.mobile": 0,
                     "marketer.code": 0,
                     "marketer.__v": 0,
+
+                    "data.waybills": 0,
+                    "data.data.imileAwb": 0,
+                    "data.sticker": 0,
+                    "data.Shipments.ShipmentDetails": 0,
+
+                    "data.waybills": 0,
+                    "data.data.imileAwb": 0,
+                    "data.sticker": 0,
+                    "data.Shipments.ShipmentDetails": 0,
                 }
             }
         ])
@@ -401,6 +257,108 @@ exports.getOrders = async (req, res) => {
                 numberOfPages
             },
             data: orders
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+// Filter orders by date + company
+exports.filterOrdersByDate = async (req, res) => {
+    /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    let page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const skip = (page - 1) * limit
+    const startDate = req.query.startDate || new Date('2000-01-01')
+    const endDate = req.query.endDate || new Date()
+    const { company = '' } = req.query
+
+    try {
+        console.time('blocking await')
+        const query = {
+            company: { $regex: company, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
+            status: { $ne: "failed" },
+        }
+        const populateObj = {
+            path: 'user',
+            select: "name email mobile"
+        }
+
+        let ordersPerPage = await Order.find(query)
+            .limit(limit).skip(skip).sort({ created_at: -1 })
+            .populate(populateObj)
+            .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
+
+        const numberOfOrders = await Order.find(query).countDocuments()
+        const numberOfPages = (numberOfOrders % limit == 0) ? numberOfOrders / limit : Math.floor(numberOfOrders / limit) + 1;
+
+        console.timeEnd('blocking await')
+        res.status(200).json({
+            result: ordersPerPage.length,
+            pagination: {
+                currentPage: page,
+                limit,
+                numberOfPages
+            },
+            data: ordersPerPage
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({
+            error: err.message
+        })
+    }
+}
+
+// Filter orders by date + company
+exports.filterOrdersByDate = async (req, res) => {
+    /** Pagination -> default: page=1, limit=30 (max number of items (orders) per page)*/
+    let page = +req.query.page || 1
+    const limit = +req.query.limit || 30
+    const skip = (page - 1) * limit
+    const startDate = req.query.startDate || new Date('2000-01-01')
+    const endDate = req.query.endDate || new Date()
+    const { company = '' } = req.query
+
+    try {
+        console.time('blocking await')
+        const query = {
+            company: { $regex: company, $options: 'i' },
+            created_at: {
+                $gte: startDate,
+                $lte: endDate
+            },
+            status: { $ne: "failed" },
+        }
+        const populateObj = {
+            path: 'user',
+            select: "name email mobile"
+        }
+
+        let ordersPerPage = await Order.find(query)
+            .limit(limit).skip(skip).sort({ created_at: -1 })
+            .populate(populateObj)
+            .select("-__v -data.waybills -data.data.imileAwb -data.sticker -data.Shipments.ShipmentDetails");
+
+        const numberOfOrders = await Order.find(query).countDocuments()
+        const numberOfPages = (numberOfOrders % limit == 0) ? numberOfOrders / limit : Math.floor(numberOfOrders / limit) + 1;
+
+        console.timeEnd('blocking await')
+        res.status(200).json({
+            result: ordersPerPage.length,
+            pagination: {
+                currentPage: page,
+                limit,
+                numberOfPages
+            },
+            data: ordersPerPage
         })
     } catch (err) {
         console.log(err);
