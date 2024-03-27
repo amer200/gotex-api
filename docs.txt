@@ -324,59 +324,6 @@ response {
 }
 
 6) get order by id [admin]
-5) filter orders by date and company [admin]
-url = /orders/filter-by-date?page=1&limit=30&company={}&startDate={}&endDate={}
-method = GET
-
-default pagination -> page=1, limit=30
-
-response {
-    "result": 11,
-    "pagination": {
-        "currentPage": 5,
-        "limit": 30,
-        "numberOfPages": 5
-    },
-    "data": [
-        {
-            "order": {
-                "for": "user",
-                "payedFrom": "user-wallet"
-            },
-            "cancel": {
-                "request": false,
-                "requestStatus": "pending"
-            },
-            "_id": "65f2f919efc2b1c044e6a6c2",
-            "user": {
-                "_id": "65aa75eda40865c366f08fb9",
-                "name": "soha",
-                "email": "sohakandil71097@gmail.com",
-                "mobile": "966505694459"
-            },
-            "company": "saee",
-            "ordernumber": "59/1710422297788gotex",
-            "data": {
-                "success": true,
-                "waybill": "OS06797891KS",
-                "epayment_url": "",
-                "message": "Pickup Order created successfully",
-                "short_code": "CGBz",
-                "cash_on_delivery": 0,
-                "cash_on_pickup": 0,
-                "pickup_date": null
-            },
-            "paytype": "cc",
-            "price": 22,
-            "marktercode": "abc",
-            "created_at": "2024-03-14T13:18:17.788Z",
-            "status": "pending",
-            "billCode": "OS06797891KS"
-        }
-    ]
-}
-
-6) get order by id [admin]
 url = /orders/:orderId
 method = GET
 
@@ -416,7 +363,6 @@ response {
 }
 
 7) cancel order request [user]
-7) cancel order request [user]
 url = /orders/cancel-order-request
 method = POST
 
@@ -429,8 +375,7 @@ response {
     "msg": "Your canceling request is saved. Wait until admin accept it."
 }
 
-8) change cancel order request status [admin]
-8) change cancel order request status [admin]
+8) change status of cancel order request  [admin]
 url = /orders/cancel-order-request-status
 method = POST
 note: requestStatus is pending by default, can be set to one of these values : pending, accepted or rejected
@@ -445,7 +390,6 @@ response {
     "msg": "ok"
 }
 
-9) get all cancel order requests [admin]
 9) get all cancel order requests [admin]
 url = /orders/get-cancel-order-requests
 method = GET

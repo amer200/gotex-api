@@ -12,13 +12,13 @@ const ccOrderPay = async (params) => {
             --clint.package.availableOrders;
 
             order.order.payedFrom = "client-package";
-        } else if (clint.wallet > totalShipPrice) {
+        } else if (clint.wallet >= totalShipPrice) {
             clint.wallet -= totalShipPrice;
 
             order.order.payedFrom = "client-wallet";
         } else if (
             clint.credit.status == "accepted" &&
-            clint.credit.limet > totalShipPrice
+            clint.credit.limet >= totalShipPrice
         ) {
             clint.credit.limet -= totalShipPrice;
 
