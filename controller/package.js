@@ -179,11 +179,14 @@ exports.marketerBuyClientPackage = async (req, res) => {
             return res.status(400).json({ msg: 'Client can\'t buy another package until completely use the previous one or cancel it.' })
         }
 
-        if (client.wallet > package.price) {
+        if (client.wallet >= package.price) {
             client.wallet -= package.price
             client.package.paidBy = 'client'
+        } else if (client.credit.status == 'accepted' && client.credit.limet >= package.price) {
+            client.credit.limet -= package.price
+            client.package.paidBy = 'client'
         } else {
-            if (user.wallet > package.price) {
+            if (user.wallet >= package.price) {
                 user.wallet -= package.price
                 client.package.paidBy = 'marketer'
                 await user.save()
