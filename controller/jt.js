@@ -150,7 +150,9 @@ exports.createUserOrder = async (req, res) => {
     try {
         const responsePromise = axios(config);
         const [user, ordersNum, response] = await Promise.all([userPromise, ordersNumPromise, responsePromise])
-
+        console.log("req=" + data)
+        console.log("********************")
+        console.log(response)
         const order = await JtOrder.create({
             user: userId,
             company: "jt",
