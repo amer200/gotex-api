@@ -150,7 +150,7 @@ exports.createUserOrder = async (req, res) => {
     try {
         const responsePromise = axios(config);
         const [user, ordersNum, response] = await Promise.all([userPromise, ordersNumPromise, responsePromise])
-        console.log("header=" + config.headers)
+        console.log("header=" + config.headers[0])
         console.log("********************")
         console.log("body=" + bizContent)
         console.log("********************")
