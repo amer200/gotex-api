@@ -51,6 +51,7 @@ const packageRoutes = require("./routes/package");
 const ordersRoutes = require("./routes/orders");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
+app.use("/companies", companiesRoutes);
 app.use("/saee", saeeRoutes);
 app.use("/aramex", aramexRoutes);
 app.use("/glt", gltRoutes);
