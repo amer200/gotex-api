@@ -269,6 +269,7 @@ exports.createUserOrder = async (req, res) => {
       },
     });
   } catch (error) {
+    console.log(error);
     if (error instanceof AxiosError) {
       res.status(500).json({
         msg: error.response.data,
