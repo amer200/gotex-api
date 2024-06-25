@@ -1,6 +1,5 @@
 const axios = require("axios");
 const User = require("../model/user");
-const { createClientInvoice } = require("../modules/daftra");
 const Jt = require("../model/jt");
 const JtOrder = require("../model/jtorders");
 const Clint = require("../model/clint");
@@ -10,6 +9,7 @@ const fs = require("fs");
 const base64 = require("base64topdf");
 const ccOrderPay = require("../modules/ccOrderPay");
 const Order = require("../model/orders");
+const refundCanceledOrder = require("../modules/refundCanceledOrder");
 
 exports.edit = (req, res) => {
   const status = req.body.status;
@@ -66,7 +66,6 @@ exports.createUserOrder = async (req, res) => {
     goodsValue,
     items,
     cod,
-    daftraid,
     clintid,
   } = req.body;
   /***************** */
@@ -211,27 +210,6 @@ exports.createUserOrder = async (req, res) => {
         msg: response.data,
       });
     }
-
-    let invo = "";
-    if (daftraid) {
-      invo = await createClientInvoice(
-        daftraid,
-        req.user.user.daftraid,
-        description,
-        paytype,
-        totalShipPrice,
-        goodsValue
-      );
-      if (invo.result != "successful") {
-        invo = { result: "failed", daftra_response: invo };
-      }
-    } else {
-      invo = {
-        result: "failed",
-        msg: "daftraid for client is required to create daftra invoice",
-      };
-    }
-    order.inovicedaftra = invo;
 
     let clint = {};
     if (clintid) {

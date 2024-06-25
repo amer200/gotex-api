@@ -1,39 +1,41 @@
-const dotenv = require('dotenv')
-dotenv.config({ path: 'test.env' })
-const express = require('express');
+const dotenv = require("dotenv");
+dotenv.config({ path: "test.env" });
+const express = require("express");
 const app = express();
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const port = process.env.PORT;
-var cors = require('cors');
-var morgan = require('morgan')
-app.use(morgan('combined'))
-const { upload, uploadClintReceipts } = require('./modules/fileUpload')
-const { dbConnection } = require('./db/mongoose');
+var cors = require("cors");
+var morgan = require("morgan");
+app.use(morgan("combined"));
+const { upload, uploadClintReceipts } = require("./modules/fileUpload");
+const { dbConnection } = require("./db/mongoose");
 /********************************************************************************* */
 /** File Upload */
-app.post('/user/signup', upload.array('cr'));
-app.post('/user/sign-up', upload.array('cr'));
-app.post('/user/marketer-signup', upload.array('cr'));
-app.post('/invatation/invited-user-signup', upload.array('cr'));
-app.post('/user/add-clint-deposit', uploadClintReceipts.single('recipt'));
+app.post("/user/signup", upload.array("cr"));
+app.post("/user/sign-up", upload.array("cr"));
+app.post("/user/marketer-signup", upload.array("cr"));
+app.post("/invatation/invited-user-signup", upload.array("cr"));
+app.post("/user/add-clint-deposit", uploadClintReceipts.single("recipt"));
 /********************************************************************************** */
 app.set("view engine", "ejs");
 /********************************************************************************* */
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 /********************************************************************************* */
-app.use(cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH']
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"],
+  })
+);
 
 // Connect with database
-dbConnection()
+dbConnection();
 
 const userRoutes = require("./routes/user");
 const adminRoutes = require("./routes/admin");
-const companiesRoutes = require('./routes/companies');
+const companiesRoutes = require("./routes/companies");
 const saeeRoutes = require("./routes/saee");
 const aramexRoutes = require("./routes/aramex");
 const smsaRoutes = require("./routes/smsa");
@@ -41,7 +43,6 @@ const gltRoutes = require("./routes/glt");
 const anwanRoutes = require("./routes/anwan");
 const splRoutes = require("./routes/spl");
 const invRoutes = require("./routes/invatation");
-const daftraRoutes = require("./routes/daftra");
 const imileRoutes = require("./routes/imile");
 const jtRouters = require("./routes/jt");
 const dhlRouters = require("./routes/dhl");
@@ -59,7 +60,6 @@ app.use("/smsa", smsaRoutes);
 app.use("/anwan", anwanRoutes);
 app.use("/spl", splRoutes);
 app.use("/invatation", invRoutes);
-app.use("/daftra", daftraRoutes);
 app.use("/imile", imileRoutes);
 app.use("/jt", jtRouters);
 app.use("/dhl", dhlRouters);
@@ -69,5 +69,5 @@ app.use("/package", packageRoutes);
 app.use("/orders", ordersRoutes);
 /********************************************************************************* */
 app.listen(port, () => {
-    console.log('app connected on port ' + port)
-})
+  console.log("app connected on port " + port);
+});
