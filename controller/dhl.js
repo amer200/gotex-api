@@ -3,10 +3,6 @@ const Dhl = require("../model/dhl");
 const DhlOrder = require("../model/dhlorders");
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const {
-  createClientInvoice,
-  createSupplierInvoice,
-} = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
 const Order = require("../model/orders");
 
@@ -65,7 +61,6 @@ exports.createUserOrder = async (req, res) => {
     description,
     cod,
     clintid,
-    daftraid,
   } = req.body;
   const markterCode = req.body.markterCode || "";
   const totalShipPrice = res.locals.totalShipPrice;
@@ -292,36 +287,6 @@ exports.createUserOrder = async (req, res) => {
         msg: response.data,
       });
     }
-
-    const supplier_daftraid = dhl.daftraId;
-    const supplierInvoice = await createSupplierInvoice(
-      supplier_daftraid,
-      description,
-      totalShipPrice,
-      quantity
-    );
-    order.supplier_inovicedaftra = supplierInvoice;
-
-    let invo = "";
-    if (daftraid) {
-      invo = await createClientInvoice(
-        daftraid,
-        req.user.user.daftraid,
-        description,
-        paytype,
-        totalShipPrice,
-        quantity
-      );
-      if (invo.result != "successful") {
-        invo = { result: "failed", daftra_response: invo };
-      }
-    } else {
-      invo = {
-        result: "failed",
-        msg: "daftraid for client is required to create daftra invoice",
-      };
-    }
-    order.inovicedaftra = invo;
 
     let clint = {};
     if (clintid) {

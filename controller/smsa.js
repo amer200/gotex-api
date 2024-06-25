@@ -5,7 +5,6 @@ const { AxiosError } = require("axios");
 const base64 = require("base64topdf");
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const { createClientInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
 const Order = require("../model/orders");
 
@@ -62,7 +61,6 @@ exports.createUserOrder = async (req, res) => {
     cod,
     markterCode,
     clintid,
-    daftraid,
   } = req.body;
   const userId = req.user.user.id;
 
@@ -198,27 +196,6 @@ exports.createUserOrder = async (req, res) => {
       });
     }
 
-    let invo = "";
-    if (daftraid) {
-      invo = await createClientInvoice(
-        daftraid,
-        req.user.user.daftraid,
-        description,
-        paytype,
-        totalShipPrice,
-        pieces
-      );
-      if (invo.result != "successful") {
-        invo = { result: "failed", daftra_response: invo };
-      }
-    } else {
-      invo = {
-        result: "failed",
-        msg: "daftraid for client is required to create daftra invoice",
-      };
-    }
-    order.inovicedaftra = invo;
-
     let i = 1;
     response.data.waybills.forEach((a) => {
       base64.base64Decode(
@@ -270,7 +247,10 @@ exports.createUserOrder = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    if (error instanceof AxiosError) {
+    if (
+      error instanceof AxiosError &&
+      Object.keys(error.response.data).length
+    ) {
       res.status(500).json({
         msg: error.response.data,
       });

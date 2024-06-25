@@ -3,11 +3,9 @@ const Saee = require("../model/saee");
 const SaeeOrder = require("../model/saeeorders");
 const User = require("../model/user");
 const Clint = require("../model/clint");
-const { createClientInvoice, createSupplierInvoice } = require("../modules/daftra");
 const ccOrderPay = require("../modules/ccOrderPay");
 const Order = require("../model/orders");
 const refundCanceledOrder = require("../modules/refundCanceledOrder");
-
 
 exports.edit = (req, res) => {
   const status = req.body.status;
@@ -18,31 +16,31 @@ exports.edit = (req, res) => {
   const maxcodmarkteer = req.body.maxcodmarkteer;
   const kgprice = req.body.kgprice;
   Saee.findOne()
-    .then(s => {
+    .then((s) => {
       s.status = status;
       s.userprice = userprice;
       s.marketerprice = marketerprice;
       s.kgprice = kgprice;
       s.maxcodmarkteer = maxcodmarkteer;
       s.mincodmarkteer = mincodmarkteer;
-      s.codprice = userCodPrice
-      return s.save()
+      s.codprice = userCodPrice;
+      return s.save();
     })
-    .then(s => {
+    .then((s) => {
       res.status(200).json({
-        msg: "ok"
-      })
+        msg: "ok",
+      });
     })
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
+      console.log(err);
       res.status(500).json({
-        msg: err.message
-      })
-    })
-}
+        msg: err.message,
+      });
+    });
+};
 exports.createUserOrder = async (req, res) => {
   let ordersNum = await SaeeOrder.count();
-  const userId = req.user.user.id
+  const userId = req.user.user.id;
   const userPromise = User.findById(userId);
   const saeePromise = Saee.findOne();
   const p_name = req.body.p_name;
@@ -56,10 +54,9 @@ exports.createUserOrder = async (req, res) => {
   const c_streetaddress = req.body.c_streetaddress;
   const c_mobile = req.body.c_mobile;
   const cod = req.body.cod;
-  const markterCode = req.body.markterCode || '';
+  const markterCode = req.body.markterCode || "";
   const totalShipPrice = res.locals.totalShipPrice;
   const clintid = req.body.clintid;
-  let daftraid = req.body.daftraid; // client daftra id
   const description = req.body.description;
   if (cod) {
     var cashondelivery = res.locals.codAmount;
@@ -93,31 +90,35 @@ exports.createUserOrder = async (req, res) => {
     senderaddress: p_streetaddress,
     sendercity: p_city,
     // sendercountry: "SA"
-  }
+  };
 
   const sender = {
     name: p_name,
     mobile: p_mobile,
     city: p_city,
-    address: p_streetaddress
-  }
+    address: p_streetaddress,
+  };
 
   const receiver = {
     name: c_name,
     mobile: c_mobile,
     city: c_city,
-    address: c_streetaddress
-  }
+    address: c_streetaddress,
+  };
 
   try {
     const config = {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json;charset=utf-8' },
-      url: 'https://corporate.saeex.com/deliveryrequest/newpickup',
-      data: data
-    }
-    const responsePromise = axios(config)
-    const [user, saee, response] = await Promise.all([userPromise, saeePromise, responsePromise])
+      method: "POST",
+      headers: { "Content-Type": "application/json;charset=utf-8" },
+      url: "https://corporate.saeex.com/deliveryrequest/newpickup",
+      data: data,
+    };
+    const responsePromise = axios(config);
+    const [user, saee, response] = await Promise.all([
+      userPromise,
+      saeePromise,
+      responsePromise,
+    ]);
 
     const order = await SaeeOrder.create({
       user: userId,
@@ -132,7 +133,7 @@ exports.createUserOrder = async (req, res) => {
       weight: weight,
       marktercode: markterCode,
       created_at: new Date(),
-    })
+    });
 
     const myOrder = await Order.create({
       _id: order._id,
@@ -148,55 +149,47 @@ exports.createUserOrder = async (req, res) => {
       weight: weight,
       marktercode: markterCode,
       created_at: new Date(),
-    })
+    });
 
     if (!response.data.success) {
-      order.status = 'failed'
-      await Promise.all([order.save(), myOrder.save()])
+      order.status = "failed";
+      await Promise.all([order.save(), myOrder.save()]);
 
       return res.status(400).json({
-        msg: response.data
-      })
+        msg: response.data,
+      });
     }
 
-    const supplier_daftraid = saee.daftraId
-    const supplierInvoice = await createSupplierInvoice(supplier_daftraid, description, totalShipPrice, quantity);
-    order.supplier_inovicedaftra = supplierInvoice
-
-    let invo = ""
-    if (daftraid) {
-      invo = await createClientInvoice(daftraid, req.user.user.daftraid, description, paytype, totalShipPrice, quantity);
-      if (invo.result != 'successful') {
-        invo = { result: "failed", daftra_response: invo }
-      }
-    } else {
-      invo = { result: "failed", msg: "daftraid for client is required to create daftra invoice" }
-    }
-    order.inovicedaftra = invo
-
-    let clint = {}
+    let clint = {};
     if (clintid) {
       clint = await Clint.findById(clintid);
       if (!clint) {
-        return res.status(400).json({ error: "Client not found" })
+        return res.status(400).json({ error: "Client not found" });
       }
       const co = {
         company: "saee",
-        id: order._id
-      }
+        id: order._id,
+      };
       clint.orders.push(co);
 
       order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
-      await clint.save()
+      await clint.save();
     }
 
     if (!cod) {
-      const ccOrderPayObj = { clintid, clint, totalShipPrice, user, companyName: 'saee', order }
-      await ccOrderPay(ccOrderPayObj)
+      const ccOrderPayObj = {
+        clintid,
+        clint,
+        totalShipPrice,
+        user,
+        companyName: "saee",
+        order,
+      };
+      await ccOrderPay(ccOrderPayObj);
     }
 
-    myOrder.billCode = response.data.waybill
-    myOrder.order = order.order
+    myOrder.billCode = response.data.waybill;
+    myOrder.order = order.order;
     await Promise.all([order.save(), myOrder.save()]);
 
     res.status(200).json({
@@ -205,145 +198,144 @@ exports.createUserOrder = async (req, res) => {
       clientData: {
         package: clint.package,
         wallet: clint.wallet,
-        credit: clint.credit
-      }
-    })
+        credit: clint.credit,
+      },
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({
-      error: err.message
-    })
+      error: err.message,
+    });
   }
-}
+};
 exports.getUserOrders = async (req, res) => {
   const userId = req.user.user.id;
-  SaeeOrder.find({ user: userId, status: { $ne: "failed" } }).sort({ created_at: -1 })
-    .then(o => {
+  SaeeOrder.find({ user: userId, status: { $ne: "failed" } })
+    .sort({ created_at: -1 })
+    .then((o) => {
       res.status(200).json({
-        data: o
-      })
+        data: o,
+      });
     })
-    .catch(err => {
-      console.log(err.request)
-    })
-}
+    .catch((err) => {
+      console.log(err.request);
+    });
+};
 exports.getSticker = async (req, res) => {
   const orderId = req.params.id;
   SaeeOrder.findById(orderId)
-    .then(order => {
+    .then((order) => {
       if (!order) {
-        return res.status(404).json({ error: 'Order not found' })
+        return res.status(404).json({ error: "Order not found" });
       }
       axios({
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
-          'secret': `${process.env.SAEE_KEY_P}`
+          "Content-Type": "application/json",
+          secret: `${process.env.SAEE_KEY_P}`,
         },
-        url: `https://corporate.saeex.com/deliveryrequest/printsticker/${order.data.waybill}`
-      })
-        .then(bill => {
-          res.status(200).json({
-            msg: "ok",
-            data: bill.data
-          })
-        })
+        url: `https://corporate.saeex.com/deliveryrequest/printsticker/${order.data.waybill}`,
+      }).then((bill) => {
+        res.status(200).json({
+          msg: "ok",
+          data: bill.data,
+        });
+      });
     })
-    .catch(err => {
-      console.log(err)
-    })
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
 exports.trakingOrderByNum = async (req, res) => {
   const orderId = req.body.orderId;
   const order = await SaeeOrder.findById(orderId);
   axios({
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      'secret': `${process.env.SAEE_KEY_P}`
+      "Content-Type": "application/json",
+      secret: `${process.env.SAEE_KEY_P}`,
     },
-    url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`
+    url: `https://corporate.saeex.com/tracking/ordernumber?ordernumber=${order.ordernumber}`,
   })
-    .then(response => {
+    .then((response) => {
       res.status(200).json({
-        data: response.data
-      })
+        data: response.data,
+      });
     })
-    .catch(err => {
-      console.log(err)
-    })
-}
+    .catch((err) => {
+      console.log(err);
+    });
+};
 exports.getCities = (req, res) => {
   axios({
-    method: 'GET',
+    method: "GET",
     headers: {
-      'Content-Type': 'application/json',
-      'secret': `${process.env.SAEE_KEY_P}`
+      "Content-Type": "application/json",
+      secret: `${process.env.SAEE_KEY_P}`,
     },
-    url: `https://corporate.saeex.com/deliveryrequest/getallcities`
+    url: `https://corporate.saeex.com/deliveryrequest/getallcities`,
   })
-    .then(response => {
+    .then((response) => {
       res.status(200).json({
-        data: response.data
-      })
+        data: response.data,
+      });
     })
-    .catch(err => {
-      console.log(err)
+    .catch((err) => {
+      console.log(err);
       res.status(500).json({
-        error: err.message
-      })
-    })
-}
+        error: err.message,
+      });
+    });
+};
 
 exports.cancelOrder = async (req, res) => {
   const { orderId, cancelReason = "" } = req.body;
-  const userId = req.user.user.id
+  const userId = req.user.user.id;
   const order = await SaeeOrder.findById(orderId);
 
   try {
     if (!order || order.user != userId) {
       return res.status(400).json({
-        err: "order not found"
-      })
+        err: "order not found",
+      });
     }
-    if (order.status == 'canceled') {
+    if (order.status == "canceled") {
       return res.status(400).json({
-        err: "This order is already canceled"
-      })
+        err: "This order is already canceled",
+      });
     }
 
     let data = JSON.stringify({
-      "waybill": order.data.waybill,
-      "canceled_by": 1
+      waybill: order.data.waybill,
+      canceled_by: 1,
     });
     let config = {
-      method: 'post',
+      method: "post",
       maxBodyLength: Infinity,
-      url: 'https://corporate.saeex.com/deliveryrequest/cancelpickup',
+      url: "https://corporate.saeex.com/deliveryrequest/cancelpickup",
       headers: {
-        'secret': process.env.SAEE_KEY_P,
-        'Content-Type': 'application/json',
+        secret: process.env.SAEE_KEY_P,
+        "Content-Type": "application/json",
       },
-      data: data
+      data: data,
     };
 
     const saeeRes = await axios.request(config);
     if (saeeRes.data.success == true) {
-      order.status = 'canceled'
-      order.cancelReason = cancelReason
-      await order.save(order)
+      order.status = "canceled";
+      order.cancelReason = cancelReason;
+      await order.save(order);
 
-      await refundCanceledOrder(order)
+      await refundCanceledOrder(order);
 
-      return res.status(200).json({ data: saeeRes.data })
+      return res.status(200).json({ data: saeeRes.data });
     } else {
-      return res.status(400).json({ data: saeeRes.data })
+      return res.status(400).json({ data: saeeRes.data });
     }
-
   } catch (err) {
-    console.log(err)
+    console.log(err);
     res.status(500).json({
-      msg: err.message
-    })
+      msg: err.message,
+    });
   }
-}
+};
