@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 
-const clintSchema = mongoose.Schema({
+const clintSchema = mongoose.Schema(
+  {
     name: String,
     company: {
-        type: String,
-        default: ''
+      type: String,
+      default: "",
     },
     email: String,
     mobile: String,
@@ -13,40 +14,41 @@ const clintSchema = mongoose.Schema({
     notes: String,
     street: String,
     wallet: {
-        type: Number,
-        default: 0
+      type: Number,
+      default: 0,
     },
     category: String,
-    addby: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    addby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     orders: [
-        {
-            company: String,
-            id: String,
-            markter: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
-        }
+      {
+        company: String,
+        id: String,
+        markter: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      },
     ],
-    daftraClientId: String,
     credit: {
-        status: String,
-        limet: Number,
-        addby: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+      status: String,
+      limet: Number,
+      addby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     },
     marktercode: String,
     branches: [
-        {
-            city: String,
-            address: String
-        }
+      {
+        city: String,
+        address: String,
+      },
     ],
     receipts: {
-        type: [String]
+      type: [String],
     },
     package: {
-        price: Number,
-        numberOfOrders: Number,
-        companies: Array,
-        paidBy: { type: String, enum: ['client', 'marketer'] },
-        availableOrders: Number,
-    }
-}, { timestamps: true })
+      price: Number,
+      numberOfOrders: Number,
+      companies: Array,
+      paidBy: { type: String, enum: ["client", "marketer"] },
+      availableOrders: Number,
+    },
+  },
+  { timestamps: true }
+);
 module.exports = mongoose.model("Clint", clintSchema);

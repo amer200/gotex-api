@@ -68,7 +68,6 @@ exports.addClient = async (req, res) => {
       category,
       addby: userId,
       orders: [],
-      daftraClientId: daftraResult.id,
       branches,
     });
     await myClient.save();
@@ -194,7 +193,7 @@ exports.editClient = async (req, res) => {
 //             return res.status(400).json({ msg: `No client for this id ${clientId}` })
 //         }
 
-//         const { company, name, city, address, mobile, notes, daftraClientId } = client
+//         const { company, name, city, address, mobile, notes } = client
 
 //         const editImileClientParams = {
 //             company: `${client.company} - removed`,
@@ -414,7 +413,6 @@ exports.registerClient = async (req, res) => {
       category,
       addby: marketer._id,
       orders: [],
-      daftraClientId: daftraResult.id,
       branches,
       marktercode: marketerCode,
     });
