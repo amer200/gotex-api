@@ -16,6 +16,8 @@ app.post("/user/sign-up", upload.array("cr"));
 app.post("/user/marketer-signup", upload.array("cr"));
 app.post("/invatation/invited-user-signup", upload.array("cr"));
 app.post("/user/add-clint-deposit", uploadClintReceipts.single("recipt"));
+
+app.post("/gotex/cancel-order", upload.array("images"));
 /********************************************************************************** */
 app.set("view engine", "ejs");
 /********************************************************************************* */
@@ -46,6 +48,7 @@ const invRoutes = require("./routes/invatation");
 const imileRoutes = require("./routes/imile");
 const jtRouters = require("./routes/jt");
 const dhlRouters = require("./routes/dhl");
+const gotexRouters = require("./routes/gotex");
 const clientRouters = require("./routes/client");
 const marketerRoutes = require("./routes/markter");
 const packageRoutes = require("./routes/package");
@@ -63,6 +66,7 @@ app.use("/invatation", invRoutes);
 app.use("/imile", imileRoutes);
 app.use("/jt", jtRouters);
 app.use("/dhl", dhlRouters);
+app.use("/gotex", gotexRouters);
 app.use("/clients", clientRouters);
 app.use("/markter", marketerRoutes);
 app.use("/package", packageRoutes);
