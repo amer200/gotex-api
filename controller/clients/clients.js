@@ -32,9 +32,6 @@ exports.addClient = async (req, res) => {
       });
     }
     const user = await User.findById(userId);
-    if (user.daftraid) {
-      staff_id = user.daftraid;
-    }
 
     const usedMobile = await Client.findOne({ mobile });
     if (usedMobile) {
@@ -118,7 +115,6 @@ exports.editClient = async (req, res) => {
       }
       console.log(user.rolle);
       rolle = user.rolle;
-      staff_id = user.daftraid;
     }
 
     const populateObj = {

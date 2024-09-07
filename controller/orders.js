@@ -163,9 +163,7 @@ exports.getOrders = async (req, res) => {
           "user.cr": 0,
           "user.iscrproofed": 0,
           "user.__v": 0,
-          "user.daftraid": 0,
           "user.package": 0,
-          "user.daftraClientId": 0,
 
           "marketer._id": 0,
           "marketer.password": 0,
