@@ -274,13 +274,18 @@ exports.getUserOrders = async (req, res) => {
   let page = +req.query.page || 1;
   const limit = +req.query.limit || 30;
   const skip = (page - 1) * limit;
-  const { company = "" } = req.query;
+  const { company = "", billCode = "", marktercode = "" } = req.query;
 
   try {
-    const matchObj = {
-      user: new mongoose.Types.ObjectId(userId),
-      company: { $regex: company, $options: "i" },
-    };
+    let matchObj = {};
+    if (company || billCode || marktercode) {
+      matchObj = {
+        user: new mongoose.Types.ObjectId(userId),
+        company: { $regex: company, $options: "i" },
+        billCode: { $regex: billCode, $options: "i" },
+        marktercode: { $regex: marktercode, $options: "i" },
+      };
+    }
 
     const ordersPromise = Order.aggregate([
       {
