@@ -15,7 +15,7 @@ exports.edit = async (req, res) => {
   const {
     status,
     userprice,
-    userCodPrice,
+    codprice,
     marketerprice,
     mincodmarkteer,
     maxcodmarkteer,
@@ -27,7 +27,7 @@ exports.edit = async (req, res) => {
 
     gotex.status = status;
     gotex.userprice = userprice;
-    gotex.userCodPrice = userCodPrice;
+    gotex.codprice = codprice;
     gotex.marketerprice = marketerprice;
     gotex.mincodmarkteer = mincodmarkteer;
     gotex.maxcodmarkteer = maxcodmarkteer;
