@@ -2,6 +2,7 @@ const User = require("../model/user");
 const Order = require("../model/orders");
 const paginate = require("../modules/paginate");
 const refundCanceledOrder = require("../modules/refundCanceledOrder");
+const mongoose = require("mongoose");
 
 /**
  * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
@@ -250,6 +251,67 @@ exports.getOrders = async (req, res) => {
     }
 
     console.timeEnd("block");
+    res.status(200).json({
+      result: orders.length,
+      pagination: {
+        currentPage: page,
+        limit,
+        numberOfPages,
+      },
+      data: orders,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+};
+
+exports.getUserOrders = async (req, res) => {
+  const userId = req.user.user.id;
+
+  let page = +req.query.page || 1;
+  const limit = +req.query.limit || 30;
+  const skip = (page - 1) * limit;
+  const { company = "" } = req.query;
+
+  try {
+    const matchObj = {
+      user: new mongoose.Types.ObjectId(userId),
+      company: { $regex: company, $options: "i" },
+    };
+
+    const ordersPromise = Order.aggregate([
+      {
+        $match: matchObj,
+      },
+      { $sort: { created_at: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+    ]);
+
+    const allOrdersPromise = Order.aggregate([
+      {
+        $match: matchObj,
+      },
+      { $count: "totalCount" },
+    ]);
+    const [orders, allOrders] = await Promise.all([
+      ordersPromise,
+      allOrdersPromise,
+    ]);
+
+    let numberOfOrders,
+      numberOfPages = 0;
+    if (allOrders[0]) {
+      numberOfOrders = allOrders[0].totalCount;
+      numberOfPages =
+        numberOfOrders % limit == 0
+          ? numberOfOrders / limit
+          : Math.floor(numberOfOrders / limit) + 1;
+    }
+
     res.status(200).json({
       result: orders.length,
       pagination: {
