@@ -142,7 +142,7 @@ exports.createUserOrder = async (req, res) => {
       data: response.data.data,
       sender,
       receiver,
-      billCode: response.data.ordernumber,
+      billCode: response.data.data.billcode,
       paytype,
       price: totalShipPrice,
       codPrice: cashondelivery,
@@ -150,9 +150,42 @@ exports.createUserOrder = async (req, res) => {
       created_at: new Date(),
     });
 
+    let clint = {};
+    if (clintid) {
+      clint = await Clint.findById(clintid);
+      if (!clint) {
+        return res.status(400).json({ error: "Client not found" });
+      }
+      const co = {
+        company: "gotex",
+        id: order._id,
+      };
+      clint.orders.push(co);
+
+      order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
+      await clint.save();
+    }
+
+    if (!cod) {
+      const ccOrderPayObj = {
+        clintid,
+        clint,
+        totalShipPrice,
+        user,
+        companyName: "gotex",
+        order,
+      };
+      await ccOrderPay(ccOrderPayObj);
+    }
+
     return res.status(200).json({
       msg: "order created",
       data: order,
+      clientData: {
+        package: clint.package,
+        wallet: clint.wallet,
+        credit: clint.credit,
+      },
     });
   } catch (err) {
     if (err instanceof AxiosError && Object.keys(err.response.data).length) {
