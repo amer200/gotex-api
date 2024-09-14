@@ -269,7 +269,7 @@ exports.creteNewOrder = async (req, res) => {
           return res.status(400).json({ error: "Client not found" });
         }
         const co = {
-          company: "smsa",
+          company: "spl",
           id: order._id,
         };
         clint.orders.push(co);
@@ -289,7 +289,7 @@ exports.creteNewOrder = async (req, res) => {
         await ccOrderPay(ccOrderPayObj);
       }
 
-      myOrder.billCode = response.data.Items.Barcode;
+      myOrder.billCode = response.data.Items[0]?.Barcode;
       myOrder.order = order.order;
       await Promise.all([order.save(), myOrder.save()]);
 
