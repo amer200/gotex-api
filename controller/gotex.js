@@ -133,7 +133,6 @@ exports.createUserOrder = async (req, res) => {
     };
     const responsePromise = axios(config);
     const [response, user] = await Promise.all([responsePromise, userPromise]);
-    console.log(response.data.data);
 
     const order = await Order.create({
       _id: response.data._id,
@@ -142,7 +141,7 @@ exports.createUserOrder = async (req, res) => {
       data: response.data.data,
       sender,
       receiver,
-      billCode: response.data.data.billcode,
+      billCode: response.data.data.ordernumber,
       paytype,
       price: totalShipPrice,
       codPrice: cashondelivery,
