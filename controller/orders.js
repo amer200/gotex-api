@@ -277,7 +277,7 @@ exports.getUserOrders = async (req, res) => {
   const { company = "", billCode = "", marktercode = "" } = req.query;
 
   try {
-    let matchObj = {};
+    let matchObj = { user: new mongoose.Types.ObjectId(userId) };
     if (company || billCode || marktercode) {
       matchObj = {
         user: new mongoose.Types.ObjectId(userId),
