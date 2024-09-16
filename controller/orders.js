@@ -173,10 +173,7 @@ exports.getOrders = async (req, res) => {
           "marketer.code": 0,
           "marketer.__v": 0,
 
-          "data.waybills": 0,
-          "data.data.imileAwb": 0,
-          "data.sticker": 0,
-          "data.Shipments.ShipmentDetails": 0,
+          data: 0,
         },
       },
     ]);
@@ -230,8 +227,10 @@ exports.getOrders = async (req, res) => {
     //         case 'smsa':
     //             order.billCode = order.data.sawb
     //             break;
-    //         case 'spl':
-    //             order.billCode = order.data.Items.Barcode
+    //         case 'Spl':
+    //            if(orders.data.Items){
+    //             order.billCode = order.data.Items[0]?.Barcode
+    //            }
     //             break;
     //         default:
     //             break;
@@ -294,6 +293,12 @@ exports.getUserOrders = async (req, res) => {
       { $sort: { created_at: -1 } },
       { $skip: skip },
       { $limit: limit },
+      {
+        $project: {
+          __v: 0,
+          data: 0,
+        },
+      },
     ]);
 
     const allOrdersPromise = Order.aggregate([
