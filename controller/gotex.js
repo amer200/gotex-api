@@ -164,6 +164,7 @@ exports.createUserOrder = async (req, res) => {
       order.marktercode = clint.marktercode ? clint.marktercode : markterCode;
       await clint.save();
     }
+    await order.save();
 
     if (!cod) {
       const ccOrderPayObj = {
