@@ -3,7 +3,14 @@ const Order = require("../model/orders");
 const paginate = require("../modules/paginate");
 const refundCanceledOrder = require("../modules/refundCanceledOrder");
 const mongoose = require("mongoose");
-
+const AnwanOrder = require("../model/anwanorders");
+const AramexOrder = require("../model/aramexorders");
+const ImileOrder = require("../model/imileorders");
+const JtOrder = require("../model/jtorders");
+const GltOrder = require("../model/gltorders");
+const SaeeOrder = require("../model/saeeorders");
+const SmsaOrder = require("../model/smsaorders");
+const SplOrder = require("../model/splorders");
 /**
  * @Desc :  Filter with company, paytype, billCode, marktercode or keyword (user data -> name, email or mobile)
  *        + Filter by date
@@ -151,6 +158,11 @@ exports.getOrders = async (req, res) => {
       { $skip: skip },
       { $limit: limit },
       {
+        $addFields: {
+          billFile: "$data.waybills.awbFile",
+        },
+      },
+      {
         $project: {
           // select
           __v: 0,
@@ -239,6 +251,15 @@ exports.getOrders = async (req, res) => {
     //     await order.save()
     // })
 
+    // const myOrders = await Order.find({ company: "saee" });
+    // const companyOrders = await SaeeOrder.find();
+    // myOrders.forEach(async (order1) => {
+    //   companyOrders.forEach(async (order2) => {
+    //     order1.marktercode = order2.marktercode;
+    //     await order1.save();
+    //   });
+    // });
+
     let numberOfOrders,
       numberOfPages = 0;
     if (allOrders[0]) {
@@ -250,6 +271,83 @@ exports.getOrders = async (req, res) => {
     }
 
     console.timeEnd("block");
+    res.status(200).json({
+      result: orders.length,
+      pagination: {
+        currentPage: page,
+        limit,
+        numberOfPages,
+      },
+      data: orders,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      error: err.message,
+    });
+  }
+};
+
+exports.getUserOrders = async (req, res) => {
+  const userId = req.user.user.id;
+
+  let page = +req.query.page || 1;
+  const limit = +req.query.limit || 30;
+  const skip = (page - 1) * limit;
+  const { company = "", billCode = "", marktercode = "" } = req.query;
+
+  try {
+    let matchObj = { user: new mongoose.Types.ObjectId(userId) };
+    if (company || billCode || marktercode) {
+      matchObj = {
+        user: new mongoose.Types.ObjectId(userId),
+        company: { $regex: company, $options: "i" },
+        billCode: { $regex: billCode, $options: "i" },
+        marktercode: { $regex: marktercode, $options: "i" },
+      };
+    }
+
+    const ordersPromise = Order.aggregate([
+      {
+        $match: matchObj,
+      },
+      { $sort: { created_at: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $addFields: {
+          billFile: "$data.waybills.awbFile",
+        },
+      },
+      {
+        $project: {
+          __v: 0,
+          data: 0,
+        },
+      },
+    ]);
+
+    const allOrdersPromise = Order.aggregate([
+      {
+        $match: matchObj,
+      },
+      { $count: "totalCount" },
+    ]);
+    const [orders, allOrders] = await Promise.all([
+      ordersPromise,
+      allOrdersPromise,
+    ]);
+
+    let numberOfOrders,
+      numberOfPages = 0;
+    if (allOrders[0]) {
+      numberOfOrders = allOrders[0].totalCount;
+      numberOfPages =
+        numberOfOrders % limit == 0
+          ? numberOfOrders / limit
+          : Math.floor(numberOfOrders / limit) + 1;
+    }
+
     res.status(200).json({
       result: orders.length,
       pagination: {
@@ -314,78 +412,6 @@ exports.filterOrdersByDate = async (req, res) => {
         numberOfPages,
       },
       data: ordersPerPage,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      error: err.message,
-    });
-  }
-};
-
-exports.getUserOrders = async (req, res) => {
-  const userId = req.user.user.id;
-
-  let page = +req.query.page || 1;
-  const limit = +req.query.limit || 30;
-  const skip = (page - 1) * limit;
-  const { company = "", billCode = "", marktercode = "" } = req.query;
-
-  try {
-    let matchObj = { user: new mongoose.Types.ObjectId(userId) };
-    if (company || billCode || marktercode) {
-      matchObj = {
-        user: new mongoose.Types.ObjectId(userId),
-        company: { $regex: company, $options: "i" },
-        billCode: { $regex: billCode, $options: "i" },
-        marktercode: { $regex: marktercode, $options: "i" },
-      };
-    }
-
-    const ordersPromise = Order.aggregate([
-      {
-        $match: matchObj,
-      },
-      { $sort: { created_at: -1 } },
-      { $skip: skip },
-      { $limit: limit },
-      {
-        $project: {
-          __v: 0,
-          data: 0,
-        },
-      },
-    ]);
-
-    const allOrdersPromise = Order.aggregate([
-      {
-        $match: matchObj,
-      },
-      { $count: "totalCount" },
-    ]);
-    const [orders, allOrders] = await Promise.all([
-      ordersPromise,
-      allOrdersPromise,
-    ]);
-
-    let numberOfOrders,
-      numberOfPages = 0;
-    if (allOrders[0]) {
-      numberOfOrders = allOrders[0].totalCount;
-      numberOfPages =
-        numberOfOrders % limit == 0
-          ? numberOfOrders / limit
-          : Math.floor(numberOfOrders / limit) + 1;
-    }
-
-    res.status(200).json({
-      result: orders.length,
-      pagination: {
-        currentPage: page,
-        limit,
-        numberOfPages,
-      },
-      data: orders,
     });
   } catch (err) {
     console.log(err);
