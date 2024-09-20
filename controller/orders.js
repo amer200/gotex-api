@@ -179,7 +179,7 @@ exports.getOrders = async (req, res) => {
           "marketer.code": 0,
           "marketer.__v": 0,
 
-          data: 0,
+          // data: 0,
         },
       },
     ]);
