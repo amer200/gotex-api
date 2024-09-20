@@ -3,7 +3,10 @@ const mongoose = require("mongoose");
 const clintSchema = mongoose.Schema(
   {
     name: String,
-    company: String,
+    company: {
+      type: String,
+      default: "",
+    },
     email: String,
     mobile: String,
     city: String,
