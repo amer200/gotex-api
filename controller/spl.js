@@ -43,7 +43,7 @@ exports.edit = (req, res) => {
 
 exports.getToken = (req, res) => {
   const grant_type = "password";
-  const UserName = "extrAccount";
+  const UserName = process.env.spl_userName;
   const Password = process.env.spl_password;
   var data = qs.stringify({
     grant_type: "password",
@@ -52,7 +52,7 @@ exports.getToken = (req, res) => {
   });
   var config = {
     method: "post",
-    url: "https://gateway-minasapre.sp.com.sa/token",
+    url: "https://gateway-minasa.sp.com.sa/APIGateway/token",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
@@ -196,7 +196,7 @@ exports.creteNewOrder = async (req, res) => {
   try {
     var config = {
       method: "post",
-      url: "https://gateway-minasapre.sp.com.sa/api/CreditSale/AddUPDSPickupDelivery",
+      url: "https://gateway-minasa.sp.com.sa/APIGateway/api/CreditSale/AddUPDSPickupDelivery",
       headers: {
         // 'Content-Type': 'application/x-www-form-urlencoded',
         "Content-Type": "application/json;charset=utf-8",
@@ -347,7 +347,7 @@ exports.getCountries = async (req, res) => {
   });
   var config = {
     method: "post",
-    url: "https://gateway-minasapre.sp.com.sa/api/Location/GetCountries",
+    url: "https://gateway-minasa.sp.com.sa/APIGateway/api/Location/GetCountries",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
       Authorization: `bearer ${spl.token}`,
@@ -372,7 +372,7 @@ exports.getCities = async (req, res) => {
   });
   var config = {
     method: "post",
-    url: "https://gateway-minasapre.sp.com.sa/api/GIS/GetCitiesByRegion",
+    url: "https://gateway-minasa.sp.com.sa/APIGateway/api/GIS/GetCitiesByRegion",
     headers: {
       Authorization: `bearer ${spl.token}`,
     },
@@ -396,7 +396,7 @@ exports.getDistrict = async (req, res) => {
   });
   var config = {
     method: "post",
-    url: "https://gateway-minasapre.sp.com.sa/api/GIS/GetDistricts",
+    url: "https://gateway-minasa.sp.com.sa/APIGateway/api/GIS/GetDistricts",
     headers: {
       Authorization: `bearer ${spl.token}`,
     },
@@ -423,7 +423,7 @@ var job = new CronJob(
      */
     const spl = await Spl.findOne();
     const grant_type = "password";
-    const UserName = "extrAccount";
+    const UserName = process.env.spl_userName;
     const Password = process.env.spl_password;
     var data = qs.stringify({
       grant_type: "password",
@@ -432,7 +432,7 @@ var job = new CronJob(
     });
     var config = {
       method: "post",
-      url: "https://gateway-minasapre.sp.com.sa/token",
+      url: "https://gateway-minasa.sp.com.sa/APIGateway/token",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
