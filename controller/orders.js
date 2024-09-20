@@ -31,11 +31,11 @@ const SplOrder = require("../model/splorders");
 //     try {
 //         console.time('blocking await')
 //         const query = {
-//             paytype: { $regex: paytype, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
-//             marktercode: { $regex: marktercode, $options: 'i' },
-//             company: { $regex: company, $options: 'i' },
-//             billCode: { $regex: billCode, $options: 'i' },
-//             billCode: { $regex: billCode, $options: 'i' },
+//             paytype: { $regex: `^${paytype}`, $options: 'i' },// $options: 'i' to make it case-insensitive (accept capital or small chars)
+//             marktercode: { $regex: `^${marktercode}`, $options: 'i' },
+//             company: { $regex: `^${company}`, $options: 'i' },
+//             billCode: { $regex: `^${billCode}`, $options: 'i' },
+//             billCode: { $regex: `^${billCode}`, $options: 'i' },
 //             created_at: {
 //                 $gte: startDate,
 //                 $lte: endDate
@@ -47,9 +47,9 @@ const SplOrder = require("../model/splorders");
 //             /**@Desc if users.name or user.email != keyword, it returns user=null */
 //             match: {
 //                 $or: [
-//                     { name: { $regex: keyword, $options: 'i' } },
-//                     { email: { $regex: keyword, $options: 'i' } },
-//                     { mobile: { $regex: keyword, $options: 'i' } }
+//                     { name: { $regex: `^${keyword}`, $options: 'i' } },
+//                     { email: { $regex: `^${keyword}`, $options: 'i' } },
+//                     { mobile: { $regex: `^${keyword}`, $options: 'i' } }
 //                 ]
 //             },
 //             select: "name email mobile"
@@ -106,29 +106,28 @@ exports.getOrders = async (req, res) => {
   } = req.query;
 
   try {
-    console.time("block");
     let matchObj = {};
     if (!company && !paytype && !billCode && !marktercode && !keyword) {
       matchObj = {};
     } else if (!keyword) {
       matchObj = {
-        paytype: { $regex: paytype, $options: "i" }, // $options: 'i' to make it case-insensitive (accept capital or small chars)
-        marktercode: { $regex: marktercode, $options: "i" },
-        company: { $regex: company, $options: "i" },
-        billCode: { $regex: billCode, $options: "i" },
+        paytype: { $regex: `^${paytype}` }, // $options: 'i' to make it case-insensitive (accept capital or small chars)
+        marktercode: { $regex: `^${marktercode}`, $options: "i" },
+        company: { $regex: `^${company}`, $options: "i" },
+        billCode: { $regex: `^${billCode}` },
         status: { $ne: "failed" },
       };
     } else {
       matchObj = {
-        paytype: { $regex: paytype, $options: "i" }, // $options: 'i' to make it case-insensitive (accept capital or small chars)
-        marktercode: { $regex: marktercode, $options: "i" },
-        company: { $regex: company, $options: "i" },
-        billCode: { $regex: billCode, $options: "i" },
+        paytype: { $regex: `^${paytype}` },
+        marktercode: { $regex: `^${marktercode}`, $options: "i" },
+        company: { $regex: `^${company}`, $options: "i" },
+        billCode: { $regex: `^${billCode}` },
         status: { $ne: "failed" },
         $or: [
-          { "user.name": { $regex: keyword, $options: "i" } },
-          { "user.email": { $regex: keyword, $options: "i" } },
-          { "user.mobile": { $regex: keyword, $options: "i" } },
+          { "user.name": { $regex: `^${keyword}`, $options: "i" } },
+          { "user.email": { $regex: `^${keyword}`, $options: "i" } },
+          { "user.mobile": { $regex: `^${keyword}`, $options: "i" } },
         ],
       };
     }
@@ -157,11 +156,6 @@ exports.getOrders = async (req, res) => {
       { $sort: { created_at: -1 } },
       { $skip: skip },
       { $limit: limit },
-      {
-        $addFields: {
-          billFile: "$data.waybills.awbFile",
-        },
-      },
       {
         $project: {
           // select
@@ -270,7 +264,6 @@ exports.getOrders = async (req, res) => {
           : Math.floor(numberOfOrders / limit) + 1;
     }
 
-    console.timeEnd("block");
     res.status(200).json({
       result: orders.length,
       pagination: {
@@ -301,9 +294,9 @@ exports.getUserOrders = async (req, res) => {
     if (company || billCode || marktercode) {
       matchObj = {
         user: new mongoose.Types.ObjectId(userId),
-        company: { $regex: company, $options: "i" },
-        billCode: { $regex: billCode, $options: "i" },
-        marktercode: { $regex: marktercode, $options: "i" },
+        company: { $regex: `^${company}`, $options: "i" },
+        billCode: { $regex: `^${billCode}` },
+        marktercode: { $regex: `^${marktercode}`, $options: "i" },
       };
     }
 
@@ -378,7 +371,7 @@ exports.filterOrdersByDate = async (req, res) => {
   try {
     console.time("blocking await");
     const query = {
-      company: { $regex: company, $options: "i" },
+      company: { $regex: `^${company}`, $options: "i" },
       created_at: {
         $gte: startDate,
         $lte: endDate,

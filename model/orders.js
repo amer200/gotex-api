@@ -62,5 +62,16 @@ orderSchema.index({ paytype: 1 }, { unique: false });
 orderSchema.index({ billCode: 1 }, { unique: false });
 orderSchema.index({ marktercode: 1 }, { unique: false });
 orderSchema.index({ user: 1 }, { unique: false });
+orderSchema.index({
+  paytype: 1,
+  marktercode: 1,
+  company: 1,
+  billCode: 1,
+  status: 1,
+  "user.name": 1,
+  "user.email": 1,
+  "user.mobile": 1,
+});
+orderSchema.index({ user: 1, company: 1, billCode: 1, marktercode: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);
