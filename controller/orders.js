@@ -179,7 +179,7 @@ exports.getOrders = async (req, res) => {
           "marketer.code": 0,
           "marketer.__v": 0,
 
-          // data: 0,
+          data: 0,
         },
       },
     ]);
@@ -387,8 +387,8 @@ exports.filterOrdersByDate = async (req, res) => {
       .limit(limit)
       .skip(skip)
       .sort({ created_at: -1 })
-      .populate(populateObj);
-    // .select("-__v -data");
+      .populate(populateObj)
+      .select("-__v -data");
 
     const numberOfOrders = await Order.find(query).countDocuments();
     const numberOfPages =
