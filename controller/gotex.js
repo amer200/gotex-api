@@ -9,7 +9,7 @@ const refundCanceledOrder = require("../modules/refundCanceledOrder");
 const FormData = require("form-data");
 const fs = require("fs");
 
-const baseUrl = "https://dashboard.go-tex.net/logistics-test";
+const baseUrl = "https://dashboard.go-tex.net/logistics";
 
 exports.edit = async (req, res) => {
   const {
