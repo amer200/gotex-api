@@ -248,9 +248,9 @@ exports.filterOrdersByDate = async (req, res) => {
     };
 
     let ordersPerPage = await Order.find(query)
+      .sort({ created_at: -1 })
       .limit(limit)
       .skip(skip)
-      .sort({ created_at: -1 })
       .populate(populateObj)
       .select("-__v -data");
 
