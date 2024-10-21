@@ -1,8 +1,14 @@
-const Product = require('../models/Product');
+const Product = require('../model/product');
 
 // Create a new product
 const createProduct = async (req, res) => {
-    const { name, createdBy, description, price, stock, category, images } = req.body;
+    const { name, createdBy, description, price, stock, category } = req.body;
+    var images = [];
+    if (req.files) {
+        req.files.forEach((f) => {
+            images.push(f.path);
+        });
+    }
 
     try {
         const newProduct = new Product({
@@ -47,12 +53,11 @@ const getProductById = async (req, res) => {
 // Update an existing product
 const updateProduct = async (req, res) => {
     const { productId } = req.params;
-    const { name, description, price, stock, category, images } = req.body;
-
+    const { name, description, price, stock, category } = req.body;
     try {
         const updatedProduct = await Product.findByIdAndUpdate(
             productId,
-            { name, description, price, stock, category, images },
+            { name, description, price, stock, category },
             { new: true, runValidators: true }
         );
 

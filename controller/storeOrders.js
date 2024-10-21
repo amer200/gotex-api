@@ -9,7 +9,7 @@ const createOrder = async (req, res) => {
         // Calculate total amount
         let totalAmount = 0;
         const orderItems = [];
-
+        console.log(items)
         for (let item of items) {
             const product = await Product.findById(item.product);
             if (!product) return res.status(404).json({ message: `Product with ID ${item.product} not found` });

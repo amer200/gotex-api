@@ -7,11 +7,12 @@ const port = process.env.PORT;
 var cors = require("cors");
 var morgan = require("morgan");
 app.use(morgan("combined"));
-const { upload, uploadClintReceipts } = require("./modules/fileUpload");
+const { upload, uploadClintReceipts, uploadImages } = require("./modules/fileUpload");
 const { dbConnection } = require("./db/mongoose");
 /********************************************************************************* */
 /** File Upload */
 app.post("/user/signup", upload.array("cr"));
+app.post("/products", uploadImages.array("images"));
 app.post("/user/sign-up", upload.array("cr"));
 app.post("/user/marketer-signup", upload.array("cr"));
 app.post("/invatation/invited-user-signup", upload.array("cr"));
@@ -53,6 +54,9 @@ const clientRouters = require("./routes/client");
 const marketerRoutes = require("./routes/markter");
 const packageRoutes = require("./routes/package");
 const ordersRoutes = require("./routes/orders");
+const productRoutes = require("./routes/product");
+const storeOrdersRoutes = require("./routes/storeOrders");
+const cartRoutes = require("./routes/cart");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -71,6 +75,9 @@ app.use("/clients", clientRouters);
 app.use("/markter", marketerRoutes);
 app.use("/package", packageRoutes);
 app.use("/orders", ordersRoutes);
+app.use("/products", productRoutes);
+app.use("/store-orders", storeOrdersRoutes);
+app.use("/cart", cartRoutes);
 /********************************************************************************* */
 app.listen(port, () => {
   console.log("app connected on port " + port);

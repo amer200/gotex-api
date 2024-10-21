@@ -12,5 +12,6 @@ const storage = (path) => {
     })
 }
 
+exports.uploadImages = multer({ storage: storage('public/images/') })
 exports.upload = multer({ storage: storage('public/cr/') })
 exports.uploadClintReceipts = multer({ storage: storage('public/receipts/') })
