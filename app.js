@@ -57,6 +57,7 @@ const ordersRoutes = require("./routes/orders");
 const productRoutes = require("./routes/product");
 const storeOrdersRoutes = require("./routes/storeOrders");
 const cartRoutes = require("./routes/cart");
+const categoryRoutes = require("./routes/category");
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 app.use("/companies", companiesRoutes);
@@ -76,6 +77,7 @@ app.use("/markter", marketerRoutes);
 app.use("/package", packageRoutes);
 app.use("/orders", ordersRoutes);
 app.use("/products", productRoutes);
+app.use("/category", categoryRoutes);
 app.use("/store-orders", storeOrdersRoutes);
 app.use("/cart", cartRoutes);
 /********************************************************************************* */
