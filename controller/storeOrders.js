@@ -59,6 +59,17 @@ const getOrders = async (req, res) => {
     }
 };
 
+const getUserOrders = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const orders = await Order.find({ user: userId }).populate('items.product');
+        return res.status(200).json(orders);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+
 // Get a single order by ID
 const getOrderById = async (req, res) => {
     const { orderId } = req.params;
@@ -111,4 +122,5 @@ module.exports = {
     getOrderById,
     getOrders,
     updateOrderStatus,
+    getUserOrders
 }
