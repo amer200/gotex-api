@@ -1,7 +1,7 @@
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 
-const sendEmail = async (email, param1, param2, temp, mailSubject) => {
+const sendEmail = async (email, param1, param2, temp, mailSubject, gotex) => {
     try {
         const transporter = nodemailer.createTransport({
             host: "smtp.hostinger.com",
@@ -19,7 +19,7 @@ const sendEmail = async (email, param1, param2, temp, mailSubject) => {
             } else {
                 transporter.sendMail({
                     from: {
-                        name: 'Gotex',
+                        name: gotex ? 'Gotex' : "Tup Trupo",
                         address: process.env.EMAIL
                     },
                     to: email,

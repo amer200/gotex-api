@@ -48,7 +48,8 @@ exports.signUp = (req, res) => {
               u.emailcode,
               u._id,
               "/../views/emailTemp.ejs",
-              mailSubject
+              mailSubject,
+              gotex
             );
           }
           else {
@@ -57,7 +58,8 @@ exports.signUp = (req, res) => {
               u.emailcode,
               u._id,
               "/../views/emailTempTest.ejs",
-              mailSubject
+              "Verify your Tup Trupo account",
+              gotex
             );
           }
           res.status(200).json({
@@ -250,7 +252,8 @@ exports.createNewPassword = async (req, res) => {
         u.emailcode,
         u._id,
         "/../views/password_mail.ejs",
-        mailSubject
+        mailSubject,
+        gotex
       );
     }
     else {
@@ -259,7 +262,8 @@ exports.createNewPassword = async (req, res) => {
         u.emailcode,
         u._id,
         "/../views/password_mailTest.ejs",
-        mailSubject
+        "Verify your Tup Trupo account",
+        gotex
       );
     }
     return res.status(200).json({
