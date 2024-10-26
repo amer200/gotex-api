@@ -248,9 +248,9 @@ exports.createNewPassword = async (req, res) => {
     await user.save();
     if (gotex) {
       sendEmail(
-        u.email,
-        u.emailcode,
-        u._id,
+        user.email,
+        user.emailcode,
+        user._id,
         "/../views/password_mail.ejs",
         mailSubject,
         gotex
@@ -258,9 +258,9 @@ exports.createNewPassword = async (req, res) => {
     }
     else {
       sendEmail(
-        u.email,
-        u.emailcode,
-        u._id,
+        user.email,
+        user.emailcode,
+        user._id,
         "/../views/password_mailTest.ejs",
         "Verify your Tup Trupo account",
         gotex
