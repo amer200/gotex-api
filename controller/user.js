@@ -10,7 +10,7 @@ const genRandomString = require("../modules/genRandomString");
 const mailSubject = "Verify your gotex account";
 
 exports.signUp = (req, res) => {
-  const { name, password, email, mobile, address, location } = req.body;
+  const { name, password, email, mobile, address, location, gotex } = req.body;
   console.log(req.body);
   console.log(req.files);
 
@@ -41,13 +41,25 @@ exports.signUp = (req, res) => {
           cr: cr,
         });
         user.save().then((u) => {
-          sendEmail(
-            u.email,
-            u.emailcode,
-            u._id,
-            "/../views/emailTemp.ejs",
-            mailSubject
-          );
+
+          if (gotex) {
+            sendEmail(
+              u.email,
+              u.emailcode,
+              u._id,
+              "/../views/emailTemp.ejs",
+              mailSubject
+            );
+          }
+          else {
+            sendEmail(
+              u.email,
+              u.emailcode,
+              u._id,
+              "/../views/emailTempTest.ejs",
+              mailSubject
+            );
+          }
           res.status(200).json({
             msg: "ok",
             user: u,
@@ -222,6 +234,7 @@ exports.getUserBalance = (req, res) => {
 exports.createNewPassword = async (req, res) => {
   try {
     const email = req.body.email;
+    const gotex = req.body.gotex;
     const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).json({
@@ -231,13 +244,24 @@ exports.createNewPassword = async (req, res) => {
     user.emailcode = genRandomString(6);
     console.log(user.emailcode);
     await user.save();
-    sendEmail(
-      user.email,
-      user.emailcode,
-      user._id,
-      "/../views/password_mail.ejs",
-      mailSubject
-    );
+    if (gotex) {
+      sendEmail(
+        u.email,
+        u.emailcode,
+        u._id,
+        "/../views/password_mail.ejs",
+        mailSubject
+      );
+    }
+    else {
+      sendEmail(
+        u.email,
+        u.emailcode,
+        u._id,
+        "/../views/password_mailTest.ejs",
+        mailSubject
+      );
+    }
     return res.status(200).json({
       msg: "the email has been sent",
     });
