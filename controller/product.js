@@ -30,12 +30,31 @@ const createProduct = async (req, res) => {
 // Get all products
 const getProducts = async (req, res) => {
     try {
-        const products = await Product.find();
+        const products = await Product.find().populate("category");
         return res.status(200).json(products);
     } catch (error) {
         return res.status(500).json({ message: error.message });
     }
 };
+const getProductsByCategory = async (req, res) => {
+    try {
+        const { categoryId } = req.params;
+        const products = await Product.find({ category: categoryId }).populate("category");
+        return res.status(200).json(products);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+const getProductsByName = async (req, res) => {
+    try {
+        const { query } = req.params;
+        const products = await Product.find({ $text: { $search: query } }).populate("category");
+        return res.status(200).json(products);
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 
 // Get a single product by ID
 const getProductById = async (req, res) => {
@@ -86,6 +105,8 @@ module.exports = {
     deleteProduct,
     updateProduct,
     getProductById,
-    getProducts
+    getProducts,
+    getProductsByCategory,
+    getProductsByName
 
 };
