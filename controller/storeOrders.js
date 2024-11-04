@@ -1,5 +1,6 @@
 const Order = require('../model/storeOrders');
 const Product = require('../model/product');
+const Client = require('../model/clint');
 
 // Create a new order
 const createOrder = async (req, res) => {
@@ -26,6 +27,10 @@ const createOrder = async (req, res) => {
             });
             totalAmount += product.price * item.quantity;
         }
+        const client = await Client.findById(user);
+        if (client.wallet < totalAmount) {
+            return res.status(400).json({ message: "your amount not enough" });
+        }
 
         const newOrder = new Order({
             user: userId,
@@ -36,7 +41,8 @@ const createOrder = async (req, res) => {
         });
 
         const savedOrder = await newOrder.save();
-
+        client.wallet -= totalAmount;
+        await client.save();
         // After successful order, you can also reduce the stock quantity
         for (let item of orderItems) {
             await Product.findByIdAndUpdate(item.product, {

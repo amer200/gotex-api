@@ -8,7 +8,7 @@ const orderItemSchema = new Schema({
 }, { _id: false });
 
 const StoreOrderSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: 'Clint' },
     items: [orderItemSchema],
     totalAmount: { type: Number, required: true },
     status: { type: String, default: 'Pending', enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'] },
