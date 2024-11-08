@@ -1,16 +1,19 @@
 const Order = require("../model/storeOrders");
 const Product = require("../model/product");
+const User = require("../model/user");
 const Client = require("../model/clint");
+const ccStoreOrderPay = require("../modules/ccStoreOrderPay");
 
 // Create a new order
 const createOrder = async (req, res) => {
-  const { userId, items, shippingAddress, paymentMethod } = req.body;
+  const userId = req.user.user.id;
+  const { clientId, items, shippingAddress, paymentMethod } = req.body;
 
   try {
-    // Calculate total amount
     let totalAmount = 0;
     const orderItems = [];
-    // console.log(items);
+
+    // Calculate total amount
     for (let item of items) {
       const product = await Product.findById(item.product);
       if (!product)
@@ -32,22 +35,38 @@ const createOrder = async (req, res) => {
       });
       totalAmount += product.price * item.quantity;
     }
-    const client = await Client.findById(userId);
-
-    if (client.wallet < totalAmount) {
-      return res.status(400).json({ message: "your amount not enough" });
-    }
+    console.log(paymentMethod);
     const newOrder = new Order({
       user: userId,
+      client: clientId,
       items: orderItems,
       totalAmount,
       shippingAddress,
       paymentMethod,
     });
+    let client = {};
+    console.log(clientId);
+    if (clientId) {
+      client = await Client.findById(clientId);
+      if (!client) {
+        return res.status(400).json({ error: "Client not found" });
+      }
+    }
 
-    const savedOrder = await newOrder.save();
-    client.wallet -= totalAmount;
-    await client.save();
+    if (paymentMethod == "cc") {
+      const user = await User.findById(userId);
+
+      const ccOrderPayObj = {
+        clientId,
+        client,
+        totalAmount,
+        user,
+        order: newOrder,
+      };
+
+      await ccStoreOrderPay(ccOrderPayObj);
+    }
+
     // After successful order, you can also reduce the stock quantity
     for (let item of orderItems) {
       await Product.findByIdAndUpdate(item.product, {
@@ -55,7 +74,8 @@ const createOrder = async (req, res) => {
       });
     }
 
-    return res.status(201).json(savedOrder);
+    await newOrder.save();
+    return res.status(201).json(newOrder);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
@@ -73,8 +93,9 @@ const getOrders = async (req, res) => {
 
 const getUserOrders = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.user.user.id;
     const orders = await Order.find({ user: userId }).populate("items.product");
+
     return res.status(200).json(orders);
   } catch (error) {
     return res.status(500).json({ message: error.message });
