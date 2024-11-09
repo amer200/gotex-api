@@ -44,8 +44,8 @@ const createOrder = async (req, res) => {
       shippingAddress,
       paymentMethod,
     });
+
     let client = {};
-    console.log(clientId);
     if (clientId) {
       client = await Client.findById(clientId);
       if (!client) {
@@ -75,7 +75,14 @@ const createOrder = async (req, res) => {
     }
 
     await newOrder.save();
-    return res.status(201).json(newOrder);
+    return res.status(201).json({
+      msg: "order created successfully",
+      data: newOrder,
+      clientData: {
+        wallet: client.wallet,
+        credit: client.credit,
+      },
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: error.message });
