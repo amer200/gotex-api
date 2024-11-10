@@ -84,10 +84,10 @@ const removeFromCart = async (req, res) => {
   try {
     const cart = await Cart.findOne({ user: userId });
     if (!cart) return res.status(404).json({ message: "Cart not found" });
-
     const itemIndex = cart.items.findIndex(
-      (item) => item.product.toString() === productId
+      (item) => item.product._id.toString() === productId
     );
+
     if (itemIndex > -1) {
       const product = await Product.findById(productId);
       cart.totalPrice -= product.price * cart.items[itemIndex].quantity;
