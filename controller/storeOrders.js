@@ -91,7 +91,11 @@ const createOrder = async (req, res) => {
 // Get all orders (for admin or user's order history)
 const getOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate("items.product");
+    const orders = await Order.find().populate([
+      { path: "items.product" },
+      { path: "user", select: "name" },
+      { path: "client", select: "name" },
+    ]);
     return res.status(200).json(orders);
   } catch (error) {
     return res.status(500).json({ message: error.message });
